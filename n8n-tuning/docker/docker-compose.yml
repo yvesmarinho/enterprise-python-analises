@@ -1,0 +1,58 @@
+services:
+  victoria-metrics:
+    image: victoriametrics/victoria-metrics:latest
+    container_name: n8n-victoria-metrics
+    ports:
+      - "8428:8428"
+    volumes:
+      - victoria-metrics-data:/victoria-metrics-data
+    command:
+      - '-storageDataPath=/victoria-metrics-data'
+      - '-retentionPeriod=90d'
+      - '-httpListenAddr=:8428'
+    networks:
+      - n8n-monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8428/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: n8n-grafana
+    user: "472:0"
+    ports:
+      - "3100:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro,delegated
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:rw,delegated
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=W123Mudar
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3100
+      - GF_INSTALL_PLUGINS=
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/n8n-performance-detailed.json
+    networks:
+      - n8n-monitoring
+    restart: unless-stopped
+    depends_on:
+      - victoria-metrics
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  victoria-metrics-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+networks:
+  n8n-monitoring:
+    driver: bridge

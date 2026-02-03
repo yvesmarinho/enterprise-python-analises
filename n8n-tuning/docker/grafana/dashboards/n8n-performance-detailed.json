@@ -1,0 +1,823 @@
+{
+  "uid": "n8n-performance-detailed",
+  "title": "N8N Performance Analysis",
+  "tags": [
+    "n8n",
+    "performance",
+    "workflows"
+  ],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total Workflows",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "n8n_workflows_total",
+          "legendFormat": "Total"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Active Workflows",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "n8n_workflows_active",
+          "legendFormat": "Active"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Success Rate",
+      "type": "gauge",
+      "targets": [
+        {
+          "expr": "n8n_success_rate_percent",
+          "legendFormat": "Success Rate"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "steps": [
+              {
+                "value": 0,
+                "color": "red"
+              },
+              {
+                "value": 70,
+                "color": "yellow"
+              },
+              {
+                "value": 90,
+                "color": "green"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Total Executions (Recent)",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "n8n_executions_total",
+          "legendFormat": "Executions"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "value": null,
+                "color": "purple"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Top 10 Most Executed Workflows",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "topk(10, n8n_workflow_executions_total{workflow_name!=\"unknown\"})",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "workflow_id": true
+            },
+            "renameByName": {
+              "workflow_name": "Workflow",
+              "Value": "Executions"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Top 10 Slowest Workflows (Avg Duration)",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "topk(10, n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"})",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-GrYlRd"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "workflow_id": true
+            },
+            "renameByName": {
+              "workflow_name": "Workflow",
+              "Value": "Avg Duration (s)"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Workflows by Success Rate",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "(n8n_workflow_executions_success{workflow_name!=\"unknown\"} / n8n_workflow_executions_total{workflow_name!=\"unknown\"}) * 100",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "steps": [
+                    {
+                      "value": 0,
+                      "color": "red"
+                    },
+                    {
+                      "value": 70,
+                      "color": "yellow"
+                    },
+                    {
+                      "value": 90,
+                      "color": "green"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "workflow_id": true
+            },
+            "renameByName": {
+              "workflow_name": "Workflow",
+              "Value": "Success Rate %"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Success Rate %",
+                "desc": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Failed Executions by Workflow",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "topk(10, n8n_workflow_executions_failed{workflow_name!=\"unknown\"})",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "steps": [
+                    {
+                      "value": 0,
+                      "color": "green"
+                    },
+                    {
+                      "value": 1,
+                      "color": "yellow"
+                    },
+                    {
+                      "value": 5,
+                      "color": "orange"
+                    },
+                    {
+                      "value": 10,
+                      "color": "red"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "workflow_id": true
+            },
+            "renameByName": {
+              "workflow_name": "Workflow",
+              "Value": "Failed"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Execution Duration Distribution",
+      "type": "bargauge",
+      "targets": [
+        {
+          "expr": "topk(15, n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"})",
+          "legendFormat": "{{workflow_name}}"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "value": 0,
+                "color": "green"
+              },
+              {
+                "value": 30,
+                "color": "yellow"
+              },
+              {
+                "value": 60,
+                "color": "orange"
+              },
+              {
+                "value": 120,
+                "color": "red"
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient"
+      }
+    },
+    {
+      "id": 10,
+      "title": "\ud83c\udfaf Bottleneck Priority Score (Higher = More Critical)",
+      "type": "table",
+      "description": "Score = Duration \u00d7 log10(Executions + 1). Higher scores indicate workflows that should be optimized first due to their combination of duration and execution volume.",
+      "targets": [
+        {
+          "expr": "sort_desc(n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"} * (ln(n8n_workflow_executions_total{workflow_name!=\"unknown\"} + 1) / ln(10)))",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bottleneck Score"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": 0,
+                      "color": "green"
+                    },
+                    {
+                      "value": 0.5,
+                      "color": "yellow"
+                    },
+                    {
+                      "value": 1.0,
+                      "color": "orange"
+                    },
+                    {
+                      "value": 2.0,
+                      "color": "red"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "workflow_name"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Workflow"
+              },
+              {
+                "id": "custom.width",
+                "value": 400
+              }
+            ]
+          }
+        ],
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        }
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "workflow_id": true
+            },
+            "indexByName": {
+              "workflow_name": 0,
+              "Value": 1
+            }
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "displayName": "Bottleneck Score",
+            "desc": true
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "title": "\ud83d\udd25 Bottleneck Score Ranking",
+      "type": "table",
+      "description": "Workflows ranked by bottleneck score (duration \u00d7 log(executions)). Higher score = higher optimization priority. See \"Score Components\" panel below for detailed breakdown.",
+      "targets": [
+        {
+          "expr": "n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"} * (ln(n8n_workflow_executions_total{workflow_name!=\"unknown\"} + 1) / ln(10))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{workflow_name}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 44
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 0.5,
+                "color": "yellow"
+              },
+              {
+                "value": 1.0,
+                "color": "orange"
+              },
+              {
+                "value": 2.0,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bottleneck Score"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "gradient"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Workflow"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 400
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        },
+        "sortBy": [
+          {
+            "displayName": "Bottleneck Score",
+            "desc": true
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true
+            },
+            "indexByName": {
+              "workflow_name": 0,
+              "Value": 1
+            },
+            "renameByName": {
+              "Value": "Bottleneck Score",
+              "workflow_name": "Workflow"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Bottleneck Score",
+                "desc": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": 15
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "\ud83d\udcca Score Components: Duration vs Volume",
+      "type": "table",
+      "description": "Workflows ranked by bottleneck score. This is a simplified view showing only the score - same data as the panel above but with a different visualization style.",
+      "targets": [
+        {
+          "expr": "n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"} * (ln(n8n_workflow_executions_total{workflow_name!=\"unknown\"} + 1) / ln(10))",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 44
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bottleneck Score"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": 0,
+                      "color": "green"
+                    },
+                    {
+                      "value": 0.5,
+                      "color": "yellow"
+                    },
+                    {
+                      "value": 1.0,
+                      "color": "orange"
+                    },
+                    {
+                      "value": 2.0,
+                      "color": "red"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Workflow"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 400
+              }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true
+            },
+            "indexByName": {
+              "workflow_name": 0,
+              "Value": 1
+            },
+            "renameByName": {
+              "Value": "Bottleneck Score",
+              "workflow_name": "Workflow"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Bottleneck Score",
+                "desc": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": 15
+          }
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 36,
+  "version": 2
+}

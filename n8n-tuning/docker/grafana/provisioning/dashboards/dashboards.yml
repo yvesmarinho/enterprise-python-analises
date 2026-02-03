@@ -1,0 +1,13 @@
+apiVersion: 1
+
+providers:
+  - name: 'N8N Dashboards'
+    orgId: 1
+    folder: 'N8N Performance'
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 5
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

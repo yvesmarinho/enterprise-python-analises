@@ -1,0 +1,298 @@
+{
+  "source_server": "wf005.vya.digital",
+  "target_servers": [
+    {
+      "name": "wf001.vya.digital",
+      "current_containers": 22,
+      "cpu_usage": 12.52,
+      "memory_usage": 1.576818181818182,
+      "cpu_capacity": 87.48,
+      "memory_capacity": 98.42318181818182
+    },
+    {
+      "name": "wf002.vya.digital",
+      "current_containers": 7,
+      "cpu_usage": 11.85,
+      "memory_usage": 6.314285714285714,
+      "cpu_capacity": 88.15,
+      "memory_capacity": 93.68571428571428
+    },
+    {
+      "name": "wf006.vya.digital",
+      "current_containers": 8,
+      "cpu_usage": 54.660000000000004,
+      "memory_usage": 10.2975,
+      "cpu_capacity": 45.339999999999996,
+      "memory_capacity": 89.7025
+    }
+  ],
+  "containers": [
+    {
+      "name": "dashboard",
+      "image": "metabase/metabase:latest",
+      "cpu_percent": 3.93,
+      "memory_mb": 2744.31,
+      "memory_percent": 17.16,
+      "volumes": 1,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "3002"
+          }
+        ]
+      }
+    },
+    {
+      "name": "redis",
+      "image": "redis:alpine",
+      "cpu_percent": 0.74,
+      "memory_mb": 578.07,
+      "memory_percent": 14.11,
+      "volumes": 1,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "6379/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "6379"
+          }
+        ]
+      }
+    },
+    {
+      "name": "evolution_api_wea001",
+      "image": "evoapicloud/evolution-api:v2.3.7",
+      "cpu_percent": 0.0,
+      "memory_mb": 310.63,
+      "memory_percent": 1.94,
+      "volumes": 2,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8088"
+          }
+        ]
+      }
+    },
+    {
+      "name": "portainer",
+      "image": "sha256:ac6e9f6834c8",
+      "cpu_percent": 0.04,
+      "memory_mb": 235.74,
+      "memory_percent": 1.47,
+      "volumes": 2,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8000/tcp": null,
+        "9000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9000"
+          }
+        ],
+        "9443/tcp": null
+      }
+    },
+    {
+      "name": "pgadmin",
+      "image": "dpage/pgadmin4:latest",
+      "cpu_percent": 0.1,
+      "memory_mb": 226.09,
+      "memory_percent": 5.52,
+      "volumes": 3,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "443/tcp": null,
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8082"
+          }
+        ]
+      }
+    },
+    {
+      "name": "evolution_api_wea002",
+      "image": "evoapicloud/evolution-api:v2.3.7",
+      "cpu_percent": 0.03,
+      "memory_mb": 171.12,
+      "memory_percent": 1.07,
+      "volumes": 2,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8089"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dashy",
+      "image": "lissy93/dashy:latest",
+      "cpu_percent": 0.37,
+      "memory_mb": 161.3,
+      "memory_percent": 1.01,
+      "volumes": 2,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8083"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rabbitmq",
+      "image": "rabbitmq:3-management",
+      "cpu_percent": 1.04,
+      "memory_mb": 154.53,
+      "memory_percent": 3.77,
+      "volumes": 4,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "15671/tcp": null,
+        "15672/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "15673"
+          }
+        ],
+        "15691/tcp": null,
+        "15692/tcp": null,
+        "25672/tcp": null,
+        "4369/tcp": null,
+        "5671/tcp": null,
+        "5672/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5673"
+          }
+        ]
+      }
+    },
+    {
+      "name": "traefik",
+      "image": "sha256:ec31dae6a8fb",
+      "cpu_percent": 0.0,
+      "memory_mb": 138.23,
+      "memory_percent": 0.86,
+      "volumes": 8,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          }
+        ],
+        "9090/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9090"
+          }
+        ]
+      }
+    },
+    {
+      "name": "code_store",
+      "image": "ghcr.io/jordan-dalby/bytestash:latest",
+      "cpu_percent": 0.06,
+      "memory_mb": 68.62,
+      "memory_percent": 0.43,
+      "volumes": 1,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "5000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "api013.vya.digital",
+      "image": "enterprise/node-survey:latest",
+      "cpu_percent": 0.0,
+      "memory_mb": 59.03,
+      "memory_percent": 0.37,
+      "volumes": 2,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3034/tcp": null
+      }
+    },
+    {
+      "name": "dbmgnt002.vya.digital",
+      "image": "adminer:latest",
+      "cpu_percent": 0.01,
+      "memory_mb": 39.87,
+      "memory_percent": 0.97,
+      "volumes": 1,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": null
+      }
+    },
+    {
+      "name": "api012.vyadigital",
+      "image": "adminvyadigital/enterprise-node-billet:latest",
+      "cpu_percent": 0.0,
+      "memory_mb": 34.9,
+      "memory_percent": 0.22,
+      "volumes": 1,
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3033/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "3033"
+          }
+        ]
+      }
+    }
+  ],
+  "total_containers": 13,
+  "total_memory_mb": 4922.44,
+  "total_cpu_percent": 6.319999999999999
+}

@@ -1,0 +1,812 @@
+{
+  "timestamp": "2026-01-16T10:53:55.198455",
+  "total_containers": 13,
+  "containers": [
+    {
+      "name": "evolution_api_wea002",
+      "id": "bdb324b4a998",
+      "image": "evoapicloud/evolution-api:v2.3.7",
+      "status": "running",
+      "created": "2025-12-08T19:43:52.222747772Z",
+      "cpu": {
+        "percent": 0.03,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 179437568,
+        "usage_mb": 171.12,
+        "usage_gb": 0.17,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 1.07
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/data/compose/26/evolution-api/WF005-Dev/evolution_instances",
+          "destination": "/evolution/instances",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 143360,
+            "mb": 0.14,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/data/compose/26/evolution-api/WF005-Dev/evolution_store",
+          "destination": "/evolution/store",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 4096,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8089"
+          }
+        ]
+      }
+    },
+    {
+      "name": "evolution_api_wea001",
+      "id": "572b825d29ef",
+      "image": "evoapicloud/evolution-api:v2.3.7",
+      "status": "running",
+      "created": "2025-12-08T19:38:11.83020749Z",
+      "cpu": {
+        "percent": 0.0,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 325718016,
+        "usage_mb": 310.63,
+        "usage_gb": 0.3,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 1.94
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/evolution-api-dev/evolution_store",
+          "destination": "/evolution/store",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 4096,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/evolution-api-dev/evolution_instances",
+          "destination": "/evolution/instances",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 507904,
+            "mb": 0.48,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8088"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dashboard",
+      "id": "d7411ce3180a",
+      "image": "metabase/metabase:latest",
+      "status": "running",
+      "created": "2025-10-27T13:04:16.34939585Z",
+      "cpu": {
+        "percent": 3.93,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 2877620224,
+        "usage_mb": 2744.31,
+        "usage_gb": 2.68,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 17.16
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/dev/urandom",
+          "destination": "/dev/random",
+          "mode": "",
+          "rw": false,
+          "usage": {
+            "bytes": 0,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "3002"
+          }
+        ]
+      }
+    },
+    {
+      "name": "api012.vyadigital",
+      "id": "c8a9ed4e156c",
+      "image": "adminvyadigital/enterprise-node-billet:latest",
+      "status": "running",
+      "created": "2025-07-05T18:28:27.041700501Z",
+      "cpu": {
+        "percent": 0.0,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 36593664,
+        "usage_mb": 34.9,
+        "usage_gb": 0.03,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 0.22
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 39,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3033/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "3033"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pgadmin",
+      "id": "30c4b2fcdc7a",
+      "image": "dpage/pgadmin4:latest",
+      "status": "running",
+      "created": "2025-03-14T14:29:29.833275036Z",
+      "cpu": {
+        "percent": 0.1,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 237068288,
+        "usage_mb": 226.09,
+        "usage_gb": 0.22,
+        "limit_bytes": 4294967296,
+        "limit_mb": 4096.0,
+        "limit_gb": 4.0,
+        "percent": 5.52
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/pgadmin/data",
+          "destination": "/opt/admin_vya.digital",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 5436,
+            "mb": 0.01,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "volume",
+          "source": "/var/lib/docker/volumes/3c78cfebfc7daa0317eda069ca07a0d0753d6fbf99332ed6e08554c28394a7d4/_data",
+          "destination": "/var/lib/pgadmin",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 1296824341,
+            "mb": 1236.75,
+            "gb": 1.21
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "",
+          "rw": false,
+          "usage": {
+            "bytes": 39,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "443/tcp": null,
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8082"
+          }
+        ]
+      }
+    },
+    {
+      "name": "portainer",
+      "id": "a420d746f719",
+      "image": "sha256:ac6e9f6834c8",
+      "status": "running",
+      "created": "2025-02-28T13:40:00.390167196Z",
+      "cpu": {
+        "percent": 0.04,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 247189504,
+        "usage_mb": 235.74,
+        "usage_gb": 0.23,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 1.47
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/portainer/portainer_data",
+          "destination": "/data",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 2002061570,
+            "mb": 1909.31,
+            "gb": 1.86
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/var/run/docker.sock",
+          "destination": "/var/run/docker.sock",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 0,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8000/tcp": null,
+        "9000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9000"
+          }
+        ],
+        "9443/tcp": null
+      }
+    },
+    {
+      "name": "code_store",
+      "id": "e9f5579af5ae",
+      "image": "ghcr.io/jordan-dalby/bytestash:latest",
+      "status": "running",
+      "created": "2024-11-18T17:13:06.130071035Z",
+      "cpu": {
+        "percent": 0.06,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 71958528,
+        "usage_mb": 68.62,
+        "usage_gb": 0.07,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 0.43
+      },
+      "volumes": [
+        {
+          "type": "volume",
+          "source": "/var/lib/docker/volumes/codestore_code-store/_data",
+          "destination": "/data/snippets",
+          "mode": "z",
+          "rw": true,
+          "usage": {
+            "bytes": 1598352,
+            "mb": 1.52,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "5000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dashy",
+      "id": "5999810af954",
+      "image": "lissy93/dashy:latest",
+      "status": "running",
+      "created": "2024-10-17T13:51:41.872417522Z",
+      "cpu": {
+        "percent": 0.37,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 169132032,
+        "usage_mb": 161.3,
+        "usage_gb": 0.16,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 1.01
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/dashy/conf/conf.yml",
+          "destination": "/app/user-data/conf.yml",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 20047,
+            "mb": 0.02,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/dashy/icons",
+          "destination": "/app/user-data/item-icons",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 38779017,
+            "mb": 36.98,
+            "gb": 0.04
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8083"
+          }
+        ]
+      }
+    },
+    {
+      "name": "traefik",
+      "id": "84dea0654d85",
+      "image": "sha256:ec31dae6a8fb",
+      "status": "running",
+      "created": "2024-10-10T18:24:14.080530973Z",
+      "cpu": {
+        "percent": 0.0,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 144945152,
+        "usage_mb": 138.23,
+        "usage_gb": 0.13,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 0.86
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/traefik_dynamic.toml",
+          "destination": "/traefik_dynamic.toml",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 317,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/log",
+          "destination": "/var/log/traefik",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 446367312,
+            "mb": 425.69,
+            "gb": 0.42
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/run/docker.sock",
+          "destination": "/var/run/docker.sock",
+          "mode": "",
+          "rw": false,
+          "usage": {
+            "bytes": 0,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/acme.json",
+          "destination": "/acme.json",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 247481,
+            "mb": 0.24,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "",
+          "rw": false,
+          "usage": {
+            "bytes": 39,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/timezone",
+          "destination": "/etc/timezone",
+          "mode": "",
+          "rw": false,
+          "usage": {
+            "bytes": 17,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/letsencrypt",
+          "destination": "/letsencrypt",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 4096,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/traefik.toml",
+          "destination": "/traefik.toml",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 1142,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          }
+        ],
+        "9090/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9090"
+          }
+        ]
+      }
+    },
+    {
+      "name": "api013.vya.digital",
+      "id": "e3c4e7d76a82",
+      "image": "enterprise/node-survey:latest",
+      "status": "running",
+      "created": "2024-09-22T14:32:31.883255199Z",
+      "cpu": {
+        "percent": 0.0,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 61898752,
+        "usage_mb": 59.03,
+        "usage_gb": 0.06,
+        "limit_bytes": 16769081344,
+        "limit_mb": 15992.24,
+        "limit_gb": 15.62,
+        "percent": 0.37
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/enterprise-node-survey/cache",
+          "destination": "/app/cache",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 4096,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 39,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3034/tcp": null
+      }
+    },
+    {
+      "name": "redis",
+      "id": "b1219e167a6d",
+      "image": "redis:alpine",
+      "status": "running",
+      "created": "2024-09-20T13:32:30.83387955Z",
+      "cpu": {
+        "percent": 0.74,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 606154752,
+        "usage_mb": 578.07,
+        "usage_gb": 0.56,
+        "limit_bytes": 4294967296,
+        "limit_mb": 4096.0,
+        "limit_gb": 4.0,
+        "percent": 14.11
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/redis/data/redis",
+          "destination": "/data",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 367361826,
+            "mb": 350.34,
+            "gb": 0.34
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "6379/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "6379"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rabbitmq",
+      "id": "d2063e4e3d96",
+      "image": "rabbitmq:3-management",
+      "status": "running",
+      "created": "2024-09-20T12:25:13.447851072Z",
+      "cpu": {
+        "percent": 1.04,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 162037760,
+        "usage_mb": 154.53,
+        "usage_gb": 0.15,
+        "limit_bytes": 4294967296,
+        "limit_mb": 4096.0,
+        "limit_gb": 4.0,
+        "percent": 3.77
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/rabbitmq/storage/rabbitmq1",
+          "destination": "/var/lib/rabbitmq",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 867967,
+            "mb": 0.83,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/rabbitmq/storage/rabbitmq1/rabbitmq.config",
+          "destination": "/etc/rabbitmq/conf.d/10-defautls.conf",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 37332,
+            "mb": 0.04,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/rabbitmq/storage/rabbitmq1/definitions.json",
+          "destination": "/etc/rabbitmq/conf.d/definitions.json",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 2663,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/rabbitmq/storage/rmq-start1.sh",
+          "destination": "/usr/local/bin/rmq-start.sh",
+          "mode": "",
+          "rw": true,
+          "usage": {
+            "bytes": 1233,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "15671/tcp": null,
+        "15672/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "15673"
+          }
+        ],
+        "15691/tcp": null,
+        "15692/tcp": null,
+        "25672/tcp": null,
+        "4369/tcp": null,
+        "5671/tcp": null,
+        "5672/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "5673"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dbmgnt002.vya.digital",
+      "id": "8bb2d7577e4e",
+      "image": "adminer:latest",
+      "status": "running",
+      "created": "2024-09-19T15:16:49.970767098Z",
+      "cpu": {
+        "percent": 0.01,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 41803776,
+        "usage_mb": 39.87,
+        "usage_gb": 0.04,
+        "limit_bytes": 4294967296,
+        "limit_mb": 4096.0,
+        "limit_gb": 4.0,
+        "percent": 0.97
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 39,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8080/tcp": null
+      }
+    }
+  ]
+}

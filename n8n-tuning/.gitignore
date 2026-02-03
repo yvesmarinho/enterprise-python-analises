@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Data files (não versionar dados coletados)
+data/metrics/*.json
+data/workflows/*.json
+data/logs/*.log
+data/logs/*.txt
+data/database/*.csv
+data/database/*.sql
+
+# Reports (opcional - remover linha se quiser versionar)
+# reports/*.md
+# reports/*.pdf
+
+# Secrets
+.secrets/credentials.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# pytest
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/

@@ -1,0 +1,617 @@
+{
+  "timestamp": "2026-01-16T10:57:28.755270",
+  "total_containers": 8,
+  "containers": [
+    {
+      "name": "perfexcrm",
+      "id": "f873b8a25d34",
+      "image": "adminvyadigital/perfexcrm:3.1.5",
+      "status": "running",
+      "created": "2026-01-07T18:13:23.428979878Z",
+      "cpu": {
+        "percent": 0.01,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 113848320,
+        "usage_mb": 108.57,
+        "usage_gb": 0.11,
+        "limit_bytes": 16773492736,
+        "limit_mb": 15996.45,
+        "limit_gb": 15.62,
+        "percent": 0.68
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/perfexcrm/var_www/html",
+          "destination": "/var/www/html",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 151231475,
+            "mb": 144.23,
+            "gb": 0.14
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/perfexcrm/apache-crm.conf",
+          "destination": "/etc/apache2/sites-enabled/apache-crm.conf",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 298,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8001"
+          }
+        ]
+      }
+    },
+    {
+      "name": "synChat",
+      "id": "3d11724f4069",
+      "image": "adminvyadigital/chatwoot:v3.12.71",
+      "status": "running",
+      "created": "2025-11-15T00:46:07.286226251Z",
+      "cpu": {
+        "percent": 25.46,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 10147139584,
+        "usage_mb": 9677.07,
+        "usage_gb": 9.45,
+        "limit_bytes": 16773492736,
+        "limit_mb": 15996.45,
+        "limit_gb": 15.62,
+        "percent": 60.5
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/etc/timezone",
+          "destination": "/etc/timezone",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 18,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/var/log",
+          "destination": "/app/log",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 21852505040,
+            "mb": 20840.17,
+            "gb": 20.35
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/chatwoot-synchat/app/public/favicon-16x16.png",
+          "destination": "/app/public/favicon-16x16.png",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 803,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/chatwoot-synchat/app/public/favicon-32x32.png",
+          "destination": "/app/public/favicon-32x32.png",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 1129,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/chatwoot-synchat/app/views",
+          "destination": "/app/views/devise/mailer",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 4096,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 37,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/chatwoot-synchat/app/storage",
+          "destination": "/app/storage",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 4096,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/chatwoot-synchat/app/public/brand-assets",
+          "destination": "/app/public/brand-assets",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 86630,
+            "mb": 0.08,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/chatwoot-synchat/app/public/favicon-512x512.png",
+          "destination": "/app/public/favicon-512x512.png",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 14946,
+            "mb": 0.01,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/chatwoot-synchat/app/public/favicon-96x96.png",
+          "destination": "/app/public/favicon-96x96.png",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 1996,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "3008"
+          }
+        ]
+      }
+    },
+    {
+      "name": "synChatSidekiq",
+      "id": "fc393bbae617",
+      "image": "adminvyadigital/chatwoot:v3.12.71",
+      "status": "running",
+      "created": "2025-11-15T00:46:07.284967656Z",
+      "cpu": {
+        "percent": 18.38,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 481198080,
+        "usage_mb": 458.91,
+        "usage_gb": 0.45,
+        "limit_bytes": 16773492736,
+        "limit_mb": 15996.45,
+        "limit_gb": 15.62,
+        "percent": 2.87
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 37,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/timezone",
+          "destination": "/etc/timezone",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 18,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3000/tcp": null
+      }
+    },
+    {
+      "name": "chat-vya-digital",
+      "id": "a81d7b939f42",
+      "image": "chatwoot/chatwoot:v3.16.0-ce",
+      "status": "running",
+      "created": "2025-11-14T23:38:18.435083045Z",
+      "cpu": {
+        "percent": 0.52,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 1803292672,
+        "usage_mb": 1719.75,
+        "usage_gb": 1.68,
+        "limit_bytes": 16773492736,
+        "limit_mb": 15996.45,
+        "limit_gb": 15.62,
+        "percent": 10.75
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 37,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/timezone",
+          "destination": "/etc/timezone",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 18,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3000/tcp": null
+      }
+    },
+    {
+      "name": "chat-vya-digital-sidekiq",
+      "id": "21aab74b1838",
+      "image": "chatwoot/chatwoot:v3.16.0-ce",
+      "status": "running",
+      "created": "2025-11-14T23:38:18.43508065Z",
+      "cpu": {
+        "percent": 0.05,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 433975296,
+        "usage_mb": 413.87,
+        "usage_gb": 0.4,
+        "limit_bytes": 16773492736,
+        "limit_mb": 15996.45,
+        "limit_gb": 15.62,
+        "percent": 2.59
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 37,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/timezone",
+          "destination": "/etc/timezone",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 18,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "3000/tcp": null
+      }
+    },
+    {
+      "name": "redis",
+      "id": "84b8ce141792",
+      "image": "redis:alpine",
+      "status": "running",
+      "created": "2025-07-04T19:29:25.086557506Z",
+      "cpu": {
+        "percent": 9.92,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 32808960,
+        "usage_mb": 31.29,
+        "usage_gb": 0.03,
+        "limit_bytes": 4294967296,
+        "limit_mb": 4096.0,
+        "limit_gb": 4.0,
+        "percent": 0.76
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/redis/data/redis",
+          "destination": "/data",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 5518372,
+            "mb": 5.26,
+            "gb": 0.01
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "6379/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "6379"
+          }
+        ]
+      }
+    },
+    {
+      "name": "traefik",
+      "id": "62582b071a18",
+      "image": "traefik:latest",
+      "status": "running",
+      "created": "2025-03-11T20:20:55.024757005Z",
+      "cpu": {
+        "percent": 0.0,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 576233472,
+        "usage_mb": 549.54,
+        "usage_gb": 0.54,
+        "limit_bytes": 16773492736,
+        "limit_mb": 15996.45,
+        "limit_gb": 15.62,
+        "percent": 3.44
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/traefik_dynamic.toml",
+          "destination": "/traefik_dynamic.toml",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 317,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/log",
+          "destination": "/var/log/traefik",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 834375405,
+            "mb": 795.72,
+            "gb": 0.78
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/run/docker.sock",
+          "destination": "/var/run/docker.sock",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 0,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/acme.json",
+          "destination": "/acme.json",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 91286,
+            "mb": 0.09,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/localtime",
+          "destination": "/etc/localtime",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 37,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/etc/timezone",
+          "destination": "/etc/timezone",
+          "mode": "ro",
+          "rw": false,
+          "usage": {
+            "bytes": 18,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/letsencrypt",
+          "destination": "/letsencrypt",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 4096,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/traefik/traefik.toml",
+          "destination": "/traefik.toml",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 1122,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          }
+        ],
+        "9090/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9090"
+          }
+        ]
+      }
+    },
+    {
+      "name": "portainer",
+      "id": "b0db9f6bef8b",
+      "image": "sha256:0c03664af9ed",
+      "status": "running",
+      "created": "2025-02-03T20:53:38.926738095Z",
+      "cpu": {
+        "percent": 0.32,
+        "cores": 6
+      },
+      "memory": {
+        "usage_bytes": 132526080,
+        "usage_mb": 126.39,
+        "usage_gb": 0.12,
+        "limit_bytes": 16773492736,
+        "limit_mb": 15996.45,
+        "limit_gb": 15.62,
+        "percent": 0.79
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/docker_user/portainer/portainer_data",
+          "destination": "/data",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 558866,
+            "mb": 0.53,
+            "gb": 0.0
+          }
+        },
+        {
+          "type": "bind",
+          "source": "/var/run/docker.sock",
+          "destination": "/var/run/docker.sock",
+          "mode": "rw",
+          "rw": true,
+          "usage": {
+            "bytes": 0,
+            "mb": 0.0,
+            "gb": 0.0
+          }
+        }
+      ],
+      "networks": [
+        "app-network"
+      ],
+      "ports": {
+        "8000/tcp": null,
+        "9000/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "9000"
+          }
+        ],
+        "9443/tcp": null
+      }
+    }
+  ]
+}

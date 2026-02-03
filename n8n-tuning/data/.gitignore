@@ -1,0 +1,8 @@
+# Ignore data files
+*.json
+*.csv
+*.txt
+*.log
+
+# Keep structure
+!.gitkeep
