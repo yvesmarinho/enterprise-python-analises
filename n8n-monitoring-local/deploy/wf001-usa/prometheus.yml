@@ -1,0 +1,99 @@
+# Prometheus Configuration - wf001 (USA)
+# Scraping de métricas locais e remotas
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'vya-monitoring'
+    datacenter: 'wf001-usa'
+
+# Remote write para VictoriaMetrics
+remote_write:
+  - url: http://victoria-metrics:8428/api/v1/write
+    queue_config:
+      max_samples_per_send: 10000
+      capacity: 20000
+      max_shards: 30
+
+scrape_configs:
+  # ============================================
+  # Métricas Locais (wf001)
+  # ============================================
+  
+  # Collector API (este servidor)
+  - job_name: 'collector-api'
+    static_configs:
+      - targets: ['collector-api:9102']
+        labels:
+          service: 'collector-api'
+          location: 'wf001'
+          country: 'US'
+
+  # Node Exporter (este servidor)
+  - job_name: 'node-exporter-wf001'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          server: 'wf001'
+          location: 'virginia-usa'
+          country: 'US'
+
+  # cAdvisor (este servidor)
+  - job_name: 'cadvisor-wf001'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          server: 'wf001'
+          location: 'virginia-usa'
+          country: 'US'
+
+  # ============================================
+  # Métricas Remotas (wf008)
+  # ============================================
+  
+  # Ping Service no Brasil
+  - job_name: 'ping-service-wf008'
+    static_configs:
+      - targets: ['wf008.vya.digital:9101']
+        labels:
+          service: 'ping-service'
+          server: 'wf008'
+          location: 'sao-paulo-brazil'
+          country: 'BR'
+    scheme: https
+    tls_config:
+      insecure_skip_verify: false
+
+  # Node Exporter no Brasil
+  - job_name: 'node-exporter-wf008'
+    static_configs:
+      - targets: ['wf008.vya.digital:9100']
+        labels:
+          server: 'wf008'
+          location: 'sao-paulo-brazil'
+          country: 'BR'
+    scheme: https
+    tls_config:
+      insecure_skip_verify: false
+
+  # cAdvisor no Brasil
+  - job_name: 'cadvisor-wf008'
+    static_configs:
+      - targets: ['wf008.vya.digital:8080']
+        labels:
+          server: 'wf008'
+          location: 'sao-paulo-brazil'
+          country: 'BR'
+    scheme: https
+    tls_config:
+      insecure_skip_verify: false
+
+  # ============================================
+  # Outros Servidores (se houver)
+  # ============================================
+  
+  # Exemplo: wf005
+  # - job_name: 'node-exporter-wf005'
+  #   static_configs:
+  #     - targets: ['wf005.vya.digital:9100']

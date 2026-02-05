@@ -1,0 +1,208 @@
+# Redes para simular separação geográfica
+networks:
+  brazil-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+  usa-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24
+  monitoring-net:
+    driver: bridge
+
+# Carrega variáveis de ambiente do .secrets/.env
+x-common-env: &common-env
+  env_file:
+    - .secrets/.env
+
+services:
+  # ============================================
+  # NOTA: PostgreSQL e MySQL externos (wfdb02.vya.digital)
+  # Não estão rodando localmente, usar configurações do .env
+  # ============================================
+
+  # ============================================
+  # VictoriaMetrics (Monitoring)
+  # ============================================
+  
+  victoria-metrics:
+    <<: *common-env
+    image: victoriametrics/victoria-metrics:latest
+    container_name: dev-victoria-metrics
+    user: "${DOCKER_UID}:${DOCKER_GID}"
+    networks:
+      - monitoring-net
+      - usa-net
+      - brazil-net
+    command:
+      - '--storageDataPath=/victoria-metrics-data'
+      - '--retentionPeriod=90d'
+      - '--httpListenAddr=:8428'
+    ports:
+      - "8428:8428"
+    volumes:
+      - victoria-data:/victoria-metrics-data
+
+  # ============================================
+  # Grafana (Monitoring)
+  # ============================================
+  
+  grafana:
+    <<: *common-env
+    image: grafana/grafana:latest
+    container_name: dev-grafana
+    networks:
+      - monitoring-net
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infrastructure/grafana/provisioning:/etc/grafana/provisioning
+      - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - victoria-metrics
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ============================================
+  # Collector API (USA Network)
+  # ============================================
+  
+  collector-api:
+    <<: *common-env
+    build:
+      context: ./collector-api
+      dockerfile: Dockerfile
+    container_name: dev-collector-api
+    user: "${DOCKER_UID}:${DOCKER_GID}"
+    networks:
+      - usa-net
+      - monitoring-net
+    env_file:
+      - .secrets/.env
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=5000
+      - VICTORIA_METRICS_URL=http://victoria-metrics:8428
+    ports:
+      - "5000:5000"
+      - "9102:9102"
+    volumes:
+      - ./collector-api:/app
+      - ./logs/collector-api:/app/logs
+    depends_on:
+      - victoria-metrics
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # ============================================
+  # Ping Service (Brazil Network)
+  # ============================================
+  
+  ping-service:
+    <<: *common-env
+    build:
+      context: ./ping-service
+      dockerfile: Dockerfile
+    container_name: dev-ping-service
+    user: "${DOCKER_UID}:${DOCKER_GID}"
+    networks:
+      - brazil-net
+      - monitoring-net
+    env_file:
+      - .secrets/.env
+    environment:
+      - TARGET_URL=http://collector-api:5000/api/ping
+      - PING_INTERVAL=30
+      - SOURCE_LOCATION=local_dev_brazil
+      - SOURCE_DATACENTER=local
+      - SOURCE_COUNTRY=BR
+      - VICTORIA_METRICS_URL=http://victoria-metrics:8428
+    ports:
+      - "9101:9101"
+    volumes:
+      - ./ping-service:/app
+      - ./logs/ping-service:/app/logs
+    depends_on:
+      - collector-api
+      - victoria-metrics
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9101/metrics"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # ============================================
+  # Node Exporter (Opcional - para testes)
+  # ============================================
+  
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: dev-node-exporter
+    networks:
+      - monitoring-net
+    command:
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    restart: unless-stopped
+
+  # ============================================
+  # cAdvisor (Opcional - para testes)
+  # ============================================
+  
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: dev-cadvisor
+    networks:
+      - monitoring-net
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+
+volumes:
+  victoria-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./victoria_data
+
+  grafana-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./grafana_data

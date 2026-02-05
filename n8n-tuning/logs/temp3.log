@@ -1,0 +1,32 @@
+=== wf008 ===
+cat .env
+# Variáveis de Ambiente - Servidor wf008 (Brasil)
+# Copiar para .env e ajustar valores reais
+
+# Docker User (non-root security)
+# Obter com: id -u docker_user && id -g docker_user no servidor wf008
+DOCKER_UID=1003
+DOCKER_GID=995
+
+# API Keys (mesma chave usada em wf001)
+COLLECTOR_API_KEY='BR*sL9aqutR-QO_hA3+a3tlYaXIBA!R3jit!lglB2j#-t_396T*?fRoNI2i6et1@'
+
+# Environment
+LOG_LEVEL=INFO
+ENVIRONMENT=production
+
+
+=== wf001 ===
+# API Keys
+COLLECTOR_API_KEY='BR*sL9aqutR-QO_hA3+a3tlYaXIBA!R3jit!lglB2j#-t_396T*?fRoNI2i6et1@'
+
+
+=== n8n-monitoring-local/ping-service ===
+prod-ping-service  | Job "Periodic Ping (trigger: interval[0:00:30], next run at: 2026-02-04 20:14:06 UTC)" executed successfully
+prod-ping-service  | Running job "Periodic Ping (trigger: interval[0:00:30], next run at: 2026-02-04 20:14:36 UTC)" (scheduled at 2026-02-04 20:14:06.839501+00:00)
+prod-ping-service  | {"ping_number": 14, "event": "executing_scheduled_ping", "level": "debug", "timestamp": "2026-02-04T20:14:06.869546Z"}
+prod-ping-service  | {"ping_id": "1c8f0aa4-4569-4fb3-b6f0-bf4d97c47bb5", "target_url": "https://api-monitoring.vya.digital/api/ping", "timestamp_start": "2026-02-04T20:14:06.869759Z", "event": "sending_ping", "level": "debug", "timestamp": "2026-02-04T20:14:06.869813Z"}
+prod-ping-service  | HTTP Request: POST https://api-monitoring.vya.digital/api/ping "HTTP/1.1 401 Unauthorized"
+prod-ping-service  | {"error_type": "http_401", "event": "ping_error_recorded", "level": "warning", "timestamp": "2026-02-04T20:14:07.277710Z"}
+prod-ping-service  | {"ping_id": "1c8f0aa4-4569-4fb3-b6f0-bf4d97c47bb5", "status_code": 401, "response": {"detail": "Invalid API Key"}, "event": "ping_failed", "level": "warning", "timestamp": "2026-02-04T20:14:07.277804Z"}
+prod-ping-service  | Job "Periodic Ping (trigger: interval[0:00:30], next run at: 2026-02-04 20:14:36 UTC)" executed successfully

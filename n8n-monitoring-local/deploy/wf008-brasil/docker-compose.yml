@@ -1,0 +1,82 @@
+# Docker Compose - Servidor wf008 (Brasil - São Paulo)
+# Serviços: Ping Service, Node Exporter, cAdvisor
+# Data: 2026-02-04
+
+version: '3.8'
+
+networks:
+  monitoring-net:
+    driver: bridge
+
+services:
+  # ============================================
+  # Ping Service (Envia pings para wf001)
+  # ============================================
+  ping-service:
+    image: adminvyadigital/n8n-ping-service:latest
+    container_name: prod-ping-service
+    user: "${DOCKER_UID}:${DOCKER_GID}"
+    networks:
+      - monitoring-net
+    environment:
+      - TARGET_URL=https://api-monitoring.vya.digital/api/ping
+      - COLLECTOR_API_KEY=${COLLECTOR_API_KEY}
+      - PING_INTERVAL=30
+      - SOURCE_LOCATION=wf008_brazil
+      - SOURCE_DATACENTER=wf008
+      - SOURCE_COUNTRY=BR
+      - VICTORIA_METRICS_URL=http://localhost:8428
+      - LOG_LEVEL=INFO
+      - ENVIRONMENT=production
+    ports:
+      - "9101:9101"  # Prometheus metrics
+    volumes:
+      - /opt/monitoring/logs/ping-service:/app/logs
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # ============================================
+  # Node Exporter (Métricas do Sistema)
+  # ============================================
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: prod-node-exporter
+    networks:
+      - monitoring-net
+    command:
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    restart: unless-stopped
+
+  # ============================================
+  # cAdvisor (Métricas de Containers)
+  # ============================================
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: prod-cadvisor
+    networks:
+      - monitoring-net
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
