@@ -174,7 +174,25 @@ curl 'http://localhost:8428/api/v1/query?query=count(n8n_workflow_info)' | jq -r
 
 ---
 
-## 🔐 Segurança
+## � Gestão de Dados Dev vs Prod
+
+### Dados são Independentes ✅
+
+**Dev (seu PC)**: `localhost:8428` → Volume Docker local  
+**Prod (servidor)**: `servidor:8428` → Volume Docker no servidor
+
+**Resultado**: Completamente separados, sem misturas!
+
+**Documentação completa**: [DEV_VS_PROD_DATA.md](../DEV_VS_PROD_DATA.md)
+
+### Opções Disponíveis:
+1. **Separado** (Padrão) - Recomendado ✅
+2. **Centralizado** - Para análise comparativa
+3. **Exportar/Importar** - Para migração ou backup
+
+---
+
+## �🔐 Segurança
 
 ### Credenciais
 - ✅ Sempre use `.secrets/credentials.json` (não versionado)
@@ -244,6 +262,9 @@ grep -c "✅ Coleta de métricas concluída" logs/cron.log
 
 ### P: Posso usar outra porta para o Grafana?
 **R**: Sim, edite `docker-compose.yml` mudando `3100:3000` para `PORTA:3000`.
+
+### P: Os dados do dev e prod vão se misturar?
+**R**: NÃO! São completamente independentes. Ver [DEV_VS_PROD_DATA.md](../DEV_VS_PROD_DATA.md) para detalhes.
 
 ---
 

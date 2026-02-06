@@ -17,7 +17,7 @@ echo "=== $(date '+%Y-%m-%d %H:%M:%S') - Iniciando coleta de métricas por node 
 cd "$PROJECT_DIR" || exit 1
 
 # Executar coletor (últimas 6 horas, 500 execuções para ser mais leve)
-"$PYTHON_VENV" scripts/n8n_node_metrics_exporter.py >> "$PROJECT_DIR/logs/cron_node_metrics.log" 2>&1
+"$PYTHON_VENV" scripts/n8n_node_metrics_exporter.py --backend prometheus >> "$PROJECT_DIR/logs/cron_node_metrics.log" 2>&1
 
 # Status
 if [ $? -eq 0 ]; then

@@ -1,6 +1,7 @@
 """Métricas Prometheus para o Collector API"""
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
 from ..logger import get_logger
+from .prometheus_pusher import PrometheusPusher
 
 logger = get_logger(__name__)
 

@@ -15,7 +15,7 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🚀 Iniciando coleta de métricas..."
 
 # 1. Executar o exporter de métricas gerais (workflows e execuções)
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 📊 Coletando métricas gerais..."
-"$PYTHON_VENV" "$PROJECT_DIR/scripts/n8n_metrics_exporter.py"
+"$PYTHON_VENV" "$PROJECT_DIR/scripts/n8n_metrics_exporter.py" --backend prometheus
 
 # Verificar exit code
 if [ $? -eq 0 ]; then
@@ -26,7 +26,7 @@ fi
 
 # 2. Executar o exporter de métricas atômicas por node (banco PostgreSQL)
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Coletando métricas atômicas por node..."
-"$PYTHON_VENV" "$PROJECT_DIR/scripts/n8n_node_metrics_exporter.py"
+"$PYTHON_VENV" "$PROJECT_DIR/scripts/n8n_node_metrics_exporter.py" --backend prometheus
 
 # Verificar exit code
 if [ $? -eq 0 ]; then

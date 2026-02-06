@@ -10,7 +10,7 @@ from .models import HealthResponse, ErrorResponse
 from .api import router as ping_router
 from .database.postgres_probe import PostgresProbe
 from .database import MySQLProbe
-from .metrics import MetricsExporter, service_up
+from .metrics import MetricsExporter, service_up, PrometheusPusher
 
 # Configurar logging
 configure_logging()
@@ -42,6 +42,26 @@ async def lifespan(app: FastAPI):
     )
     
     background_tasks.extend([postgres_task, mysql_task])
+    
+    # Inicializar Prometheus Pusher (se habilitado)
+    prometheus_task = None
+    if settings.prometheus_pushgateway_enabled:
+        logger.info("prometheus_pusher_enabled",
+                   pushgateway_url=settings.prometheus_pushgateway_url,
+                   interval=settings.prometheus_pushgateway_interval)
+        
+        prometheus_pusher = PrometheusPusher(
+            pushgateway_url=settings.prometheus_pushgateway_url,
+            job_name=settings.prometheus_job_name,
+            instance_name=f"{settings.api_host}:{settings.api_port}"
+        )
+        
+        prometheus_task = asyncio.create_task(
+            prometheus_pusher.run_periodic_push(settings.prometheus_pushgateway_interval)
+        )
+        background_tasks.append(prometheus_task)
+    else:
+        logger.info("prometheus_pusher_disabled")
     
     logger.info("collector_api_started_successfully")
     

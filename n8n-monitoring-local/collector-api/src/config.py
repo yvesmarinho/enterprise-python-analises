@@ -33,6 +33,12 @@ class Settings(BaseSettings):
     # Victoria Metrics
     victoria_metrics_url: str = Field(default="http://victoria-metrics:8428")
     
+    # Prometheus Pushgateway
+    prometheus_pushgateway_url: str = Field(default="https://prometheus.vya.digital/pushgateway")
+    prometheus_pushgateway_enabled: bool = Field(default=True)
+    prometheus_pushgateway_interval: int = Field(default=60, description="Intervalo de push para Prometheus em segundos")
+    prometheus_job_name: str = Field(default="collector_api")
+    
     # Metrics Server
     metrics_port: int = Field(default=9102)
     

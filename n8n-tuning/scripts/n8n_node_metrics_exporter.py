@@ -22,16 +22,25 @@ from credentials_helper import CredentialsManager
 class N8NNodeMetricsExporter:
     """Exportador de métricas atômicas por node do N8N"""
     
-    def __init__(self, pg_config: Dict, vm_url: str = "http://localhost:8428"):
+    def __init__(self, pg_config: Dict, vm_url: str = "http://localhost:8428",
+                 prometheus_pushgateway: str = None,
+                 prometheus_job: str = "n8n_node_metrics",
+                 backend: str = "victoria_metrics"):
         """
         Inicializa o exportador
         
         Args:
             pg_config: Configuração do PostgreSQL
             vm_url: URL do Victoria Metrics
+            prometheus_pushgateway: URL do Prometheus Pushgateway
+            prometheus_job: Nome do job no Prometheus
+            backend: 'victoria_metrics' ou 'prometheus'
         """
         self.pg_config = pg_config
         self.vm_url = vm_url.rstrip('/')
+        self.prometheus_pushgateway = prometheus_pushgateway.rstrip('/') if prometheus_pushgateway else None
+        self.prometheus_job = prometheus_job
+        self.backend = backend
         self.conn = None
     
     def connect_db(self):
@@ -394,6 +403,35 @@ class N8NNodeMetricsExporter:
             print(f"❌ Erro ao enviar métricas: {e}")
             return False
     
+    def push_to_prometheus_pushgateway(self, metrics: str) -> bool:
+        """Envia métricas para Prometheus Pushgateway"""
+        import requests
+        
+        if not self.prometheus_pushgateway:
+            print("❌ URL do Prometheus Pushgateway não configurado")
+            return False
+        
+        url = f"{self.prometheus_pushgateway}/metrics/job/{self.prometheus_job}"
+        
+        try:
+            response = requests.post(url, data=metrics, timeout=10)
+            response.raise_for_status()
+            print(f"✅ Métricas enviadas para Prometheus Pushgateway")
+            print(f"   Job: {self.prometheus_job}")
+            print(f"   URL: {self.prometheus_pushgateway}")
+            return True
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Erro ao enviar métricas para Prometheus: {e}")
+            print(f"   Verifique se o Pushgateway está rodando em: {self.prometheus_pushgateway}")
+            return False
+    
+    def push_metrics(self, metrics: str) -> bool:
+        """Envia métricas para o backend configurado"""
+        if self.backend == "prometheus":
+            return self.push_to_prometheus_pushgateway(metrics)
+        else:
+            return self.push_to_victoria_metrics(metrics)
+    
     def collect_and_push(self, hours_back: int = 24, limit: int = 1000) -> bool:
         """Pipeline completo de coleta e envio"""
         print("=" * 60)
@@ -428,8 +466,8 @@ class N8NNodeMetricsExporter:
             print(f"✅ {len(metric_lines)} métricas geradas")
             
             print()
-            print("📤 Enviando para Victoria Metrics...")
-            success = self.push_to_victoria_metrics(metrics)
+            print("📤 Enviando métricas...")
+            success = self.push_metrics(metrics)
             
             print()
             print("=" * 60)
@@ -437,8 +475,12 @@ class N8NNodeMetricsExporter:
                 print("✅ Coleta e exportação concluídas!")
                 print()
                 print("🔍 Verificar métricas:")
-                print(f"   Victoria Metrics: {self.vm_url}")
-                print(f"   Grafana: http://localhost:3100")
+                if self.backend == "prometheus":
+                    print(f"   Prometheus Pushgateway: {self.prometheus_pushgateway}")
+                    print(f"   Job name: {self.prometheus_job}")
+                else:
+                    print(f"   Victoria Metrics: {self.vm_url}")
+                    print(f"   Grafana: http://localhost:3100")
             else:
                 print("❌ Falha na exportação")
             print("=" * 60)
@@ -457,6 +499,18 @@ class N8NNodeMetricsExporter:
 
 def main():
     """Função principal"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='N8N Node Metrics Exporter')
+    parser.add_argument('--backend', choices=['victoria_metrics', 'prometheus'], 
+                        default='prometheus',
+                        help='Backend para enviar métricas (default: prometheus)')
+    parser.add_argument('--hours', type=int, default=6,
+                        help='Horas atrás para coletar (default: 6)')
+    parser.add_argument('--limit', type=int, default=500,
+                        help='Número de execuções a processar (default: 500)')
+    args = parser.parse_args()
+    
     print("🔍 Carregando credenciais...")
     
     try:
@@ -468,16 +522,35 @@ def main():
             sys.exit(1)
         
         print(f"✅ PostgreSQL: {pg_config['host']}:{pg_config['port']}/{pg_config['database']}")
+        print(f"✅ Backend: {args.backend}")
         print()
         
-        # Criar exporter
-        exporter = N8NNodeMetricsExporter(
-            pg_config=pg_config,
-            vm_url="http://localhost:8428"
-        )
+        # Configurar backend
+        if args.backend == "prometheus":
+            prom_config = creds.get_prometheus_config()
+            pushgateway_url = prom_config.get('pushgateway_url', 'http://wfdb01.vya.digital:9091')
+            job_name = prom_config.get('job_name', 'n8n_node_metrics')
+            
+            print(f"✅ Prometheus Pushgateway: {pushgateway_url}")
+            print(f"✅ Job name: {job_name}")
+            print()
+            
+            exporter = N8NNodeMetricsExporter(
+                pg_config=pg_config,
+                prometheus_pushgateway=pushgateway_url,
+                prometheus_job=job_name,
+                backend="prometheus"
+            )
+        else:
+            # Victoria Metrics
+            exporter = N8NNodeMetricsExporter(
+                pg_config=pg_config,
+                vm_url="http://localhost:8428",
+                backend="victoria_metrics"
+            )
         
-        # Coletar últimas 6h, até 500 execuções (para coletas frequentes via cron)
-        success = exporter.collect_and_push(hours_back=6, limit=500)
+        # Coletar e exportar
+        success = exporter.collect_and_push(hours_back=args.hours, limit=args.limit)
         
         sys.exit(0 if success else 1)
         

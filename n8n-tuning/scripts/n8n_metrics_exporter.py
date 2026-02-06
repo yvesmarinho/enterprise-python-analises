@@ -20,9 +20,13 @@ from credentials_helper import CredentialsManager
 
 
 class N8NMetricsExporter:
-    """Exportador de métricas do N8N para Victoria Metrics"""
+    """Exportador de métricas do N8N para Victoria Metrics ou Prometheus"""
     
-    def __init__(self, n8n_url: str, n8n_api_key: str, vm_url: str = "http://localhost:8428"):
+    def __init__(self, n8n_url: str, n8n_api_key: str, 
+                 vm_url: str = "http://localhost:8428",
+                 prometheus_pushgateway: str = None,
+                 prometheus_job: str = "n8n_metrics",
+                 backend: str = "victoria_metrics"):
         """
         Inicializa o exportador
         
@@ -30,10 +34,16 @@ class N8NMetricsExporter:
             n8n_url: URL do N8N
             n8n_api_key: API Key do N8N
             vm_url: URL do Victoria Metrics
+            prometheus_pushgateway: URL do Prometheus Pushgateway (ex: http://wfdb01.vya.digital:9091)
+            prometheus_job: Nome do job no Prometheus
+            backend: 'victoria_metrics' ou 'prometheus'
         """
         self.n8n_url = n8n_url.rstrip('/')
         self.n8n_api_key = n8n_api_key
         self.vm_url = vm_url.rstrip('/')
+        self.prometheus_pushgateway = prometheus_pushgateway.rstrip('/') if prometheus_pushgateway else None
+        self.prometheus_job = prometheus_job
+        self.backend = backend
         
         self.headers = {
             "X-N8N-API-KEY": n8n_api_key,
@@ -266,6 +276,49 @@ class N8NMetricsExporter:
             print(f"❌ Erro ao enviar métricas para Victoria Metrics: {e}")
             return False
     
+    def push_to_prometheus_pushgateway(self, metrics: str) -> bool:
+        """
+        Envia métricas para Prometheus Pushgateway
+        
+        Args:
+            metrics: String com métricas em formato Prometheus
+            
+        Returns:
+            True se sucesso, False caso contrário
+        """
+        if not self.prometheus_pushgateway:
+            print("❌ URL do Prometheus Pushgateway não configurado")
+            return False
+        
+        url = f"{self.prometheus_pushgateway}/metrics/job/{self.prometheus_job}"
+        
+        try:
+            response = requests.post(url, data=metrics, timeout=10)
+            response.raise_for_status()
+            print(f"✅ Métricas enviadas para Prometheus Pushgateway com sucesso")
+            print(f"   Job: {self.prometheus_job}")
+            print(f"   URL: {self.prometheus_pushgateway}")
+            return True
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Erro ao enviar métricas para Prometheus: {e}")
+            print(f"   Verifique se o Pushgateway está rodando em: {self.prometheus_pushgateway}")
+            return False
+    
+    def push_metrics(self, metrics: str) -> bool:
+        """
+        Envia métricas para o backend configurado
+        
+        Args:
+            metrics: String com métricas em formato Prometheus
+            
+        Returns:
+            True se sucesso, False caso contrário
+        """
+        if self.backend == "prometheus":
+            return self.push_to_prometheus_pushgateway(metrics)
+        else:
+            return self.push_to_victoria_metrics(metrics)
+    
     def collect_and_push(self, executions_limit: int = 100) -> bool:
         """
         Coleta métricas do N8N e envia para Victoria Metrics
@@ -300,7 +353,7 @@ class N8NMetricsExporter:
         
         print()
         print("📤 Enviando para Victoria Metrics...")
-        success = self.push_to_victoria_metrics(metrics)
+        success = self.push_metrics(metrics)
         
         print()
         print("=" * 60)
@@ -308,8 +361,12 @@ class N8NMetricsExporter:
             print("✅ Coleta e exportação concluídas com sucesso!")
             print()
             print("🔍 Verificar métricas:")
-            print(f"   Victoria Metrics: {self.vm_url}")
-            print(f"   Grafana: http://localhost:3100")
+            if self.backend == "prometheus":
+                print(f"   Prometheus Pushgateway: {self.prometheus_pushgateway}")
+                print(f"   Job name: {self.prometheus_job}")
+            else:
+                print(f"   Victoria Metrics: {self.vm_url}")
+                print(f"   Grafana: http://localhost:3100")
         else:
             print("❌ Falha na exportação")
         print("=" * 60)
@@ -319,6 +376,16 @@ class N8NMetricsExporter:
 
 def main():
     """Função principal"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='N8N Metrics Exporter')
+    parser.add_argument('--backend', choices=['victoria_metrics', 'prometheus'], 
+                        default='prometheus',
+                        help='Backend para enviar métricas (default: prometheus)')
+    parser.add_argument('--limit', type=int, default=1000,
+                        help='Número de execuções a coletar (default: 1000)')
+    args = parser.parse_args()
+    
     print("🔍 Carregando credenciais...")
     
     try:
@@ -333,17 +400,37 @@ def main():
             sys.exit(1)
         
         print(f"✅ N8N URL: {n8n_url}")
+        print(f"✅ Backend: {args.backend}")
         print()
         
-        # Criar exporter
-        exporter = N8NMetricsExporter(
-            n8n_url=n8n_url,
-            n8n_api_key=api_key,
-            vm_url="http://localhost:8428"
-        )
+        # Configurar backend
+        if args.backend == "prometheus":
+            prom_config = creds.get_prometheus_config()
+            pushgateway_url = prom_config.get('pushgateway_url', 'http://wfdb01.vya.digital:9091')
+            job_name = prom_config.get('job_name', 'n8n_metrics')
+            
+            print(f"✅ Prometheus Pushgateway: {pushgateway_url}")
+            print(f"✅ Job name: {job_name}")
+            print()
+            
+            exporter = N8NMetricsExporter(
+                n8n_url=n8n_url,
+                n8n_api_key=api_key,
+                prometheus_pushgateway=pushgateway_url,
+                prometheus_job=job_name,
+                backend="prometheus"
+            )
+        else:
+            # Victoria Metrics
+            exporter = N8NMetricsExporter(
+                n8n_url=n8n_url,
+                n8n_api_key=api_key,
+                vm_url="http://localhost:8428",
+                backend="victoria_metrics"
+            )
         
-        # Coletar e exportar (últimas 1000 execuções para melhor análise)
-        success = exporter.collect_and_push(executions_limit=1000)
+        # Coletar e exportar
+        success = exporter.collect_and_push(executions_limit=args.limit)
         
         sys.exit(0 if success else 1)
         
