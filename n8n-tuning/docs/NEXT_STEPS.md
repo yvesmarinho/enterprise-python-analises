@@ -1,7 +1,7 @@
 # Próximos Passos - N8N Performance Monitoring
 
-**Última Atualização**: 04/02/2026  
-**Status**: 📋 Roadmap Completo para 4 Semanas  
+**Última Atualização**: 04/02/2026
+**Status**: 📋 Roadmap Completo para 4 Semanas
 **Objetivo**: Expandir monitoramento com métricas de infraestrutura
 
 ---
@@ -76,7 +76,7 @@ services:
   victoria-metrics:
     volumes:
       - /opt/monitoring/victoria-data:/victoria-metrics-data
-  
+
   grafana:
     volumes:
       - /opt/monitoring/grafana-data:/var/lib/grafana
@@ -214,7 +214,7 @@ scrape_configs:
     static_configs:
       - targets: ['wf005.vya.digital:5678']
     metrics_path: '/metrics'
-  
+
   - job_name: 'node-exporter'
     scrape_interval: 30s
     static_configs:
@@ -223,7 +223,7 @@ scrape_configs:
       - source_labels: [__name__]
         regex: 'node_.*'
         action: keep
-  
+
   - job_name: 'cadvisor'
     scrape_interval: 30s
     static_configs:
@@ -882,8 +882,8 @@ notifiers:
 
 **network_latency_rtt_seconds**
 - **Descrição**: Round-Trip Time (RTT) Brasil → USA → Brasil
-- **Labels**: 
-  - `source_location="sao_paulo"` 
+- **Labels**:
+  - `source_location="sao_paulo"`
   - `target_location="virginia"`
   - `protocol="https"`
 - **Cálculo**: `timestamp_response - timestamp_start`
@@ -919,7 +919,7 @@ notifiers:
 
 **database_query_latency_seconds**
 - **Descrição**: Tempo de resposta de consulta de teste
-- **Labels**: 
+- **Labels**:
   - `database_type="postgresql|mysql"`
   - `database_host="hostname"`
   - `query_type="simple_select|health_check"`
@@ -1084,7 +1084,7 @@ targets:
     interval_seconds: 30
     timeout_seconds: 10
     retry_attempts: 3
-    
+
 source:
   location: "sao_paulo"
   datacenter: "wf008"
@@ -1301,14 +1301,14 @@ histogram_quantile(0.99, rate(api_request_duration_seconds_bucket{endpoint="/api
 # PostgreSQL Health
 (database_availability_ratio{database_type="postgresql"} > 0.999) * 100
 
-# MySQL Health  
+# MySQL Health
 (database_availability_ratio{database_type="mysql"} > 0.999) * 100
 
 # API Health
 (rate(api_request_errors_total[5m]) == 0) * 100
 ```
 
-**Display**: 
+**Display**:
 - ✅ Verde: Todos saudáveis
 - ⚠️ Amarelo: 1 componente degradado
 - ❌ Vermelho: 2+ componentes com problema
@@ -1659,7 +1659,7 @@ API Collector:
 
 **Estrutura de Diretórios Local**:
 ```
-~/dev/n8n-monitoring-local/
+~/dev/n8n-prometheus-wfdb01/
 ├── docker-compose.yml              # Stack completa local
 ├── .env                            # Variáveis de ambiente
 ├── .env.example                    # Template de configuração
@@ -1765,7 +1765,7 @@ services:
   # ============================================
   # Infraestrutura de Bancos de Dados (USA)
   # ============================================
-  
+
   postgres:
     image: postgres:15-alpine
     container_name: dev-postgres
@@ -1810,7 +1810,7 @@ services:
   # ============================================
   # Mock N8N Server (USA)
   # ============================================
-  
+
   n8n-mock:
     image: n8nio/n8n:latest
     container_name: dev-n8n
@@ -1843,7 +1843,7 @@ services:
   # ============================================
   # VictoriaMetrics (Monitoring)
   # ============================================
-  
+
   victoria-metrics:
     image: victoriametrics/victoria-metrics:latest
     container_name: dev-victoria-metrics
@@ -1868,7 +1868,7 @@ services:
   # ============================================
   # Grafana (Monitoring)
   # ============================================
-  
+
   grafana:
     image: grafana/grafana:latest
     container_name: dev-grafana
@@ -1896,7 +1896,7 @@ services:
   # ============================================
   # Collector API (USA Network)
   # ============================================
-  
+
   collector-api:
     build:
       context: ./collector-api
@@ -1949,7 +1949,7 @@ services:
   # ============================================
   # Ping Service (Brazil Network)
   # ============================================
-  
+
   ping-service:
     build:
       context: ./ping-service
@@ -1988,7 +1988,7 @@ services:
   # ============================================
   # Node Exporter (Opcional - para testes)
   # ============================================
-  
+
   node-exporter:
     image: prom/node-exporter:latest
     container_name: dev-node-exporter
@@ -2010,7 +2010,7 @@ services:
   # ============================================
   # cAdvisor (Opcional - para testes)
   # ============================================
-  
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: dev-cadvisor
@@ -2288,8 +2288,8 @@ chmod +x scripts/setup_local_env.sh
 ```bash
 # Clonar/criar estrutura
 cd ~/dev
-mkdir n8n-monitoring-local
-cd n8n-monitoring-local
+mkdir n8n-prometheus-wfdb01
+cd n8n-prometheus-wfdb01
 
 # Executar setup
 bash scripts/setup_local_env.sh
@@ -2385,10 +2385,10 @@ test_endpoint() {
     local name=$1
     local url=$2
     local expected=$3
-    
+
     echo -n "Testing $name... "
     response=$(curl -s -o /dev/null -w "%{http_code}" "$url")
-    
+
     if [ "$response" -eq "$expected" ]; then
         echo -e "${GREEN}✓ PASS${NC} (HTTP $response)"
         ((PASSED++))
@@ -2402,10 +2402,10 @@ test_endpoint() {
 test_metric() {
     local name=$1
     local query=$2
-    
+
     echo -n "Testing metric $name... "
     result=$(curl -s "http://localhost:8428/api/v1/query?query=$query" | jq -r '.status')
-    
+
     if [ "$result" == "success" ]; then
         echo -e "${GREEN}✓ PASS${NC}"
         ((PASSED++))
@@ -2549,7 +2549,7 @@ async def send_ping():
             },
             "ping_id": str(uuid.uuid4())
         }
-        
+
         try:
             response = await client.post(
                 API_URL,
@@ -2566,19 +2566,19 @@ async def main():
     print(f"   Rate: {REQUESTS_PER_SECOND} req/s")
     print(f"   Duration: {DURATION_SECONDS}s")
     print()
-    
+
     start_time = time.time()
     requests_sent = 0
     requests_success = 0
     requests_failed = 0
-    
+
     while time.time() - start_time < DURATION_SECONDS:
         tasks = []
         for _ in range(REQUESTS_PER_SECOND):
             tasks.append(send_ping())
-        
+
         results = await asyncio.gather(*tasks)
-        
+
         for status, response in results:
             requests_sent += 1
             if status == 200:
@@ -2586,7 +2586,7 @@ async def main():
             else:
                 requests_failed += 1
                 print(f"❌ Error: {status} - {response}")
-        
+
         # Imprimir progresso a cada 10 requisições
         if requests_sent % 10 == 0:
             elapsed = time.time() - start_time
@@ -2594,9 +2594,9 @@ async def main():
                   f"✓ {requests_success} | "
                   f"✗ {requests_failed} | "
                   f"⏱️  {elapsed:.1f}s")
-        
+
         await asyncio.sleep(1)
-    
+
     # Resultado final
     elapsed = time.time() - start_time
     print()
@@ -2681,11 +2681,11 @@ python3 scripts/simulate_load.py
    # Tag de release
    git tag v1.0.0-homolog
    git push origin v1.0.0-homolog
-   
+
    # Build de imagens para produção
    docker build -t vya/ping-service:v1.0.0 ./ping-service
    docker build -t vya/collector-api:v1.0.0 ./collector-api
-   
+
    # Push para registry (Docker Hub ou privado)
    docker push vya/ping-service:v1.0.0
    docker push vya/collector-api:v1.0.0
@@ -2695,20 +2695,20 @@ python3 scripts/simulate_load.py
    ```bash
    # SSH para wf001
    ssh user@wf001.vya.digital
-   
+
    # Criar estrutura
    sudo mkdir -p /opt/monitoring-staging
    cd /opt/monitoring-staging
-   
+
    # Copiar docker-compose.yml e configs
    scp docker-compose.yml user@wf001:/opt/monitoring-staging/
-   
+
    # Ajustar .env para staging
    vim .env
-   
+
    # Deploy
    docker-compose up -d
-   
+
    # Monitorar logs
    docker-compose logs -f
    ```
@@ -2726,7 +2726,7 @@ python3 scripts/simulate_load.py
    sudo mkdir -p /opt/monitoring-prod
    cd /opt/monitoring-prod
    # ... repetir processo
-   
+
    # wf008 (Brasil)
    ssh user@wf008.vya.digital
    sudo mkdir -p /opt/monitoring-prod
@@ -2745,12 +2745,12 @@ python3 scripts/simulate_load.py
    ```bash
    # Parar novos serviços
    docker-compose stop collector-api ping-service
-   
+
    # Reverter para versão anterior
    docker-compose down
    git checkout v0.9.0
    docker-compose up -d
-   
+
    # Validar sistema antigo funcionando
    ./scripts/run_tests.sh
    ```
@@ -3177,7 +3177,7 @@ docker restart n8n_n8n
 
 ---
 
-**Documento Criado**: 04/02/2026  
-**Última Revisão**: 04/02/2026  
-**Próxima Revisão**: Após conclusão da Semana 4  
+**Documento Criado**: 04/02/2026
+**Última Revisão**: 04/02/2026
+**Próxima Revisão**: Após conclusão da Semana 4
 **Responsável**: DevOps Team

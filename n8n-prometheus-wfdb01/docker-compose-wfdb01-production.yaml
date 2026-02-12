@@ -1,0 +1,528 @@
+# ======================================================
+# Enterprise Observability Stack - Production with Traefik
+# ======================================================
+# Stack completo de observabilidade para produção
+# com Loki, Prometheus, Grafana e Traefik
+# Domínio: vya.digital
+# Subdomínios: prometheus, grafana, loki, alertmanager
+# Segurança: Docker Secrets para credenciais sensíveis
+# ======================================================
+# Modifications.....:
+# Date          Rev    Author           Description
+# 06/08/2025    1.0    Enterprise Team  Versão de produção
+# 06/08/2025    1.1    Enterprise Team  Implementação Docker Secrets
+# ======================================================
+
+networks:
+  enterprise-observability_loki:
+    external: true
+  app-network:
+    external: true
+
+volumes:
+  prometheus:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/prometheus
+  rules:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/rules
+  grafana:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/grafana
+  alertmanager-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/alertmanager
+  loki:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/loki
+  postgres-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/postgres-data
+  pushgateway-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/pushgateway
+  victoriametrics:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/victoriametrics
+  backup:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/docker_user/enterprise-observability/backup
+
+services:
+  # ======================================================
+  # POSTGRESQL - Base de dados principal
+  # ======================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: "enterprise-postgres"
+    hostname: "postgres.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_DB_FILE=/run/secrets/postgres_db
+      - POSTGRES_USER_FILE=/run/secrets/postgres_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+      - PGUSER=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d/:ro
+      - backup:/backup
+    secrets:
+      - postgres_db
+      - postgres_user
+      - postgres_password
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U grafana_user -d grafana_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - enterprise-observability_loki
+
+  # ======================================================
+  # POSTGRES EXPORTER - Métricas do PostgreSQL
+  # ======================================================
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: "enterprise-postgres-exporter"
+    hostname: "postgres-exporter.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+      - DATA_SOURCE_NAME_FILE=/run/secrets/postgres_exporter_dsn
+    secrets:
+      - postgres_exporter_dsn
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - enterprise-observability_loki
+
+  # ======================================================
+  # LOKI INIT - Inicialização de permissões
+  # ======================================================
+  init:
+    image: grafana/loki:3.5.3
+    user: root
+    entrypoint:
+      - "chown"
+      - "10001:10001"
+      - "/loki"
+    volumes:
+      - loki:/loki
+    restart: "no"
+    depends_on:
+      - postgres
+    networks:
+      - enterprise-observability_loki
+
+  # ======================================================
+  # GRAFANA - Interface de visualização
+  # ======================================================
+  grafana:
+    image: grafana/grafana:11.6.0
+    container_name: "enterprise-grafana"
+    hostname: "grafana.vya.digital"
+    ports:
+      - "3002:3000"
+    environment:
+      - TZ=America/Sao_Paulo
+      - GF_SECURITY_ADMIN_USER__FILE=/run/secrets/grafana_admin_user
+      - GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/grafana_admin_password
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
+      - GF_SECURITY_SECRET_KEY__FILE=/run/secrets/grafana_secret_key
+      - GF_SERVER_DOMAIN=grafana.vya.digital
+      - GF_SERVER_ROOT_URL=https://grafana.vya.digital
+      - GF_SECURITY_COOKIE_SECURE=true
+      - GF_SECURITY_STRICT_TRANSPORT_SECURITY=true
+      # PostgreSQL Database
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=postgres:5432
+      - GF_DATABASE_NAME__FILE=/run/secrets/postgres_db
+      - GF_DATABASE_USER__FILE=/run/secrets/postgres_user
+      - GF_DATABASE_PASSWORD__FILE=/run/secrets/postgres_password
+      - GF_DATABASE_SSL_MODE=disable
+    volumes:
+      - ./config/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yml
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana:/var/lib/grafana
+      - backup:/backup
+    secrets:
+      - postgres_db
+      - postgres_user
+      - postgres_password
+      - grafana_admin_user
+      - grafana_admin_password
+      - grafana_secret_key
+    user: "${UID:-472}:${GID:-472}"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.grafana.rule=Host(`grafana.vya.digital`)'
+      - 'traefik.http.routers.grafana.tls=true'
+      - 'traefik.http.routers.grafana.entrypoints=websecure'
+      - 'traefik.http.routers.grafana.tls.certresolver=lets-encrypt'
+      - 'traefik.http.middlewares.grafana.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.grafana.headers.STSSeconds=315360000'
+      - 'traefik.http.middlewares.grafana.headers.browserXSSFilter=true'
+      - 'traefik.http.middlewares.grafana.headers.contentTypeNosniff=true'
+      - 'traefik.http.middlewares.grafana.headers.forceSTSHeader=true'
+      - 'traefik.http.middlewares.grafana.headers.SSLHost=vya.digital'
+      - 'traefik.http.middlewares.grafana.headers.STSIncludeSubdomains=true'
+      - 'traefik.http.middlewares.grafana.headers.STSPreload=true'
+      - 'traefik.http.routers.grafana.middlewares=grafana@docker'
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+    networks:
+      - enterprise-observability_loki
+      - app-network
+
+  # ======================================================
+  # PROMETHEUS - Coleta e armazenamento de métricas
+  # ======================================================
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: "enterprise-prometheus"
+    hostname: "prometheus.vya.digital"
+    ports:
+      - "9091:9090"
+    environment:
+      - TZ=America/Sao_Paulo
+      - PROMETHEUS_RETENTION_TIME=${PROMETHEUS_RETENTION_TIME:-15d}
+      - PROMETHEUS_RETENTION_SIZE=${PROMETHEUS_RETENTION_SIZE:-10GB}
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
+      - rules:/etc/prometheus/rules:ro
+      - prometheus:/prometheus
+      - backup:/backup
+      - /usr/share/zoneinfo/America/Sao_Paulo:/etc/localtime:ro
+    command:
+      [
+        '--log.level=info',
+        '--config.file=/etc/prometheus/prometheus.yml',
+        '--query.lookback-delta=30s',
+        '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-15d}',
+        '--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-10GB}',
+        '--web.external-url=https://prometheus.vya.digital'
+      ]
+    user: "${UID:-65534}:${GID:-65534}"
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.prometheus.rule=Host(`prometheus.vya.digital`)'
+      - 'traefik.http.routers.prometheus.tls=true'
+      - 'traefik.http.routers.prometheus.entrypoints=websecure'
+      - 'traefik.http.routers.prometheus.tls.certresolver=lets-encrypt'
+      - 'traefik.http.middlewares.prometheus.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.prometheus.headers.STSSeconds=315360000'
+      - 'traefik.http.middlewares.prometheus.headers.browserXSSFilter=true'
+      - 'traefik.http.middlewares.prometheus.headers.contentTypeNosniff=true'
+      - 'traefik.http.middlewares.prometheus.headers.forceSTSHeader=true'
+      - 'traefik.http.middlewares.prometheus.headers.SSLHost=vya.digital'
+      - 'traefik.http.middlewares.prometheus.headers.STSIncludeSubdomains=true'
+      - 'traefik.http.middlewares.prometheus.headers.STSPreload=true'
+      - 'traefik.http.routers.prometheus.middlewares=prometheus@docker'
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+    networks:
+      - enterprise-observability_loki
+      - app-network
+
+  # ======================================================
+  # VICTORIAMETRICS - Long-term storage para métricas
+  # ======================================================
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.97.1
+    container_name: "enterprise-victoriametrics"
+    hostname: "victoriametrics.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - victoriametrics:/victoria-metrics-data
+      - backup:/backup
+      - /usr/share/zoneinfo/America/Sao_Paulo:/etc/localtime:ro
+    command:
+      - '--storageDataPath=/victoria-metrics-data'
+      - '--retentionPeriod=12'  # 12 meses de retenção (sem sufixo 'm' para evitar ambiguidade)
+      - '--httpListenAddr=:8428'
+      - '--maxConcurrentInserts=8'
+      - '--maxInsertRequestSize=32MB'
+      # Desabilita UI - apenas API
+      - '--selfScrapeInterval=10s'
+      - '--search.maxQueryDuration=60s'
+    user: "${UID:-65534}:${GID:-65534}"
+    restart: unless-stopped
+    networks:
+      - enterprise-observability_loki
+      - app-network
+    # Nota: UI não exposta via Traefik por segurança
+    # Apenas API em http://victoriametrics:8428 disponível internamente
+
+  # ======================================================
+  # PROMTAIL - Agente de coleta de logs
+  # ======================================================
+  promtail:
+    image: grafana/promtail:3.5.3
+    container_name: "enterprise-promtail"
+    hostname: "promtail.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - /var/log/applications:/var/log/:ro
+      - ./config:/etc/promtail/
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/promtail.yaml
+    restart: unless-stopped
+    networks:
+      - enterprise-observability_loki
+
+  # ======================================================
+  # LOKI READ - Instâncias de leitura (3 réplicas)
+  # ======================================================
+  loki-read:
+    image: grafana/loki:3.5.3
+    hostname: "loki-read.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./config:/etc/loki/
+    command: "-config.file=/etc/loki/loki.yaml -target=read -legacy-read-mode=false"
+    user: "${UID:-10001}:${GID:-10001}"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      init:
+        condition: service_completed_successfully
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.loki.rule=Host(`loki.vya.digital`)'
+      - 'traefik.http.routers.loki.tls=true'
+      - 'traefik.http.routers.loki.entrypoints=websecure'
+      - 'traefik.http.routers.loki.tls.certresolver=lets-encrypt'
+      - 'traefik.http.middlewares.loki.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.loki.headers.STSSeconds=315360000'
+      - 'traefik.http.middlewares.loki.headers.browserXSSFilter=true'
+      - 'traefik.http.middlewares.loki.headers.contentTypeNosniff=true'
+      - 'traefik.http.middlewares.loki.headers.forceSTSHeader=true'
+      - 'traefik.http.middlewares.loki.headers.SSLHost=vya.digital'
+      - 'traefik.http.middlewares.loki.headers.STSIncludeSubdomains=true'
+      - 'traefik.http.middlewares.loki.headers.STSPreload=true'
+      - 'traefik.http.routers.loki.middlewares=loki@docker'
+      - "traefik.http.services.loki.loadbalancer.server.port=3100"
+    deploy:
+      mode: replicated
+      replicas: 3
+    networks:
+      - enterprise-observability_loki
+      - app-network
+
+  # ======================================================
+  # LOKI WRITE - Instâncias de escrita (3 réplicas)
+  # ======================================================
+  loki-write:
+    image: grafana/loki:3.5.3
+    hostname: "loki-write.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./config:/etc/loki/
+    command: "-config.file=/etc/loki/loki.yaml -target=write"
+    user: "${UID:-10001}:${GID:-10001}"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      init:
+        condition: service_completed_successfully
+    deploy:
+      mode: replicated
+      replicas: 3
+    networks:
+      - enterprise-observability_loki
+
+  # ======================================================
+  # LOKI BACKEND - Instâncias backend (3 réplicas)
+  # ======================================================
+  loki-backend:
+    image: grafana/loki:3.5.3
+    hostname: "loki-backend.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./config:/etc/loki/
+      - ./rules:/loki/rules:ro
+    command: "-config.file=/etc/loki/loki.yaml -target=backend -legacy-read-mode=false"
+    user: "${UID:-10001}:${GID:-10001}"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      init:
+        condition: service_completed_successfully
+    deploy:
+      mode: replicated
+      replicas: 3
+    networks:
+      - enterprise-observability_loki
+
+  # ======================================================
+  # CADVISOR - Métricas de containers Docker
+  # ======================================================
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: "enterprise-cadvisor"
+    hostname: "cadvisor.vya.digital"
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - /:/rootfs:ro
+      - /usr/share/zoneinfo/America/Sao_Paulo:/etc/localtime:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    privileged: true
+    restart: unless-stopped
+    networks:
+      - enterprise-observability_loki
+
+  # ======================================================
+  # ALERTMANAGER - Gerenciamento de alertas
+  # ======================================================
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: "enterprise-alertmanager"
+    hostname: "alertmanager.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+      - ALERTMANAGER_WEBHOOK_URL_FILE=/run/secrets/alertmanager_webhook_url
+    volumes:
+      - "./config:/config"
+      - alertmanager-data:/data
+      - backup:/backup
+      - /usr/share/zoneinfo/America/Sao_Paulo:/etc/localtime:ro
+    secrets:
+      - alertmanager_webhook_url
+    command: --config.file=/config/alertmanager.yml --log.level=info --web.external-url=https://alertmanager.vya.digital
+    user: "${UID:-65534}:${GID:-65534}"
+    ports:
+      - "9093:9093"
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.alertmanager.rule=Host(`alertmanager.vya.digital`)'
+      - 'traefik.http.routers.alertmanager.tls=true'
+      - 'traefik.http.routers.alertmanager.entrypoints=websecure'
+      - 'traefik.http.routers.alertmanager.tls.certresolver=lets-encrypt'
+      - 'traefik.http.middlewares.alertmanager.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.alertmanager.headers.STSSeconds=315360000'
+      - 'traefik.http.middlewares.alertmanager.headers.browserXSSFilter=true'
+      - 'traefik.http.middlewares.alertmanager.headers.contentTypeNosniff=true'
+      - 'traefik.http.middlewares.alertmanager.headers.forceSTSHeader=true'
+      - 'traefik.http.middlewares.alertmanager.headers.SSLHost=vya.digital'
+      - 'traefik.http.middlewares.alertmanager.headers.STSIncludeSubdomains=true'
+      - 'traefik.http.middlewares.alertmanager.headers.STSPreload=true'
+      - 'traefik.http.routers.alertmanager.middlewares=alertmanager@docker'
+      - "traefik.http.services.alertmanager.loadbalancer.server.port=9093"
+    networks:
+      - enterprise-observability_loki
+      - app-network
+
+  # ======================================================
+  # PUSHGATEWAY - Recebe métricas via push
+  # ======================================================
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    container_name: "enterprise-pushgateway"
+    hostname: "pushgateway.vya.digital"
+    environment:
+      - TZ=America/Sao_Paulo
+    command:
+      - '--web.listen-address=:9091'
+      - '--web.telemetry-path=/metrics'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+      - '--log.level=info'
+      - '--web.route-prefix=/'
+      - '--web.external-url=https://prometheus.vya.digital/pushgateway'
+    volumes:
+      - pushgateway-data:/pushgateway
+      - backup:/backup
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9091/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - enterprise-observability_loki
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pushgateway.rule=Host(`prometheus.vya.digital`) && PathPrefix(`/pushgateway`)"
+      - "traefik.http.routers.pushgateway.tls=true"
+      - "traefik.http.routers.pushgateway.tls.certresolver=letsencrypt"
+      - "traefik.http.services.pushgateway.loadbalancer.server.port=9091"
+      - "traefik.http.middlewares.pushgateway-stripprefix.stripprefix.prefixes=/pushgateway"
+      - "traefik.http.routers.pushgateway.middlewares=pushgateway-stripprefix"
+      - "traefik.docker.network=app-network"
+
+# ======================================================
+# DOCKER SECRETS - Configuração segura de credenciais
+# ======================================================
+secrets:
+  postgres_db:
+    file: ./secrets/postgres_db.txt
+  postgres_user:
+    file: ./secrets/postgres_user.txt
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  grafana_admin_user:
+    file: ./secrets/grafana_admin_user.txt
+  postgres_exporter_dsn:
+    file: ./secrets/postgres_exporter_dsn.txt
+  grafana_admin_password:
+    file: ./secrets/grafana_admin_password.txt
+  grafana_secret_key:
+    file: ./secrets/grafana_secret_key.txt
+  alertmanager_webhook_url:
+    file: ./secrets/alertmanager_webhook_url.txt

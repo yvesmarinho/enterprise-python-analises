@@ -1,8 +1,8 @@
 # ✅ TODO - Enterprise Python Analysis
 
-**Última Atualização**: 06/02/2026  
-**Sessão Atual**: Integração Prometheus Pushgateway - Finalização  
-**Última sessão de trabalho**: 06/02/2026
+**Última Atualização**: 09/02/2026
+**Sessão Atual**: N8N Monitoring Integration + Deploy Pendente
+**Última sessão de trabalho**: 09/02/2026
 
 ---
 
@@ -13,10 +13,42 @@
 | Análise de Infraestrutura | ✅ Completo | 100% |
 | Plano de Migração | ✅ Completo | 100% |
 | Integração Prometheus | ✅ Completo | 100% |
-| Aprovação do Plano | ⏳ Pendente | 0% |
+| **Módulo N8N** | ✅ Implementado | **85%** |
+| **Deploy N8N** | ⏳ Pendente | **0%** |
+| Aprovação do Plano Migração | ⏳ Pendente | 0% |
 | Backup de wf005 | ⏳ Pendente | 0% |
 | Execução de Migração | ⏳ Pendente | 0% |
 | Validação Pós-Migração | ⏳ Pendente | 0% |
+
+---
+
+## 🔥 Prioridade CRÍTICA (Próxima Sessão - 30 min)
+
+### Deploy Módulo N8N ⏳ URGENTE
+- [ ] **Deploy da imagem no wf001.vya.digital**
+  - [ ] SSH no servidor wf001
+  - [ ] Identificar nome correto do serviço no docker-compose.yml
+  - [ ] Pull nova imagem: adminvyadigital/n8n-collector-api:latest
+  - [ ] Restart container prod-collector-api
+  - [ ] Aguardar 2-3 minutes (2 ciclos de coleta)
+
+- [ ] **Validação de Logs**
+  - [ ] docker logs -f prod-collector-api | grep n8n
+  - [ ] Confirmar "n8n_collector_enabled"
+  - [ ] Confirmar "n8n_workflows_fetched" count=X
+  - [ ] Confirmar "n8n_executions_fetched" total=Y new=Z
+  - [ ] Verificar ausência de "n8n_api_request_errors"
+
+- [ ] **Validação de Métricas**
+  - [ ] docker exec prod-collector-api curl /metrics | grep n8n_
+  - [ ] curl pushgateway/metrics | grep n8n_
+  - [ ] Prometheus: Query n8n_workflow_active_status
+  - [ ] Verificar 9 métricas N8N disponíveis
+
+- [ ] **Restart Grafana e Validação Dashboards**
+  - [ ] docker restart enterprise-grafana (aplicar foldersFromFilesStructure)
+  - [ ] Verificar pastas: N8N/, MySQL/, PostgreSQL/, Docker/
+  - [ ] Abrir dashboards N8N e verificar dados populando
 
 ---
 
@@ -27,18 +59,18 @@
   - Criar victoria_pusher.py
   - Implementar VictoriaPusher class
   - Integrar com PrometheusPusher
-  
+
 - [x] **Deploy de imagem atualizada**
   - Build docker image
   - Push para Docker Hub
   - Deploy em wf001.vya.digital
-  
+
 - [x] **Validar stack observability**
   - Criar script validate_enterprise_observability.py
   - Testar todos os serviços HTTPS
   - Validar SSL/TLS
   - Confirmar Pushgateway operacional
-  
+
 - [x] **Verificar população de métricas**
   - Criar script check_metrics_population.py
   - Confirmar 503 linhas de métricas
@@ -51,13 +83,13 @@
   - Executar test_collector_api_ping.py
   - Validar RTT e tempo de processamento
   - Confirmar métricas no Prometheus
-  
+
 - [ ] **Criar dashboards no Grafana**
   - Conectar datasource Prometheus
   - Dashboard: Collector API Overview
   - Dashboard: Network Latency (Brasil → USA)
   - Dashboard: Database Health
-  
+
 - [ ] **Configurar alertas no Prometheus**
   - Alert: collector_api_up == 0 (service down)
   - Alert: push_failure_time_seconds > 0 (push failures)
@@ -69,25 +101,25 @@
   - Revisar migration_plan.json com stakeholders
   - Obter sign-off técnico e de negócio
   - Documentar aprovações
-  
+
 - [ ] **Agendar janela de manutenção**
   - Definir data/hora (recomendado: madrugada ou fim de semana)
   - Duração estimada: 4-8 horas
   - Comunicar equipes afetadas
   - Criar evento no calendário compartilhado
-  
+
 - [ ] **Backup completo de wf005**
   - [ ] Backup de todos os volumes Docker
   - [ ] Export de configurações de containers
   - [ ] Backup de docker-compose files (se existirem)
   - [ ] Validar integridade dos backups
-  
+
 - [ ] **Validar conectividade**
   - Testar rede entre wf005 ↔ wf001
   - Testar rede entre wf005 ↔ wf002
   - Verificar firewall rules
   - Documentar requisitos de rede
-  
+
 - [ ] **Executar port scanner**
   - Buscar arquivos docker-compose.yml em todos os servidores
   - Executar docker_compose_ports_scanner.py
@@ -107,7 +139,7 @@
   - Iniciar em wf001
   - Testar workflows
   - Validar webhooks
-  
+
 - [ ] **postgres** (wf005 → wf002)
   - Backup do banco de dados
   - Parar container
@@ -115,7 +147,7 @@
   - Iniciar em wf002
   - Validar conectividade
   - Testar aplicações dependentes
-  
+
 - [ ] **keycloak** (wf005 → wf002)
   - Export de configuração
   - Parar container
@@ -129,12 +161,12 @@
   - Migrar configuração
   - Reconectar datasources
   - Validar visualizações
-  
+
 - [ ] **prometheus** (wf005 → wf001)
   - Migrar dados históricos
   - Atualizar targets
   - Validar métricas
-  
+
 - [ ] **loki** (wf005 → wf001)
   - Migrar logs
   - Reconectar com grafana
@@ -145,31 +177,31 @@
   - Backup de dados (se persistente)
   - Migrar container
   - Atualizar referências em apps
-  
+
 - [ ] **minio** (wf005 → wf001)
   - Backup de buckets
   - Migrar dados
   - Validar access keys
-  
+
 - [ ] **rabbitmq** (wf005 → wf001)
   - Export de configuração
   - Migrar queues
   - Testar producers/consumers
-  
+
 - [ ] **caddy** (wf005 → wf002)
   - Backup de Caddyfile
   - Migrar certificados SSL
   - Atualizar DNS (se necessário)
   - Validar reverse proxy
-  
+
 - [ ] **waha** (wf005 → wf002)
   - Migrar configuração
   - Testar integração WhatsApp
-  
+
 - [ ] **metabase** (wf005 → wf002)
   - Migrar container (já configurado externamente)
   - Validar dashboards
-  
+
 - [ ] **temporal** (wf005 → wf001)
   - Migrar workflows
   - Validar workers
@@ -183,12 +215,12 @@
   - Verificar status de todos os containers migrados
   - Executar health check endpoints
   - Validar dependências entre serviços
-  
+
 - [ ] **Smoke tests**
   - Testar funcionalidades principais de cada app
   - Validar integrações críticas
   - Verificar autenticação/autorização
-  
+
 - [ ] **Verificação de logs**
   - Monitorar logs de todos os containers
   - Identificar erros ou warnings
@@ -205,21 +237,21 @@
   - Disk I/O
   - Network throughput
   - Container health
-  
+
 - [ ] **Monitorar métricas em wf002**
   - Mesmas métricas de wf001
   - Comparar com baseline pré-migração
-  
+
 - [ ] **Análise de logs**
   - Verificar logs de aplicações 2x por dia
   - Documentar erros encontrados
   - Resolver issues críticos imediatamente
-  
+
 - [ ] **Feedback de usuários**
   - Coletar relatos de problemas
   - Criar tickets para issues
   - Comunicar status
-  
+
 - [ ] **Testes de carga** (opcional)
   - Simular carga normal de produção
   - Identificar gargalos
@@ -234,27 +266,27 @@
   - Confirmar 72h sem incidentes críticos
   - Revisar métricas acumuladas
   - Obter aprovação final
-  
+
 - [ ] **Backup final de wf005**
   - Último backup antes do desligamento
   - Armazenar em local seguro
   - Documentar localização
-  
+
 - [ ] **Desligar containers restantes**
   - Parar todos os containers em wf005
   - Validar que nenhum serviço depende deles
-  
+
 - [ ] **Desligar servidor wf005**
   - Executar shutdown do sistema
   - Desativar no provedor de nuvem (se aplicável)
   - Atualizar monitoramento para não alertar
-  
+
 - [ ] **Atualizar infraestrutura**
   - Atualizar inventário de servidores
   - Atualizar documentação de rede
   - Atualizar diagramas de arquitetura
   - Atualizar runbooks
-  
+
 - [ ] **Documentar economia**
   - Calcular economia real alcançada
   - Comparar com projeção inicial
@@ -271,13 +303,13 @@
   - Identificar gargalos
   - Propor otimizações
   - Considerar sharding ou escala horizontal
-  
+
 - [ ] **Implementar alertas de capacidade**
   - Configurar alertas em Grafana/Prometheus
   - Notificar quando CPU > 70%
   - Notificar quando RAM > 80%
   - Notificar quando disk > 85%
-  
+
 - [ ] **Revisar uso de disco**
   - Analisar volumes em todos os servidores
   - Identificar logs grandes (>10GB)
@@ -290,7 +322,7 @@
   - Mostrar uso de todos os servidores
   - Incluir projeções de crescimento
   - Alertar sobre capacidade futura
-  
+
 - [ ] **Script de coleta automática de métricas**
   - Automatizar coleta semanal de stats Docker
   - Armazenar histórico
@@ -303,17 +335,17 @@
   - Calcular custo-benefício
   - Criar proof of concept
   - Planejar migração gradual
-  
+
 - [ ] **Implementar auto-scaling**
   - Definir métricas para scaling
   - Configurar regras de auto-scaling
   - Testar em ambiente de staging
-  
+
 - [ ] **Considerar consolidação adicional**
   - Avaliar 3→2 servidores
   - Analisar após 3-6 meses de operação
   - Calcular nova economia potencial
-  
+
 - [ ] **Migração para cloud provider**
   - Avaliar AWS/GCP/Azure
   - Comparar custos atual vs cloud
@@ -347,6 +379,6 @@
 
 ---
 
-**Última Revisão**: 16/01/2026 20:40  
-**Próxima Revisão**: Após execução de cada fase  
+**Última Revisão**: 16/01/2026 20:40
+**Próxima Revisão**: Após execução de cada fase
 **Owner**: Equipe DevOps + SRE

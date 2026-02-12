@@ -1,8 +1,8 @@
 # 🔄 SESSION RECOVERY - 06/02/2026
 
-**Projeto**: Enterprise Python Analysis  
-**Foco da Sessão**: Integração Prometheus Pushgateway - Collector API  
-**Status**: ✅ Recuperação Completa  
+**Projeto**: Enterprise Python Analysis
+**Foco da Sessão**: Integração Prometheus Pushgateway - Collector API
+**Status**: ✅ Recuperação Completa
 **Horário Início**: 17:19 BRT
 
 ---
@@ -12,7 +12,7 @@
 ### Sessões Anteriores Analisadas
 
 #### 2026-02-04: N8N Monitoring System
-- **Projeto**: n8n-monitoring-local
+- **Projeto**: n8n-prometheus-wfdb01
 - **Foco**: Production Deployment & Victoria Integration
 - **Status**: 70% Complete
 - **Conquistas**:
@@ -231,7 +231,7 @@ ModuleNotFoundError: No module named 'src.victoria_pusher'
 
 ### Código Python
 ```
-n8n-monitoring-local/collector-api/src/
+n8n-prometheus-wfdb01/collector-api/src/
 ├── victoria_pusher.py          # Novo: Wrapper de compatibilidade
 ├── config.py                   # Modificado: prometheus_pushgateway_*
 ├── main.py                     # Modificado: PrometheusPusher integration
@@ -255,7 +255,7 @@ reports/
 
 ### Docker
 ```
-n8n-monitoring-local/collector-api/
+n8n-prometheus-wfdb01/collector-api/
 ├── Dockerfile                  # Validado: COPY . . correto
 └── requirements.txt            # Verificado: httpx==0.27.0
 ```

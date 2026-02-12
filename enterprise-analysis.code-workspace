@@ -1,0 +1,573 @@
+{
+  "folders": [
+    {
+      "name": "Enterprise Default Project Template",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "*.yaml": "yaml",
+      "*.yml": "yaml",
+      "mcp.json": "jsonc",
+      "objetivo.yaml": "yaml",
+      "mcp-questions.yaml": "yaml",
+      "*config*.json": "jsonc",
+      "*_config.json": "jsonc",
+      "*template*.json": "jsonc",
+      "Dockerfile": "dockerfile",
+      "Dockerfile.*": "dockerfile",
+      "docker-compose.yml": "dockercompose",
+      "docker-compose.*.yml": "dockercompose",
+      "Makefile": "makefile",
+      "makefile": "makefile",
+      "GNUmakefile": "makefile",
+      "*.lock": "json",
+      "uv.lock": "toml",
+      "pyproject.toml": "toml",
+      "requirements*.txt": "pip-requirements",
+      ".env*": "properties",
+      ".envrc": "shellscript",
+      "activate-mcp.sh": "shellscript",
+      "*.migration.py": "python",
+      "*.migration.sql": "sql",
+      "*.test.py": "python",
+      ".python-version": "properties"
+    },
+    "yaml.schemas": {
+      "objetivo": "objetivo.yaml",
+      "mcp-questions": "mcp-questions.yaml"
+    },
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/*.pyo": true,
+      "**/.pytest_cache": true,
+      "**/logs/*.log": true,
+      "**/reports/*.json": true,
+      "**/reports/*.csv": true,
+      "**/reports/*.html": true,
+      "**/backups/**": true,
+      "**/.mcp-status": true,
+      "**/venv": true,
+      "**/.venv": true,
+      "**/.env": true,
+      "**/node_modules": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      "**/*.egg-info": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.coverage": true,
+      "**/htmlcov": true,
+      "**/.mypy_cache": true,
+      "**/.ruff_cache": true,
+      "**/uv.lock": false
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/.git": true,
+      "**/secrets": true,
+      "**/__pycache__": true,
+      "**/logs": true,
+      "**/reports": true,
+      "**/backups": true,
+      "**/venv": true,
+      "**/.venv": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/*.egg-info": true,
+      "**/.pytest_cache": true,
+      "**/.mypy_cache": true,
+      "**/.ruff_cache": true,
+      "**/htmlcov": true,
+      "**/.coverage": true,
+      "**/legacy/**": false
+    },
+    "editor.rulers": [
+      80,
+      120
+    ],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "aiAssistant.projectContext": ".vscode/mcp.json",
+    "aiAssistant.followProjectConventions": true,
+    "[python]": {
+      "editor.tabSize": 4,
+      "editor.insertSpaces": true,
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      }
+    },
+    "[yaml]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    "[json]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    "[jsonc]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    "[markdown]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true,
+      "editor.wordWrap": "on"
+    },
+    "[dockerfile]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    "[makefile]": {
+      "editor.tabSize": 4,
+      "editor.insertSpaces": false
+    },
+    "python.terminal.activateEnvironment": true,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+      "test/",
+      "-v"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.autoSearchPaths": true,
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/venv/**": true,
+      "**/.venv/**": true,
+      "**/logs/**": true,
+      "**/reports/**": true,
+      "**/backups/**": true
+    },
+    "emmet.includeLanguages": {
+      "jinja2": "html"
+    },
+    "terminal.integrated.env.linux": {
+      "PYTHONPATH": "${workspaceFolder}",
+      "PROJECT_ENV": "development"
+    },
+    "terminal.integrated.env.osx": {
+      "PYTHONPATH": "${workspaceFolder}",
+      "PROJECT_ENV": "development"
+    },
+    "terminal.integrated.env.windows": {
+      "PYTHONPATH": "${workspaceFolder}",
+      "PROJECT_ENV": "development"
+    },
+    "workbench.colorCustomizations": {
+      "titleBar.activeBackground": "#1b263b",
+      "titleBar.activeForeground": "#FFFFFF",
+      "titleBar.inactiveBackground": "#415a77",
+      "titleBar.inactiveForeground": "#CCCCCC",
+      "statusBar.background": "#1b263b",
+      "statusBar.foreground": "#FFFFFF",
+      "activityBar.background": "#0d1b2a",
+      "activityBar.foreground": "#FFFFFF"
+    },
+    "workbench.colorTheme": "Default Dark+",
+    "git.ignoreLimitWarning": true,
+    "explorer.fileNesting.enabled": false,
+    "breadcrumbs.enabled": true,
+    "breadcrumbs.filePath": "on",
+    "breadcrumbs.symbolPath": "on",
+    "explorer.sortOrder": "type",
+    "explorer.compactFolders": false,
+    "explorer.decorations.colors": true,
+    "explorer.decorations.badges": true,
+    "workbench.tree.indent": 8,
+    "workbench.tree.renderIndentGuides": "onHover",
+    "workbench.editor.enablePreview": true,
+    "workbench.editor.revealIfOpen": true,
+    "files.defaultLanguage": "python",
+    "explorer.autoReveal": "focusNoScroll",
+    "*.yaml": "yaml",
+    "*.yml": "yaml",
+    "mcp.json": "jsonc",
+    "objetivo.yaml": "yaml",
+    "mcp-questions.yaml": "yaml",
+    "*config*.json": "jsonc",
+    "*_config.json": "jsonc",
+    "*template*.json": "jsonc",
+    "Dockerfile": "dockerfile",
+    "Dockerfile.*": "dockerfile",
+    "docker-compose.yml": "dockercompose",
+    "docker-compose.*.yml": "dockercompose",
+    "Makefile": "makefile",
+    "makefile": "makefile",
+    "GNUmakefile": "makefile",
+    "*.lock": "json",
+    "uv.lock": "toml",
+    "pyproject.toml": "toml",
+    "requirements*.txt": "pip-requirements",
+    ".env*": "properties",
+    ".envrc": "shellscript",
+    "activate-mcp.sh": "shellscript",
+    "*.migration.py": "python",
+    "*.migration.sql": "sql",
+    "*.test.py": "python",
+    ".python-version": "properties"
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Project: Show Help",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "help"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared",
+          "showReuseMessage": true,
+          "clear": false
+        },
+        "detail": "Show all available Makefile commands"
+      },
+      {
+        "label": "Project: Initialize",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "init"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Initialize complete project structure"
+      },
+      {
+        "label": "Project: Setup Python",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "setup-python"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Configure Python project"
+      },
+      {
+        "label": "Project: Setup Node.js",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "setup-node"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Configure Node.js project"
+      },
+      {
+        "label": "Project: Install Dependencies",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "install-deps"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Install project dependencies"
+      },
+      {
+        "label": "Dev: Start Server",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "dev"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": true,
+          "panel": "shared"
+        },
+        "detail": "Start development server"
+      },
+      {
+        "label": "Build: Production",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "build"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Build for production"
+      },
+      {
+        "label": "Test: Run All",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "test"
+        ],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Run all tests"
+      },
+      {
+        "label": "Code: Lint",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "lint"
+        ],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Run code linting"
+      },
+      {
+        "label": "Code: Format",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "format"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Format code"
+      },
+      {
+        "label": "Docker: Build Image",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "docker-build"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Build Docker image"
+      },
+      {
+        "label": "Docker: Start Containers",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "docker-up"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Start Docker containers"
+      },
+      {
+        "label": "Docker: Stop Containers",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "docker-down"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Stop Docker containers"
+      },
+      {
+        "label": "Project: Check Status",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "status"
+        ],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Check project status"
+      },
+      {
+        "label": "Project: Clean",
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "clean"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "detail": "Clean generated files"
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: Debug Current File",
+        "type": "python",
+        "request": "launch",
+        "program": "${file}",
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}",
+          "PROJECT_ENV": "development"
+        },
+        "args": [],
+        "justMyCode": false
+      },
+      {
+        "name": "Python: Debug with Args",
+        "type": "python",
+        "request": "launch",
+        "program": "${file}",
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}",
+          "PROJECT_ENV": "development"
+        },
+        "args": [
+          "--verbose",
+          "--debug"
+        ],
+        "justMyCode": false
+      },
+      {
+        "name": "Python: Test Current File",
+        "type": "python",
+        "request": "launch",
+        "module": "pytest",
+        "args": [
+          "${file}",
+          "-v",
+          "-s"
+        ],
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}",
+          "PROJECT_ENV": "test"
+        },
+        "justMyCode": false
+      },
+      {
+        "name": "Node: Debug Current File",
+        "type": "node",
+        "request": "launch",
+        "program": "${file}",
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "NODE_ENV": "development"
+        },
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "Node: Debug with Nodemon",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "nodemon",
+        "program": "${workspaceFolder}/src/index.js",
+        "restart": true,
+        "console": "integratedTerminal",
+        "env": {
+          "NODE_ENV": "development"
+        }
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.black-formatter",
+      "ms-python.isort",
+      "ms-python.pylint",
+      "charliermarsh.ruff",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "redhat.vscode-yaml",
+      "ms-vscode.makefile-tools",
+      "ms-azuretools.vscode-docker",
+      "github.copilot",
+      "github.copilot-chat",
+      "eamodio.gitlens",
+      "donjayamanne.githistory",
+      "GitHub.vscode-pull-request-github",
+      "streetsidesoftware.code-spell-checker",
+      "gruntfuggly.todo-tree",
+      "visualstudioexptteam.vscodeintellicode",
+      "ms-vscode.vscode-json",
+      "yzhang.markdown-all-in-one",
+      "DavidAnson.vscode-markdownlint"
+    ]
+  }
+}

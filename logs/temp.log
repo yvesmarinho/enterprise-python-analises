@@ -1,0 +1,50 @@
+enterprise-grafana  | logger=sqlstore t=2026-02-09T17:58:21.360369972-03:00 level=info msg="Connecting to DB" dbtype=postgres
+enterprise-grafana  | logger=migrator t=2026-02-09T17:58:21.407288565-03:00 level=info msg="Locking database"
+enterprise-grafana  | logger=migrator t=2026-02-09T17:58:21.410255592-03:00 level=info msg="Starting DB migrations"
+enterprise-grafana  | logger=migrator t=2026-02-09T17:58:21.531009514-03:00 level=info msg="migrations completed" performed=0 skipped=644 duration=1.19197ms
+enterprise-grafana  | logger=migrator t=2026-02-09T17:58:21.534208593-03:00 level=info msg="Unlocking database"
+enterprise-grafana  | logger=secrets t=2026-02-09T17:58:21.555239447-03:00 level=info msg="Envelope encryption state" enabled=true currentprovider=secretKey.v1
+enterprise-grafana  | logger=plugin.angulardetectorsprovider.dynamic t=2026-02-09T17:58:21.994244309-03:00 level=info msg="Restored cache from database" duration=10.015054ms
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.013642591-03:00 level=info msg="Config overridden from Environment variable" var="GF_DATABASE_TYPE=postgres"
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.013766142-03:00 level=info msg="Config overridden from Environment variable" var="GF_DATABASE_USER=grafana_user"
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.013848335-03:00 level=info msg="Config overridden from Environment variable" var="GF_DATABASE_PASSWORD=*********"
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.024330479-03:00 level=info msg="Config overridden from Environment variable" var="GF_DATABASE_NAME=grafana_db"
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.024499314-03:00 level=info msg="Config overridden from Environment variable" var="GF_DATABASE_SSL_MODE=disable"
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.024618837-03:00 level=info msg="Config overridden from Environment variable" var="GF_DATABASE_HOST=postgres:5432"
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.02478702-03:00 level=info msg="Config overridden from Environment variable" var="GF_DATABASE_TYPE=postgres"
+enterprise-grafana  | logger=resource-migrator t=2026-02-09T17:58:22.039528448-03:00 level=info msg="Locking database"
+enterprise-grafana  | logger=resource-migrator t=2026-02-09T17:58:22.042079419-03:00 level=info msg="Starting DB migrations"
+enterprise-grafana  | logger=resource-migrator t=2026-02-09T17:58:22.069122621-03:00 level=info msg="migrations completed" performed=0 skipped=23 duration=91.23µs
+enterprise-grafana  | logger=resource-migrator t=2026-02-09T17:58:22.073447227-03:00 level=info msg="Unlocking database"
+enterprise-grafana  | logger=sql-resource-server t=2026-02-09T17:58:22.076811573-03:00 level=info msg="Using polling notifier"
+enterprise-grafana  | logger=plugin.store t=2026-02-09T17:58:22.137330319-03:00 level=info msg="Loading plugins..."
+enterprise-grafana  | logger=plugins.registration t=2026-02-09T17:58:22.661461833-03:00 level=info msg="Plugin registered" pluginId=grafana-lokiexplore-app
+enterprise-grafana  | logger=plugins.registration t=2026-02-09T17:58:22.688176042-03:00 level=info msg="Plugin registered" pluginId=grafana-pyroscope-app
+enterprise-grafana  | logger=plugin.store t=2026-02-09T17:58:22.688224031-03:00 level=info msg="Plugins loaded" count=57 duration=550.895256ms
+enterprise-grafana  | logger=query_data t=2026-02-09T17:58:22.69837025-03:00 level=info msg="Query Service initialization"
+enterprise-grafana  | logger=live.push_http t=2026-02-09T17:58:22.704760103-03:00 level=info msg="Live Push Gateway initialization"
+enterprise-grafana  | logger=ngalert.notifier.alertmanager org=1 t=2026-02-09T17:58:22.737769868-03:00 level=info msg="Applying new configuration to Alertmanager" configHash=d2c56faca6af2a5772ff4253222f7386
+enterprise-grafana  | logger=ngalert t=2026-02-09T17:58:22.800920807-03:00 level=info msg="Using simple database alert instance store"
+enterprise-grafana  | logger=ngalert.state.manager.persist t=2026-02-09T17:58:22.800966132-03:00 level=info msg="Using sync state persister"
+enterprise-grafana  | logger=ngalert.state.manager t=2026-02-09T17:58:22.801041191-03:00 level=info msg="Running in alternative execution of Error/NoData mode"
+enterprise-grafana  | logger=infra.usagestats.collector t=2026-02-09T17:58:22.804628032-03:00 level=info msg="registering usage stat providers" usageStatsProvidersLen=2
+enterprise-grafana  | logger=grafanaStorageLogger t=2026-02-09T17:58:22.806916875-03:00 level=info msg="Storage starting"
+enterprise-grafana  | logger=ngalert.state.manager t=2026-02-09T17:58:22.810569689-03:00 level=info msg="Warming state cache for startup"
+enterprise-grafana  | logger=ngalert.multiorg.alertmanager t=2026-02-09T17:58:22.815302344-03:00 level=info msg="Starting MultiOrg Alertmanager"
+enterprise-grafana  | logger=http.server t=2026-02-09T17:58:22.819209432-03:00 level=info msg="HTTP Server Listen" address=[::]:3000 protocol=http subUrl= socket=
+enterprise-grafana  | logger=ngalert.state.manager t=2026-02-09T17:58:22.875298907-03:00 level=info msg="State cache has been initialized" states=0 duration=64.720261ms
+enterprise-grafana  | logger=ngalert.scheduler t=2026-02-09T17:58:22.875411337-03:00 level=info msg="Starting scheduler" tickInterval=10s maxAttempts=3
+enterprise-grafana  | logger=ticker t=2026-02-09T17:58:22.875543122-03:00 level=info msg=starting first_tick=2026-02-09T17:58:30-03:00
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.905334603-03:00 level=info msg="Config overridden from Environment variable" var="GF_SECURITY_SECRET_KEY=*********"
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.924296111-03:00 level=info msg="Config overridden from Environment variable" var="GF_SECURITY_SECRET_KEY=*********"
+enterprise-grafana  | logger=grafana.update.checker t=2026-02-09T17:58:22.950898343-03:00 level=info msg="Update check succeeded" duration=135.212725ms
+enterprise-grafana  | logger=plugins.update.checker t=2026-02-09T17:58:22.951091852-03:00 level=info msg="Update check succeeded" duration=124.848198ms
+enterprise-grafana  | logger=provisioning.datasources t=2026-02-09T17:58:22.980135902-03:00 level=info msg="inserting datasource from configuration" name=PostgreSQL uid=postgresql
+enterprise-grafana  | logger=settings t=2026-02-09T17:58:22.986425988-03:00 level=info msg="Config overridden from Environment variable" var="GF_SECURITY_SECRET_KEY=*********"
+enterprise-grafana  | logger=provisioning t=2026-02-09T17:58:22.999989151-03:00 level=error msg="Failed to provision data sources" error="Datasource provisioning error: data source with the same uid already exists"
+enterprise-grafana  | logger=provisioning t=2026-02-09T17:58:23.000027593-03:00 level=error msg="Failed to provision data sources" error="Datasource provisioning error: data source with the same uid already exists"
+enterprise-grafana  | logger=server t=2026-02-09T17:58:23.000038994-03:00 level=error msg="Stopped background service" service=*provisioning.ProvisioningServiceImpl reason="Datasource provisioning error: data source with the same uid already exists"
+enterprise-grafana  | logger=tracing t=2026-02-09T17:58:23.000317934-03:00 level=info msg="Closing tracing"
+enterprise-grafana  | logger=ticker t=2026-02-09T17:58:23.000819648-03:00 level=info msg=stopped last_tick=2026-02-09T17:58:20-03:00
+enterprise-grafana  | Error: ✗ *provisioning.ProvisioningServiceImpl run error: Datasource provisioning error: data source with the same uid already exists
+enterprise-grafana exited with code 1 (restarting)

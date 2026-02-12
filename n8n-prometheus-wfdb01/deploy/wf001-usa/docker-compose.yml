@@ -1,0 +1,81 @@
+# Docker Compose - Servidor wf001 (USA - Virginia)
+# Serviço: Collector API
+# Data: 2026-02-04
+# Atualizado: 2026-02-06 - Integração com Enterprise Observability Stack
+#
+# Descrição:
+# - Collector API: Recebe pings de latência de rede e monitora databases
+# - Envia métricas para Prometheus Pushgateway (https://prometheus.vya.digital/pushgateway)
+# - Stack destino: enterprise-observability @ wfdb01.vya.digital
+# - Job name: collector_api_wf001_usa
+
+networks:
+  app-network:
+    external: true
+
+services:
+  # ============================================
+  # Collector API (Recebe pings e monitora DBs)
+  # ============================================
+  collector-api:
+    image: adminvyadigital/n8n-collector-api:latest
+    container_name: prod-collector-api
+    user: "${DOCKER_UID}:${DOCKER_GID}"
+    networks:
+      - app-network
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=5000
+      - COLLECTOR_API_KEY=${COLLECTOR_API_KEY}
+      # Prometheus Pushgateway Configuration (Remote Server - Enterprise Stack)
+      # Stack: enterprise-observability @ wfdb01.vya.digital
+      # Access via Traefik: https://prometheus.vya.digital/pushgateway
+      - PROMETHEUS_PUSHGATEWAY_URL=https://prometheus.vya.digital/pushgateway
+      - PROMETHEUS_PUSHGATEWAY_ENABLED=true
+      - PROMETHEUS_PUSHGATEWAY_INTERVAL=60
+      - PROMETHEUS_JOB_NAME=collector_api_wf001_usa
+      # Database Configuration
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOSTNAME=${POSTGRES_HOSTNAME}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOSTNAME=${MYSQL_HOSTNAME}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DB=${MYSQL_DB}
+      # N8N Configuration
+      - N8N_URL=${N8N_URL}
+      - N8N_API_KEY=${N8N_API_KEY}
+      # Logging
+      - LOG_LEVEL=INFO
+      - ENVIRONMENT=production
+    ports:
+      - "5001:5000"  # API HTTP
+      - "9102:9102"  # Prometheus metrics
+    volumes:
+      - /opt/docker_user/n8n-prometheus-wfdb01/logs/collector-api:/app/logs
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.collector-api.rule=Host(`api-monitoring.vya.digital`)'
+      - 'traefik.http.routers.collector-api.tls=true'
+      - 'traefik.http.routers.collector-api.entrypoints=websecure'
+      - 'traefik.http.routers.collector-api.tls.certresolver=lets-encrypt'
+      - 'traefik.http.services.collector-api.loadbalancer.server.port=5000'
+      - 'traefik.http.middlewares.collector-api.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.collector-api.headers.STSSeconds=315360000'
+      - 'traefik.http.middlewares.collector-api.headers.browserXSSFilter=true'
+      - 'traefik.http.middlewares.collector-api.headers.contentTypeNosniff=true'
+      - 'traefik.http.middlewares.collector-api.headers.forceSTSHeader=true'
+      - 'traefik.http.middlewares.collector-api.headers.SSLHost=vya.digital'
+      - 'traefik.http.middlewares.collector-api.headers.STSIncludeSubdomains=true'
+      - 'traefik.http.middlewares.collector-api.headers.STSPreload=true'
+      - 'traefik.http.routers.collector-api.middlewares=collector-api@docker'
+      - 'traefik.docker.network=app-network'
