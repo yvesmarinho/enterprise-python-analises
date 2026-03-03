@@ -1,0 +1,235 @@
+================================================================================
+🔍 ANÁLISE DE DASHBOARDS DO GRAFANA
+📅 Data: 03/03/2026
+📁 Dashboards encontrados: 17
+================================================================================
+
+
+================================================================================
+📊 RESUMO DETALHADO POR DASHBOARD
+================================================================================
+
+📄 Dashboard: WFDB02.vya.digital - PostgreSQL Database
+   Arquivo: WFDB02.vya.digital - PostgreSQL Database-1770665590554.json
+   Painéis totais: 35
+   Painéis com datasource: 32
+   Painéis SEM datasource: 0
+   Painéis com queries: 32
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: N8N Node Performance Analysis
+   Arquivo: n8n-node-performance.json
+   Painéis totais: 4
+   Painéis com datasource: 1
+   Painéis SEM datasource: 3
+   Painéis com queries: 4
+   UIDs usados: ['prometheus']
+   ⚠️  Problemas encontrados: 3
+      - Panel 'Top 20 Slowest Nodes (Average Time)': SEM datasource configurado
+      - Panel 'Average Time by Node Type (milliseconds)': SEM datasource configurado
+      - Panel 'All Nodes Performance': SEM datasource configurado
+
+📄 Dashboard: N8N Performance Analysis
+   Arquivo: n8n-performance-detailed.json
+   Painéis totais: 12
+   Painéis com datasource: 0
+   Painéis SEM datasource: 12
+   Painéis com queries: 12
+   UIDs usados: []
+   ⚠️  Problemas encontrados: 12
+      - Panel 'Total Workflows': SEM datasource configurado
+      - Panel 'Active Workflows': SEM datasource configurado
+      - Panel 'Success Rate': SEM datasource configurado
+      ... e mais 9 problemas
+
+📄 Dashboard: N8N Performance Overview
+   Arquivo: n8n-performance-overview.json
+   Painéis totais: 6
+   Painéis com datasource: 0
+   Painéis SEM datasource: 6
+   Painéis com queries: 6
+   UIDs usados: []
+   ⚠️  Problemas encontrados: 6
+      - Panel 'Total Executions': SEM datasource configurado
+      - Panel 'Success Rate': SEM datasource configurado
+      - Panel 'Total Workflows': SEM datasource configurado
+      ... e mais 3 problemas
+
+📄 Dashboard: wf008 - Docker Monitoring
+   Arquivo: wf008 - Docker Monitoring-1756735858594.json
+   Painéis totais: 8
+   Painéis com datasource: 8
+   Painéis SEM datasource: 0
+   Painéis com queries: 8
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: wfdb02 - MySQL Dashboard
+   Arquivo: wfdb02 - MySQL Dashboard-1756827751674.json
+   Painéis totais: 18
+   Painéis com datasource: 13
+   Painéis SEM datasource: 0
+   Painéis com queries: 13
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: wfdb02 - MySQL Dashboard
+   Arquivo: wfdb02 - MySQL Dashboard-1770665439838.json
+   Painéis totais: 101
+   Painéis com datasource: 94
+   Painéis SEM datasource: 0
+   Painéis com queries: 94
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: WFDB02.vya.digital - PostgreSQL Database
+   Arquivo: WFDB02.vya.digital - PostgreSQL Database-1770665590554.json
+   Painéis totais: 35
+   Painéis com datasource: 32
+   Painéis SEM datasource: 0
+   Painéis com queries: 32
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: N8N Node Performance Analysis
+   Arquivo: n8n-node-performance.json
+   Painéis totais: 4
+   Painéis com datasource: 1
+   Painéis SEM datasource: 3
+   Painéis com queries: 4
+   UIDs usados: ['prometheus']
+   ⚠️  Problemas encontrados: 3
+      - Panel 'Top 20 Slowest Nodes (Average Time)': SEM datasource configurado
+      - Panel 'Average Time by Node Type (milliseconds)': SEM datasource configurado
+      - Panel 'All Nodes Performance': SEM datasource configurado
+
+📄 Dashboard: N8N Performance Analysis
+   Arquivo: n8n-performance-detailed.json
+   Painéis totais: 12
+   Painéis com datasource: 0
+   Painéis SEM datasource: 12
+   Painéis com queries: 12
+   UIDs usados: []
+   ⚠️  Problemas encontrados: 12
+      - Panel 'Total Workflows': SEM datasource configurado
+      - Panel 'Active Workflows': SEM datasource configurado
+      - Panel 'Success Rate': SEM datasource configurado
+      ... e mais 9 problemas
+
+📄 Dashboard: N8N Performance Overview
+   Arquivo: n8n-performance-overview.json
+   Painéis totais: 6
+   Painéis com datasource: 0
+   Painéis SEM datasource: 6
+   Painéis com queries: 6
+   UIDs usados: []
+   ⚠️  Problemas encontrados: 6
+      - Panel 'Total Executions': SEM datasource configurado
+      - Panel 'Success Rate': SEM datasource configurado
+      - Panel 'Total Workflows': SEM datasource configurado
+      ... e mais 3 problemas
+
+📄 Dashboard: wf008 - Docker Monitoring
+   Arquivo: wf008 - Docker Monitoring-1756735858594.json
+   Painéis totais: 8
+   Painéis com datasource: 8
+   Painéis SEM datasource: 0
+   Painéis com queries: 8
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: wfdb02 - MySQL Dashboard
+   Arquivo: wfdb02 - MySQL Dashboard-1756827751674.json
+   Painéis totais: 18
+   Painéis com datasource: 13
+   Painéis SEM datasource: 0
+   Painéis com queries: 13
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: wfdb02 - MySQL Dashboard
+   Arquivo: wfdb02 - MySQL Dashboard-1770665439838.json
+   Painéis totais: 101
+   Painéis com datasource: 94
+   Painéis SEM datasource: 0
+   Painéis com queries: 94
+   UIDs usados: ['prometheus']
+   ✅ Nenhum problema detectado
+
+📄 Dashboard: N8N Node Performance Analysis
+   Arquivo: n8n-node-performance.json
+   Painéis totais: 4
+   Painéis com datasource: 1
+   Painéis SEM datasource: 3
+   Painéis com queries: 4
+   UIDs usados: ['P4169E866C3094E38']
+   ⚠️  Problemas encontrados: 3
+      - Panel 'Top 20 Slowest Nodes (Average Time)': SEM datasource configurado
+      - Panel 'Average Time by Node Type (milliseconds)': SEM datasource configurado
+      - Panel 'All Nodes Performance': SEM datasource configurado
+
+📄 Dashboard: N8N Performance Analysis
+   Arquivo: n8n-performance-detailed.json
+   Painéis totais: 12
+   Painéis com datasource: 0
+   Painéis SEM datasource: 12
+   Painéis com queries: 12
+   UIDs usados: []
+   ⚠️  Problemas encontrados: 12
+      - Panel 'Total Workflows': SEM datasource configurado
+      - Panel 'Active Workflows': SEM datasource configurado
+      - Panel 'Success Rate': SEM datasource configurado
+      ... e mais 9 problemas
+
+📄 Dashboard: N8N Performance Overview
+   Arquivo: n8n-performance-overview.json
+   Painéis totais: 6
+   Painéis com datasource: 0
+   Painéis SEM datasource: 6
+   Painéis com queries: 6
+   UIDs usados: []
+   ⚠️  Problemas encontrados: 6
+      - Panel 'Total Executions': SEM datasource configurado
+      - Panel 'Success Rate': SEM datasource configurado
+      - Panel 'Total Workflows': SEM datasource configurado
+      ... e mais 3 problemas
+
+================================================================================
+📈 RESUMO GERAL
+================================================================================
+
+✅ Dashboards OK: 8
+   - WFDB02.vya.digital - PostgreSQL Database
+   - wf008 - Docker Monitoring
+   - wfdb02 - MySQL Dashboard
+   - wfdb02 - MySQL Dashboard
+   - WFDB02.vya.digital - PostgreSQL Database
+   - wf008 - Docker Monitoring
+   - wfdb02 - MySQL Dashboard
+   - wfdb02 - MySQL Dashboard
+
+⚠️  Dashboards SEM datasource configurado: 9
+   - N8N Node Performance Analysis (3 painéis)
+   - N8N Performance Analysis (12 painéis)
+   - N8N Performance Overview (6 painéis)
+   - N8N Node Performance Analysis (3 painéis)
+   - N8N Performance Analysis (12 painéis)
+   - N8N Performance Overview (6 painéis)
+   - N8N Node Performance Analysis (3 painéis)
+   - N8N Performance Analysis (12 painéis)
+   - N8N Performance Overview (6 painéis)
+
+❌ Dashboards com UID incorreto: 0
+
+🔑 UIDs únicos encontrados: ['P4169E866C3094E38', 'prometheus']
+
+================================================================================
+📝 DATASOURCE PROVISIONADO NO SERVIDOR
+================================================================================
+Nome: VictoriaMetrics
+Tipo: prometheus
+UID: (não definido - gerado automaticamente pelo Grafana)
+⚠️  PROBLEMA: Sem UID explícito, cada restart pode gerar UID diferente
+
+================================================================================

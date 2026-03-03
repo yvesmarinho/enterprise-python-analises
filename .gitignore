@@ -9,7 +9,16 @@ wheels/
 # Virtual environments
 .venv
 
+# Logs
 *.log
 
-# volume remoto
+# Secrets and credentials (NEVER commit)
+.secrets/
+.env
+*.key
+*.pem
+*credentials*.json
+!credentials.template.json
+
+# Volume remoto
 wfdb01-docker-folder/

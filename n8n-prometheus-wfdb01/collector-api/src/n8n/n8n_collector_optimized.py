@@ -1,16 +1,17 @@
 """Coletor de métricas do N8N - VERSÃO OTIMIZADA"""
 import asyncio
-from typing import Dict, List, Any, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from ..logger import get_logger
 from .n8n_client import N8NClient
 from .n8n_metrics import (
-    n8n_workflow_executions_total,
+    n8n_node_execution_duration,
+    n8n_node_execution_errors,
+    n8n_workflow_active_status,
     n8n_workflow_execution_duration,
     n8n_workflow_execution_status,
-    n8n_workflow_active_status,
-    n8n_node_execution_duration,
-    n8n_node_execution_errors
+    n8n_workflow_executions_total,
 )
 
 logger = get_logger(__name__)
@@ -29,14 +30,14 @@ class N8NCollector:
         self.client = client
         self._last_execution_ids: set = set()
         self._workflows_cache: Dict[str, Dict[str, Any]] = {}
-        
+
         # Circuit breaker state
         self._failure_count = 0
         self._max_failures = 5
         self._is_circuit_open = False
         self._last_health_check = 0
         self._health_check_interval = 300  # 5 minutos
-        
+
         # Performance tracking
         self._collection_count = 0
         self._skip_count = 0
@@ -48,7 +49,7 @@ class N8NCollector:
     async def _check_circuit_breaker(self) -> bool:
         """
         Verifica e gerencia o circuit breaker
-        
+
         Returns:
             True se pode continuar, False se circuit está aberto
         """
@@ -76,7 +77,7 @@ class N8NCollector:
         logger.warning("collection_failure_detected",
                       failure_count=self._failure_count,
                       max_failures=self._max_failures)
-        
+
         if self._failure_count >= self._max_failures:
             self._is_circuit_open = True
             import time
@@ -261,7 +262,7 @@ class N8NCollector:
         """
         try:
             runs_data = result_data.get('runData', {})
-            
+
             # Limitar processamento a 50 nodes por execução
             node_count = 0
             max_nodes = 50
@@ -272,7 +273,7 @@ class N8NCollector:
                                  workflow_id=workflow_id,
                                  max_nodes=max_nodes)
                     break
-                
+
                 if not isinstance(node_runs, list):
                     continue
 
@@ -350,7 +351,7 @@ class N8NCollector:
         """
         # Garantir intervalo mínimo de 60 segundos
         interval = max(60, interval)
-        
+
         logger.info("starting_periodic_n8n_collection_optimized",
                    interval_seconds=interval,
                    min_interval=60)
@@ -379,7 +380,7 @@ class N8NCollector:
                 if time.time() - self._last_health_check > self._health_check_interval:
                     is_healthy = await self.client.health_check()
                     self._last_health_check = time.time()
-                    
+
                     if not is_healthy:
                         logger.warning("periodic_health_check_failed")
                         await self._handle_failure()
@@ -407,7 +408,7 @@ class N8NCollector:
                            error=str(e),
                            error_type=type(e).__name__,
                            backoff_time=backoff_time)
-                
+
                 # Aumentar backoff exponencialmente
                 backoff_time = min(backoff_time * 2, max_backoff)
 

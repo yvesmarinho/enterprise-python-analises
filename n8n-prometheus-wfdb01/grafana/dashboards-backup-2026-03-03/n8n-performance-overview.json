@@ -1,0 +1,161 @@
+{
+  "uid": "n8n-performance-overview",
+  "title": "N8N Performance Overview",
+  "tags": ["n8n", "performance"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "panels": [
+      {
+        "id": 1,
+        "title": "Total Executions",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "n8n_executions_total",
+            "legendFormat": "Total Executions"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Success Rate",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "n8n_success_rate_percent",
+            "legendFormat": "Success Rate %"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 0},
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Total Workflows",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "n8n_workflows_total",
+            "legendFormat": "Total"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 0},
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"value": null, "color": "blue"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Active Workflows",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "n8n_workflows_active",
+            "legendFormat": "Active"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 6, "x": 18, "y": 0},
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"value": null, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Avg Execution Duration by Workflow",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"}",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "gridPos": {"h": 10, "w": 12, "x": 0, "y": 6},
+        "fieldConfig": {
+          "overrides": [
+            {
+              "matcher": {"id": "byName", "options": "Value"},
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Duration (s)"
+                },
+                {
+                  "id": "unit",
+                  "value": "s"
+                },
+                {
+                  "id": "decimals",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        },
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "workflow_id": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Top 10 Slowest Workflows",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "topk(10, n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"})",
+            "legendFormat": "{{workflow_name}}"
+          }
+        ],
+        "gridPos": {"h": 10, "w": 12, "x": 12, "y": 6},
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "color": {"mode": "continuous-GrYlRd"},
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 1, "color": "yellow"},
+                {"value": 3, "color": "orange"},
+                {"value": 5, "color": "red"}
+              ]
+            }
+          }
+        },
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient"
+        }
+      }
+  ],
+  "schemaVersion": 36,
+  "version": 2
+}

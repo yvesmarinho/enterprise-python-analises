@@ -43,10 +43,6 @@
             ]
           }
         }
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
       }
     },
     {
@@ -79,10 +75,6 @@
             ]
           }
         }
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
       }
     },
     {
@@ -123,10 +115,6 @@
             ]
           }
         }
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
       }
     },
     {
@@ -159,10 +147,6 @@
             ]
           }
         }
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
       }
     },
     {
@@ -196,11 +180,7 @@
             }
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     },
     {
       "id": 6,
@@ -259,11 +239,7 @@
             }
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     },
     {
       "id": 7,
@@ -346,11 +322,7 @@
             ]
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     },
     {
       "id": 8,
@@ -422,11 +394,7 @@
             }
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     },
     {
       "id": 9,
@@ -475,17 +443,13 @@
       "options": {
         "orientation": "horizontal",
         "displayMode": "gradient"
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
       }
     },
     {
       "id": 10,
-      "title": "🎯 Bottleneck Priority Score (Higher = More Critical)",
+      "title": "\ud83c\udfaf Bottleneck Priority Score (Higher = More Critical)",
       "type": "table",
-      "description": "Score = Duration × log10(Executions + 1). Higher scores indicate workflows that should be optimized first due to their combination of duration and execution volume.",
+      "description": "Score = Duration \u00d7 log10(Executions + 1). Higher scores indicate workflows that should be optimized first due to their combination of duration and execution volume.",
       "targets": [
         {
           "expr": "sort_desc(n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"} * (ln(n8n_workflow_executions_total{workflow_name!=\"unknown\"} + 1) / ln(10)))",
@@ -594,17 +558,13 @@
             "desc": true
           }
         ]
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
       }
     },
     {
       "id": 11,
-      "title": "🔥 Bottleneck Score Ranking",
+      "title": "\ud83d\udd25 Bottleneck Score Ranking",
       "type": "table",
-      "description": "Workflows ranked by bottleneck score (duration × log(executions)). Higher score = higher optimization priority. See \"Score Components\" panel below for detailed breakdown.",
+      "description": "Workflows ranked by bottleneck score (duration \u00d7 log(executions)). Higher score = higher optimization priority. See \"Score Components\" panel below for detailed breakdown.",
       "targets": [
         {
           "expr": "n8n_workflow_execution_duration_seconds{workflow_name!=\"unknown\"} * (ln(n8n_workflow_executions_total{workflow_name!=\"unknown\"} + 1) / ln(10))",
@@ -743,15 +703,11 @@
             "limitField": 15
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     },
     {
       "id": 12,
-      "title": "📊 Score Components: Duration vs Volume",
+      "title": "\ud83d\udcca Score Components: Duration vs Volume",
       "type": "table",
       "description": "Workflows ranked by bottleneck score. This is a simplified view showing only the score - same data as the panel above but with a different visualization style.",
       "targets": [
@@ -859,11 +815,7 @@
             "limitField": 15
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     }
   ],
   "schemaVersion": 36,

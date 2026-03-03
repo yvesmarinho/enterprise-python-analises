@@ -1,4 +1,4 @@
-"""Coletor de métricas do N8N - VERSÃO OTIMIZADA"""
+"""Coletor de métricas do N8N"""
 import asyncio
 from typing import Dict, List, Any, Optional
 from datetime import datetime
@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 
 class N8NCollector:
-    """Coletor de métricas do N8N - OTIMIZADO"""
+    """Coletor de métricas do N8N"""
 
     def __init__(self, client: N8NClient):
         """
@@ -29,67 +29,8 @@ class N8NCollector:
         self.client = client
         self._last_execution_ids: set = set()
         self._workflows_cache: Dict[str, Dict[str, Any]] = {}
-        
-        # Circuit breaker state
-        self._failure_count = 0
-        self._max_failures = 5
-        self._is_circuit_open = False
-        self._last_health_check = 0
-        self._health_check_interval = 300  # 5 minutos
-        
-        # Performance tracking
-        self._collection_count = 0
-        self._skip_count = 0
 
-        logger.info("n8n_collector_initialized_optimized",
-                   max_failures=self._max_failures,
-                   health_check_interval_seconds=self._health_check_interval)
-
-    async def _check_circuit_breaker(self) -> bool:
-        """
-        Verifica e gerencia o circuit breaker
-        
-        Returns:
-            True se pode continuar, False se circuit está aberto
-        """
-        if self._is_circuit_open:
-            # Tentar fechar circuit após 5 minutos
-            import time
-            if time.time() - self._last_health_check > 300:
-                logger.info("circuit_breaker_attempting_reset")
-                is_healthy = await self.client.health_check()
-                if is_healthy:
-                    self._is_circuit_open = False
-                    self._failure_count = 0
-                    logger.info("circuit_breaker_reset_success")
-                    return True
-                else:
-                    self._last_health_check = time.time()
-                    logger.warning("circuit_breaker_reset_failed")
-                    return False
-            return False
-        return True
-
-    async def _handle_failure(self) -> None:
-        """Gerencia falhas e abre circuit se necessário"""
-        self._failure_count += 1
-        logger.warning("collection_failure_detected",
-                      failure_count=self._failure_count,
-                      max_failures=self._max_failures)
-        
-        if self._failure_count >= self._max_failures:
-            self._is_circuit_open = True
-            import time
-            self._last_health_check = time.time()
-            logger.error("circuit_breaker_opened",
-                        consecutive_failures=self._failure_count)
-
-    async def _reset_failure_count(self) -> None:
-        """Reseta contador de falhas após sucesso"""
-        if self._failure_count > 0:
-            logger.info("collection_success_resetting_failures",
-                       previous_failures=self._failure_count)
-            self._failure_count = 0
+        logger.info("n8n_collector_initialized")
 
     async def collect_workflow_metrics(self) -> None:
         """Coleta métricas de workflows"""
@@ -116,22 +57,25 @@ class N8NCollector:
                     workflow_name=workflow_name
                 ).set(1 if is_active else 0)
 
+                logger.debug("workflow_metric_collected",
+                           workflow_id=workflow_id,
+                           workflow_name=workflow_name,
+                           active=is_active)
+
             logger.info("workflow_metrics_collected_successfully",
-                       workflow_count=len(workflows),
-                       active_count=sum(1 for w in workflows if w.get('active', False)))
+                       workflow_count=len(workflows))
 
         except Exception as e:
             logger.error("workflow_metrics_collection_failed",
                        error=str(e),
                        error_type=type(e).__name__)
-            raise
 
-    async def collect_execution_metrics(self, limit: int = 50) -> None:
+    async def collect_execution_metrics(self, limit: int = 100) -> None:
         """
-        Coleta métricas de execuções - OTIMIZADO
+        Coleta métricas de execuções
 
         Args:
-            limit: Número máximo de execuções a processar (reduzido de 100 para 50)
+            limit: Número máximo de execuções a processar
         """
         try:
             # Obter execuções recentes
@@ -152,18 +96,15 @@ class N8NCollector:
                 new_executions.append(execution)
                 self._last_execution_ids.add(execution_id)
 
-            # Limitar tamanho do cache de forma mais agressiva (500 -> 300)
-            if len(self._last_execution_ids) > 500:
+            # Limitar tamanho do cache (manter apenas últimas 1000 execuções)
+            if len(self._last_execution_ids) > 1000:
+                # Converter para lista, manter apenas as últimas 500
                 execution_ids_list = list(self._last_execution_ids)
-                self._last_execution_ids = set(execution_ids_list[-300:])
-                logger.info("execution_cache_trimmed",
-                           previous_size=len(execution_ids_list),
-                           new_size=len(self._last_execution_ids))
+                self._last_execution_ids = set(execution_ids_list[-500:])
 
             logger.info("processing_new_executions",
                        new_count=len(new_executions),
-                       cached_count=len(self._last_execution_ids),
-                       skipped_count=len(executions) - len(new_executions))
+                       cached_count=len(self._last_execution_ids))
 
             # Processar novas execuções
             for execution in new_executions:
@@ -177,7 +118,6 @@ class N8NCollector:
             logger.error("execution_metrics_collection_failed",
                        error=str(e),
                        error_type=type(e).__name__)
-            raise
 
     async def _process_execution(self, execution: Dict[str, Any]) -> None:
         """
@@ -189,7 +129,7 @@ class N8NCollector:
         try:
             execution_id = execution.get('id', 'unknown')
             workflow_id = execution.get('workflowId', 'unknown')
-            status = execution.get('status', 'unknown')
+            status = execution.get('status', 'unknown')  # success, error, waiting, running
 
             # Obter nome do workflow do cache ou usar ID
             workflow_name = self._workflows_cache.get(workflow_id, {}).get('name', workflow_id)
@@ -205,9 +145,9 @@ class N8NCollector:
                     stop = datetime.fromisoformat(stopped_at.replace('Z', '+00:00'))
                     duration_seconds = (stop - start).total_seconds()
                 except Exception as e:
-                    logger.debug("execution_duration_parse_failed",
-                                execution_id=execution_id,
-                                error=str(e))
+                    logger.warning("execution_duration_parse_failed",
+                                 execution_id=execution_id,
+                                 error=str(e))
 
             # Incrementar contador de execuções
             n8n_workflow_executions_total.labels(
@@ -223,21 +163,28 @@ class N8NCollector:
                     workflow_name=workflow_name
                 ).observe(duration_seconds)
 
-            # Status da execução
+            # Status da execução (1=success, 0=error, -1=running/waiting)
             status_value = 1 if status == 'success' else (0 if status == 'error' else -1)
             n8n_workflow_execution_status.labels(
                 workflow_id=workflow_id,
                 workflow_name=workflow_name
             ).set(status_value)
 
-            # Processar nodes APENAS se houver dados (evitar processamento desnecessário)
+            # Processar nodes se disponível
             data = execution.get('data', {})
-            if data and 'resultData' in data and data['resultData'].get('runData'):
+            if data and 'resultData' in data:
                 await self._process_execution_nodes(
                     workflow_id,
                     workflow_name,
                     data['resultData']
                 )
+
+            logger.debug("execution_processed",
+                       execution_id=execution_id,
+                       workflow_id=workflow_id,
+                       workflow_name=workflow_name,
+                       status=status,
+                       duration_seconds=duration_seconds)
 
         except Exception as e:
             logger.error("execution_processing_failed",
@@ -252,7 +199,7 @@ class N8NCollector:
         result_data: Dict[str, Any]
     ) -> None:
         """
-        Processa métricas de nodes de uma execução - OTIMIZADO
+        Processa métricas de nodes de uma execução
 
         Args:
             workflow_id: ID do workflow
@@ -261,18 +208,8 @@ class N8NCollector:
         """
         try:
             runs_data = result_data.get('runData', {})
-            
-            # Limitar processamento a 50 nodes por execução
-            node_count = 0
-            max_nodes = 50
 
             for node_name, node_runs in runs_data.items():
-                if node_count >= max_nodes:
-                    logger.warning("node_processing_limit_reached",
-                                 workflow_id=workflow_id,
-                                 max_nodes=max_nodes)
-                    break
-                
                 if not isinstance(node_runs, list):
                     continue
 
@@ -280,18 +217,15 @@ class N8NCollector:
                     if not isinstance(run, dict):
                         continue
 
-                    node_count += 1
-
                     # Obter tipo do node
-                    node_type = 'unknown'
-                    if run.get('source') and isinstance(run['source'], list) and len(run['source']) > 0:
-                        node_type = run['source'][0].get('type', 'unknown')
+                    node_type = run.get('source', [{}])[0].get('type', 'unknown') if run.get('source') else 'unknown'
 
                     # Calcular duração do node
+                    start_time = run.get('startTime')
                     execution_time = run.get('executionTime')
 
                     if execution_time is not None:
-                        duration_seconds = execution_time / 1000.0
+                        duration_seconds = execution_time / 1000.0  # Converter ms para segundos
 
                         n8n_node_execution_duration.labels(
                             workflow_id=workflow_id,
@@ -301,7 +235,8 @@ class N8NCollector:
                         ).observe(duration_seconds)
 
                     # Verificar erros no node
-                    if run.get('error'):
+                    error = run.get('error')
+                    if error:
                         n8n_node_execution_errors.labels(
                             workflow_id=workflow_id,
                             workflow_name=workflow_name,
@@ -317,99 +252,44 @@ class N8NCollector:
 
     async def collect_all_metrics(self) -> None:
         """Coleta todas as métricas do N8N"""
-        logger.info("starting_n8n_metrics_collection",
-                   collection_number=self._collection_count + 1)
+        logger.info("starting_n8n_metrics_collection")
 
         try:
             # Coletar métricas de workflows
             await self.collect_workflow_metrics()
 
-            # Coletar métricas de execuções (limite reduzido)
-            await self.collect_execution_metrics(limit=50)
+            # Coletar métricas de execuções
+            await self.collect_execution_metrics(limit=100)
 
-            self._collection_count += 1
-            await self._reset_failure_count()
-
-            logger.info("n8n_metrics_collection_completed",
-                       total_collections=self._collection_count,
-                       total_skips=self._skip_count)
+            logger.info("n8n_metrics_collection_completed")
 
         except Exception as e:
-            await self._handle_failure()
             logger.error("n8n_metrics_collection_failed",
                        error=str(e),
                        error_type=type(e).__name__)
-            raise
 
     async def run_periodic_collection(self, interval: int = 60) -> None:
         """
-        Executa coleta periódica de métricas - OTIMIZADO
+        Executa coleta periódica de métricas
 
         Args:
-            interval: Intervalo entre coletas em segundos (mínimo 60)
+            interval: Intervalo entre coletas em segundos
         """
-        # Garantir intervalo mínimo de 60 segundos
-        interval = max(60, interval)
-        
-        logger.info("starting_periodic_n8n_collection_optimized",
-                   interval_seconds=interval,
-                   min_interval=60)
+        logger.info("starting_periodic_n8n_collection",
+                   interval=interval)
 
-        # Health check inicial
+        # Fazer health check inicial
         is_healthy = await self.client.health_check()
         if not is_healthy:
             logger.error("n8n_api_not_available_skipping_collection")
             return
 
-        backoff_time = interval
-        max_backoff = interval * 10  # Máximo 10x o intervalo base
-
         while True:
             try:
-                # Verificar circuit breaker
-                if not await self._check_circuit_breaker():
-                    logger.warning("circuit_breaker_open_skipping_collection",
-                                 skip_count=self._skip_count + 1)
-                    self._skip_count += 1
-                    await asyncio.sleep(60)  # Wait 1 min antes de checar novamente
-                    continue
-
-                # Health check periódico (a cada 5 minutos)
-                import time
-                if time.time() - self._last_health_check > self._health_check_interval:
-                    is_healthy = await self.client.health_check()
-                    self._last_health_check = time.time()
-                    
-                    if not is_healthy:
-                        logger.warning("periodic_health_check_failed")
-                        await self._handle_failure()
-                        await asyncio.sleep(backoff_time)
-                        backoff_time = min(backoff_time * 2, max_backoff)
-                        continue
-
-                # Coletar métricas
                 await self.collect_all_metrics()
-
-                # Reset backoff após sucesso
-                backoff_time = interval
-
-                # Log de status periódico (a cada 10 coletas)
-                if self._collection_count % 10 == 0:
-                    logger.info("collector_status_update",
-                               collections=self._collection_count,
-                               skips=self._skip_count,
-                               cached_executions=len(self._last_execution_ids),
-                               cached_workflows=len(self._workflows_cache),
-                               failure_count=self._failure_count)
-
             except Exception as e:
                 logger.error("periodic_collection_error",
                            error=str(e),
-                           error_type=type(e).__name__,
-                           backoff_time=backoff_time)
-                
-                # Aumentar backoff exponencialmente
-                backoff_time = min(backoff_time * 2, max_backoff)
+                           error_type=type(e).__name__)
 
-            # Sleep com backoff
-            await asyncio.sleep(backoff_time)
+            await asyncio.sleep(interval)

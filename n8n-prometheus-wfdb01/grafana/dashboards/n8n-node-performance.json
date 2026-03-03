@@ -25,7 +25,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "P4169E866C3094E38"
           },
           "expr": "topk(20, n8n_node_execution_time_ms)",
           "format": "table",
@@ -102,7 +102,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "P4169E866C3094E38"
           },
           "expr": "sort_desc(n8n_node_type_avg_time_ms)",
           "instant": true,
@@ -161,7 +161,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "P4169E866C3094E38"
           },
           "expr": "n8n_node_execution_time_ms",
           "format": "table",
@@ -215,7 +215,7 @@
       "type": "bargauge",
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P4169E866C3094E38"
       },
       "gridPos": {
         "x": 12,

@@ -1,8 +1,8 @@
 # ✅ TODO - Enterprise Python Analysis
 
-**Última Atualização**: 09/02/2026
-**Sessão Atual**: N8N Monitoring Integration + Deploy Pendente
-**Última sessão de trabalho**: 09/02/2026
+**Última Atualização**: 03/03/2026 - 19:00
+**Sessão Atual**: N8N Dashboards Restoration - Métricas Pendentes
+**Última sessão de trabalho**: 03/03/2026
 
 ---
 
@@ -13,8 +13,9 @@
 | Análise de Infraestrutura | ✅ Completo | 100% |
 | Plano de Migração | ✅ Completo | 100% |
 | Integração Prometheus | ✅ Completo | 100% |
-| **Módulo N8N** | ✅ Implementado | **85%** |
-| **Deploy N8N** | ⏳ Pendente | **0%** |
+| **Grafana Dashboards N8N** | ⚠️ Restaurados | **50%** |
+| **Coleta Métricas N8N** | ❌ Sem dados | **0%** |
+| **Deploy N8N Collector** | ⏳ Pendente | **0%** |
 | Aprovação do Plano Migração | ⏳ Pendente | 0% |
 | Backup de wf005 | ⏳ Pendente | 0% |
 | Execução de Migração | ⏳ Pendente | 0% |
@@ -22,7 +23,37 @@
 
 ---
 
-## 🔥 Prioridade CRÍTICA (Próxima Sessão - 30 min)
+## 🔥 Prioridade MÁXIMA (Próxima Sessão - URGENTE)
+
+### ⚠️ Resolver Dashboards N8N Sem Dados
+**Status Atual (03/03/2026 19:00)**:
+- ✅ 3 dashboards N8N criados e deployados em wfdb01
+- ❌ Dashboards sem dados (gráficos vazios)
+- ❌ Métricas N8N não encontradas no VictoriaMetrics
+- ❌ Coletor N8N não deployado ainda
+
+**Causa Raiz**: Collector-API com módulo N8N **NÃO ESTÁ DEPLOYADO** nos servidores N8N (wf001/wf002/wf008)
+
+**Solução Necessária**:
+1. **Deploy do Collector-API com N8N** nos servidores N8N
+   - Deploy em wf001.vya.digital (N8N principal)
+   - Deploy em wf002.vya.digital (N8N secundário)
+   - Deploy em wf008.vya.digital (N8N Brasil)
+   
+2. **Validar coleta de métricas**
+   - Verificar logs: `docker logs collector-api | grep n8n`
+   - Verificar métricas: `curl localhost:8000/metrics | grep n8n_`
+   - Verificar Pushgateway: `curl pushgateway:9091/metrics | grep n8n_`
+   - Verificar VictoriaMetrics: `curl victoria-metrics:8428/api/v1/label/__name__/values | grep n8n`
+
+3. **Verificar dashboards Grafana**
+   - Aguardar 2-3 minutos após deploy
+   - Refresh dashboards (Ctrl+F5)
+   - Validar população de dados
+
+---
+
+## 🔥 Prioridade CRÍTICA (Próxima Sessão - 45 min)
 
 ### Deploy Módulo N8N ⏳ URGENTE
 - [ ] **Deploy da imagem no wf001.vya.digital**

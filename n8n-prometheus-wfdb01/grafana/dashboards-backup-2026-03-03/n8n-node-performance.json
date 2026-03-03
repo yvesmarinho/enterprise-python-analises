@@ -86,11 +86,7 @@
             }
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     },
     {
       "id": 2,
@@ -149,10 +145,6 @@
         "showUnfilled": true,
         "minVizWidth": 0,
         "minVizHeight": 10
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
       }
     },
     {
@@ -215,11 +207,7 @@
             ]
           }
         }
-      ],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      }
+      ]
     },
     {
       "id": 4,
@@ -239,7 +227,7 @@
         {
           "expr": "topk(10, n8n_node_execution_time_ms{node_name=~\".*HTTP.*|.*Request.*|.*API.*\"})",
           "refId": "A",
-          "legendFormat": "{{workflow_name}} → {{node_name}}"
+          "legendFormat": "{{workflow_name}} \u2192 {{node_name}}"
         }
       ],
       "options": {
