@@ -173,6 +173,6 @@ Placeholders (não reais)     : 2
 
 ---
 
-**Gerado por**: GitHub Copilot  
-**Data**: 17/03/2026  
+**Gerado por**: GitHub Copilot
+**Data**: 17/03/2026
 **Sessão**: 2026-03-17

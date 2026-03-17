@@ -80,25 +80,6 @@ enterprise-python-analysis/
 ├── reports/                        # 📈 Relatórios gerados
 │   └── servidores_desligamento_report.md
 │
-├── n8n-tuning/                     # 🔧 N8N Performance Tuning
-│   ├── docs/                       # Documentação da análise
-│   ├── data/                       # Dados coletados (metrics, workflows, logs)
-│   ├── scripts/                    # Scripts de análise
-│   ├── reports/                    # Relatórios de performance
-│   └── README.md                   # Guia do projeto
-│
-├── n8n-prometheus-wfdb01/          # 📊 Prometheus Monitoring (WFDB01)
-│   ├── collector-api/              # ⭐ API de coleta de métricas (NOVO: módulo N8N)
-│   │   └── src/n8n/                # 🆕 Módulo N8N (641 linhas - 09/02/2026)
-│   │       ├── __init__.py
-│   │       ├── n8n_metrics.py
-│   │       ├── n8n_client.py
-│   │       └── n8n_collector.py
-│   ├── ping-service/               # Serviço de ping entre servidores
-│   ├── deploy/                     # Scripts de deploy (wf001, wf008)
-│   ├── docs/                       # Documentação do projeto
-│   └── README.md                   # Guia do projeto
-│
 ├── migration_plan.json             # 🗺️ Plano de migração
 ├── main.py                         # Script principal
 ├── pyproject.toml                  # Dependências Python
@@ -172,38 +153,17 @@ enterprise-python-analysis/
 
 ---
 
-## 🔧 N8N Performance Tuning
+## � Componentes Migrados para enterprise-observability
 
-### Novo Módulo de Análise
-**Localização**: `n8n-tuning/`
-**Status**: 🚀 Iniciado em 02/02/2026
-**Objetivo**: Analisar e otimizar performance do N8N antes da migração
+> ℹ️ Os seguintes subprojetos foram movidos para [`../enterprise-observability/`](../enterprise-observability/)
 
-### Scripts de Análise N8N
+| Componente | Conteúdo | Migrado em |
+|---|---|---|
+| `n8n-prometheus-wfdb01/` | collector-api (módulo N8N), ping-service, deploy scripts | fev/2026 |
+| `n8n-tuning/` | Scripts análise N8N, dados de performance, relatórios | mar/2026 |
+| `wfdb01-docker-folder/` | Volume SSHFS remoto (estava vazio) | 17/03/2026 |
 
-#### n8n_metrics_collector.py
-**Propósito**: Coletar métricas via API do N8N
-**Uso**: `python n8n-tuning/scripts/n8n_metrics_collector.py`
-**Requer**: Variáveis N8N_URL e N8N_API_KEY
-
-**Funcionalidades**:
-- Coleta workflows e execuções
-- Analisa performance
-- Gera relatórios de baseline
-
-#### workflow_analyzer.py
-**Propósito**: Analisar complexidade de workflows
-**Uso**: `python n8n-tuning/scripts/workflow_analyzer.py`
-
-**Funcionalidades**:
-- Análise de nodes utilizados
-- Identificação de workflows complexos
-- Detecção de oportunidades de otimização
-
-### Documentação N8N Tuning
-- [📑 INDEX](../n8n-tuning/docs/INDEX.md) - Visão geral completa
-- [✅ TODO](../n8n-tuning/docs/TODO.md) - Tarefas e timeline (4 semanas)
-- [📊 ANALYSIS_GUIDE](../n8n-tuning/docs/ANALYSIS_GUIDE.md) - Guia de coleta
+**Acesso ao código dos coletores**: `../enterprise-observability/`
 
 ---
 

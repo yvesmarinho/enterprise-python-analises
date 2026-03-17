@@ -20,5 +20,5 @@ wheels/
 *credentials*.json
 !credentials.template.json
 
-# Volume remoto
-wfdb01-docker-folder/
+# Volume remoto (removido em 17/03/2026 - pasta vazia, conteúdo em enterprise-observability)
+# wfdb01-docker-folder/

@@ -160,10 +160,10 @@ docker restart enterprise-grafana
 **Dashboards Restaurados**:
 1. `n8n-performance-overview.json` (5KB)
    - 6 painéis: Executions, Success Rate, Workflows, Durations, Top 10
-   
+
 2. `n8n-performance-detailed.json` (27KB)
    - 23 painéis: Workflows, Executions, Errors, Performance analysis
-   
+
 3. `n8n-node-performance.json` (9KB)
    - 4 painéis: Top 20 slowest nodes, HTTP requests, All nodes
 

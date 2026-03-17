@@ -37,6 +37,13 @@
 - [x] Criar docs de sessão: TODAY_ACTIVITIES, SESSION_REPORT, FINAL_STATUS
 - [x] Criar branch GitHub
 
+### Limpeza & Migração (17/03/2026)
+- [x] Remover `wfdb01-docker-folder/` (pasta vazia/obsoleta)
+- [x] Registrar migração `n8n-prometheus-wfdb01/` → `enterprise-observability`
+- [x] Registrar migração `n8n-tuning/` → `enterprise-observability`
+- [x] Atualizar README.md com tabela de componentes migrados
+- [x] Atualizar INDEX.md — remover referências de subprojetos migrados
+
 ---
 
 ## 🔥 Prioridade MÁXIMA (Próxima Sessão - URGENTE)

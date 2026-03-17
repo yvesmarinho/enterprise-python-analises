@@ -1,6 +1,0 @@
-# Victoria Metrics + Grafana
-victoria-metrics-data/
-grafana-data/
-
-# Configurações locais
-*.local.yml

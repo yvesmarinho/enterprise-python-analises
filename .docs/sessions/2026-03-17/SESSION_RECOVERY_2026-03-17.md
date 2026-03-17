@@ -44,10 +44,12 @@
 
 1. ✅ Carregar regras `.copilot*` na memória
 2. ✅ Criar estrutura de sessão 2026-03-17
-3. ⏳ Varredura e proteção de arquivos sensíveis → `.secrets/`
-4. ⏳ Gerar/atualizar README.md (raiz), INDEX.md, TODO.md
-5. ⏳ Gerar docs de sessão: DAILY_ACTIVITIES, SESSION_REPORT, FINAL_STATUS
-6. ⏳ Criar branch GitHub para esta sessão
+3. ✅ Varredura e proteção de arquivos sensíveis → `.secrets/`
+4. ✅ Gerar/atualizar README.md (raiz), INDEX.md, TODO.md
+5. ✅ Gerar docs de sessão: DAILY_ACTIVITIES, SESSION_REPORT, FINAL_STATUS
+6. ✅ Criar branch GitHub para esta sessão
+7. ✅ Registrar migração dos coletores para `enterprise-observability`
+8. ✅ Remover `wfdb01-docker-folder` (pasta vazia/obsoleta)
 
 ---
 

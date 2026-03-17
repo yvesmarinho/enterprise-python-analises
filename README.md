@@ -12,9 +12,9 @@ Análise técnica de 4 servidores Docker em produção para identificar oportuni
 
 ## 📊 Resultado
 
-✅ **Servidor Identificado**: `wf005.vya.digital`  
-💰 **Economia Projetada**: R$ 7,800-12,600/ano  
-📈 **Redução**: 25% de servidores (4→3)  
+✅ **Servidor Identificado**: `wf005.vya.digital`
+💰 **Economia Projetada**: R$ 7,800-12,600/ano
+📈 **Redução**: 25% de servidores (4→3)
 ⏱️ **ROI**: < 1 mês
 
 ## 📈 Status Atual
@@ -29,10 +29,20 @@ Análise técnica de 4 servidores Docker em produção para identificar oportuni
 | Execução Migração wf005 | ⏳ Pendente | 0% |
 
 ---
-## AVISO de alteração
 
-A pasta "[n8n-prometheus-wfdb01](../enterprise-observability/examples/n8n-prometheus-wfdb01)" foi movida para o projeto `enterprise-observability` para refletir a nomenclatura correta do servidor monitorado (WF001, não WFDB01). Todos os arquivos e referências foram atualizados para garantir consistência.
+## 📦 Projetos Relacionados
 
+> ⚠️ **Os coletores e módulos de observability foram migrados para o projeto [`enterprise-observability`](../enterprise-observability/)**
+
+| Componente | Destino | Data |
+|---|---|---|
+| `n8n-prometheus-wfdb01/` (collector-api, ping-service, deploy) | `../enterprise-observability/` | fev/2026 |
+| `n8n-tuning/` (scripts de análise N8N) | `../enterprise-observability/` | mar/2026 |
+| `wfdb01-docker-folder/` (volume SSHFS) | Removida (pasta vazia) | 17/03/2026 |
+
+**Este repositório mantém**: análise de infraestrutura Docker, plano de migração wf005, scripts de análise e documentação de sessões.
+
+---
 
 ## 🚀 Quick Start
 
@@ -150,10 +160,10 @@ Toda a documentação está em [`.docs/`](.docs/):
 
 ## 💡 Status do Projeto
 
-**Fase Atual**: ⚠️ Análise Concluída — Deploy N8N Pendente  
-**Próxima Fase**: Deploy Collector-API N8N + Execução da Migração  
-**Data da Análise**: 16/01/2026  
-**Última Sessão**: 17/03/2026  
+**Fase Atual**: ⚠️ Análise Concluída — Deploy N8N Pendente
+**Próxima Fase**: Deploy Collector-API N8N + Execução da Migração
+**Data da Análise**: 16/01/2026
+**Última Sessão**: 17/03/2026
 **Confiança**: Alta (baseada em dados sólidos)
 
 ---
@@ -166,7 +176,7 @@ Toda a documentação está em [`.docs/`](.docs/):
 - wf005.vya.digital - Source (desligar)
 - wf006.vya.digital - Não mexer
 
-**Database**: wfdb02.vya.digital:5432  
+**Database**: wfdb02.vya.digital:5432
 **Credenciais**: `.secrets/postgresql_destination_config.json`
 
 ---
@@ -182,6 +192,6 @@ Toda a documentação está em [`.docs/`](.docs/):
 
 ---
 
-**Última Atualização**: 16/01/2026 20:50  
-**Versão**: 1.0  
+**Última Atualização**: 16/01/2026 20:50
+**Versão**: 1.0
 **Status**: ✅ Pronto para Execução

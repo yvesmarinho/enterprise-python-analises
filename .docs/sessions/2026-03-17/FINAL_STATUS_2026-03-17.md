@@ -99,6 +99,6 @@ RESULTADO:
 
 ---
 
-**Gerado por**: GitHub Copilot  
-**Data**: 17/03/2026  
+**Gerado por**: GitHub Copilot
+**Data**: 17/03/2026
 **Conformidade**: 100% com `.copilot-strict-rules.md`
