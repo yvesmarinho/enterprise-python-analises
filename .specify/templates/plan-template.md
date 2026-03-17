@@ -31,7 +31,16 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] **I. Production Safety**: Does this feature write to or restart any production service?
+  If yes, execution MUST be gated behind 20:30 and require manual confirmation.
+- [ ] **II. Observability-First**: Are all data sources Prometheus/VictoriaMetrics APIs or
+  the `monitor_user` read-only DB account? Direct production DB writes are prohibited.
+- [ ] **III. Security**: Are credentials stored in `.secrets/` and excluded from git?
+  Does SSH access use SPA (fwknop)?
+- [ ] **IV. Reproducible Analysis**: Do scripts accept explicit time-range parameters?
+  Do output reports include metric source, query, and time range?
+- [ ] **V. Data Integrity**: Is the scope limited to workflow step latency (≥1s threshold)?
+  Are wf001 (US East) and wf008 (Brazil) metrics labelled separately?
 
 ## Project Structure
 
