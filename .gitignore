@@ -20,5 +20,9 @@ wheels/
 *credentials*.json
 !credentials.template.json
 
+# Analysis output reports (tracked via .gitkeep but content excluded)
+reports/*
+!reports/.gitkeep
+
 # Volume remoto (removido em 17/03/2026 - pasta vazia, conteúdo em enterprise-observability)
 # wfdb01-docker-folder/
