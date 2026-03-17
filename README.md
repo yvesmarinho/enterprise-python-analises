@@ -2,7 +2,7 @@
 
 **Análise e Otimização de Infraestrutura Docker + Monitoramento N8N**
 
-**Última Atualização**: 17/03/2026 | **Sessão**: 2026-03-17
+**Última Atualização**: 17/03/2026 19:00 | **Sessão**: 2026-03-17 (encerrada)
 
 ---
 
@@ -24,8 +24,9 @@ Análise técnica de 4 servidores Docker em produção para identificar oportuni
 | Análise Infraestrutura | ✅ Completo | 100% |
 | Plano de Migração | ✅ Completo | 100% |
 | Integração Prometheus | ✅ Completo | 100% |
+| **ANA-001 N8N Analyzer** | ✅ **Implementado** | **100%** |
 | Grafana Dashboards N8N | ⚠️ Sem dados | 50% |
-| Deploy N8N Collector | ❌ Pendente | 0% |
+| Deploy N8N Collector | ⏳ Pendente | 0% |
 | Execução Migração wf005 | ⏳ Pendente | 0% |
 
 ---
@@ -46,20 +47,52 @@ Análise técnica de 4 servidores Docker em produção para identificar oportuni
 
 ## 🚀 Quick Start
 
-### 1. Executar Análise
+### 1. Análise de Performance N8N (ANA-001)
+```bash
+# Instalar CLI
+pip install -e .
+
+# Dry-run (sem conectividade necessária)
+analyze-n8n --dry-run --from 2026-01-01 --to 2026-01-31
+
+# Análise real (requer VictoriaMetrics acessível)
+analyze-n8n --from 2026-01-01 --to 2026-01-31 --output-format markdown
+```
+
+### 2. Análise Docker
 ```bash
 python scripts/docker_analyzer.py
 ```
 
-### 2. Gerar Relatório
+### 3. Gerar Relatório
 ```bash
 python scripts/generate_report.py
 ```
 
-### 3. Ver Documentação
+### 4. Ver Documentação
 ```bash
-cat .docs/SUMMARY.md
+cat docs/SUMMARY.md
 ```
+
+---
+
+## 🤖 ANA-001 — N8N Performance Analyzer
+
+CLI tool que consulta VictoriaMetrics + Loki e gera relatórios de performance N8N com classificação de causa raiz.
+
+```bash
+analyze-n8n [OPTIONS]
+  --from DATETIME        Início do período (ISO 8601 / YYYY-MM-DD)
+  --to DATETIME          Fim do período
+  --output-format        markdown|json [default: markdown]
+  --output-dir DIR       Pasta de saída [default: reports/]
+  --step-global DURATION Step fase global [default: 5m]
+  --dry-run              Mostrar configuração sem executar
+```
+
+**Labels de causa raiz**: `QUEUE_DEPTH_SPIKE`, `DB_SLOW_QUERY`, `EXTERNAL_API_TIMEOUT`, `NETWORK_LATENCY`, `N8N_INTERNAL_ERROR`, `UNKNOWN`
+
+**Status**: ✅ 40/40 tasks implementados — aguardando deploy de infra para run em produção
 
 ---
 
@@ -67,15 +100,21 @@ cat .docs/SUMMARY.md
 
 ```
 enterprise-python-analysis/
-├── .docs/                  # 📚 Documentação completa
+├── docs/                   # 📚 Documentação completa
 │   ├── SUMMARY.md          # Sumário executivo
 │   ├── INDEX.md            # Índice navegável
 │   ├── TODO.md             # Lista de tarefas
-│   └── sessions/           # Relatórios de sessões
+│   ├── sessions/           # Relatórios de sessões
+│   ├── N8N/                # Documentação N8N
+│   └── Prometheus/         # Documentação Prometheus
+├── src/n8n_analyzer/       # 🤖 ANA-001 N8N Analyzer
+│   ├── analyzers/          # Latency, Correlation, Geographic, Loki
+│   ├── collectors/         # VictoriaMetrics, Loki
+│   ├── reporters/          # Markdown, JSON
+│   ├── models/             # Pydantic v2 models
+│   └── cli.py              # analyze-n8n CLI
 ├── scripts/                # 🔧 Scripts Python
-│   ├── docker_analyzer.py
-│   ├── generate_report.py
-│   └── docker_compose_ports_scanner.py
+├── specs/                  # 📐 Especificações ANA-001
 ├── reports/                # 📈 Relatórios gerados
 ├── data/                   # 📊 Dados de entrada
 └── migration_plan.json     # 🗺️ Plano de migração
@@ -134,12 +173,12 @@ Scanner de conflitos de portas:
 
 ## 📚 Documentação
 
-Toda a documentação está em [`.docs/`](.docs/):
+Toda a documentação está em [`docs/`](docs/):
 
-- **[SUMMARY.md](.docs/SUMMARY.md)** - Visão geral executiva
-- **[INDEX.md](.docs/INDEX.md)** - Índice completo do projeto
-- **[TODO.md](.docs/TODO.md)** - Lista de tarefas pendentes
-- **[Sessions](.docs/sessions/)** - Relatórios detalhados de sessões
+- **[SUMMARY.md](docs/SUMMARY.md)** - Visão geral executiva
+- **[INDEX.md](docs/INDEX.md)** - Índice completo do projeto
+- **[TODO.md](docs/TODO.md)** - Lista de tarefas pendentes
+- **[Sessions](docs/sessions/)** - Relatórios detalhados de sessões
 
 ---
 
@@ -160,10 +199,10 @@ Toda a documentação está em [`.docs/`](.docs/):
 
 ## 💡 Status do Projeto
 
-**Fase Atual**: ⚠️ Análise Concluída — Deploy N8N Pendente
-**Próxima Fase**: Deploy Collector-API N8N + Execução da Migração
+**Fase Atual**: ✅ ANA-001 Completo — Deploy N8N Pendente
+**Próxima Fase**: Deploy Collector-API N8N + Run `analyze-n8n` em produção
 **Data da Análise**: 16/01/2026
-**Última Sessão**: 17/03/2026
+**Última Sessão**: 17/03/2026 (encerrada — 40/40 tasks ANA-001 completos)
 **Confiança**: Alta (baseada em dados sólidos)
 
 ---

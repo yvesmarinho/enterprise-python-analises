@@ -85,7 +85,7 @@ APÓS CONSOLIDAÇÃO (Projeção):
 ### Relatórios (`/reports/`)
 1. ✅ `servidores_desligamento_report.md` - Comparativo wf005 vs wf006
 
-### Documentação (`/.docs/`)
+### Documentação (`/docs/`)
 1. ✅ `INDEX.md` - Índice navegável do projeto
 2. ✅ `TODO.md` - Lista completa de tarefas
 3. ✅ `TODAY_ACTIVITIES.md` - Log cronológico de atividades
@@ -135,13 +135,13 @@ python scripts/docker_analyzer.py
 python scripts/generate_report.py
 
 # Ver documentação
-cat .docs/INDEX.md
+cat docs/INDEX.md
 ```
 
 ### Arquivos Importantes
 - **Plano**: `migration_plan.json`
 - **Relatório**: `reports/servidores_desligamento_report.md`
-- **TODO**: `.docs/TODO.md`
+- **TODO**: `docs/TODO.md`
 
 ### Servidores
 - **wf001.vya.digital** - Target (87% livre)

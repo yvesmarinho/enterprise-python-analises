@@ -1,8 +1,8 @@
 # 📑 INDEX - Enterprise Python Analysis
 
 **Projeto**: Análise e Otimização de Infraestrutura Docker + N8N Monitoring
-**Última Atualização**: 17/03/2026
-**Status**: ✅ Módulo N8N Implementado (85%) | ⏳ Deploy Pendente (15%) | 🔄 Sessão 2026-03-17 em progresso
+**Última Atualização**: 17/03/2026 19:00
+**Status**: ✅ ANA-001 Implementado (100%) | ✅ Docs Organizados | ⏳ Deploy Pendente
 
 ---
 
@@ -18,72 +18,49 @@ Analisar recursos de 4 servidores Docker em produção para identificar oportuni
 
 ```
 enterprise-python-analysis/
-├── .docs/                          # 📚 Documentação
+├── docs/                           # 📚 Documentação (migrado de .docs/ em 17/03/2026)
 │   ├── INDEX.md                    # Este arquivo
 │   ├── TODO.md                     # Lista de tarefas
 │   ├── TODAY_ACTIVITIES.md         # Log diário de atividades
+│   ├── SUMMARY.md                  # Sumário executivo
+│   ├── README.md                   # Guia de navegação
+│   ├── N8N/                        # Documentação N8N
+│   ├── Prometheus/                 # Documentação Prometheus + collector-api
 │   └── sessions/                   # Documentação de sessões
-│       ├── 2026-01-16/
-│       │   ├── SESSION_RECOVERY_2026-01-16.md
-│       │   ├── SESSION_REPORT_2026-01-16.md
-│       │   └── FINAL_STATUS_2026-01-16.md
-│       ├── 2026-02-02/
-│       │   ├── SESSION_RECOVERY_2026-02-02.md
-│       │   ├── TODAY_ACTIVITIES_2026-02-02.md
-│       │   └── SESSION_SUMMARY_2026-02-02.md
-│       ├── 2026-02-03/
-│       │   ├── SESSION_RECOVERY_2026-02-03.md
-│       │   ├── TODAY_ACTIVITIES_2026-02-03.md
-│       │   ├── SESSION_REPORT_2026-02-03.md
-│       │   └── FINAL_STATUS_2026-02-03.md
-│       ├── 2026-02-04/
-│       │   ├── SESSION_RECOVERY_2026-02-04.md
-│       │   └── TODAY_ACTIVITIES_2026-02-04.md
-│       ├── 2026-02-05/
-│       │   ├── SESSION_RECOVERY_2026-02-05.md
-│       │   ├── SESSION_REPORT_2026-02-05.md
-│       │   ├── FINAL_STATUS_2026-02-05.md
-│       │   └── TODAY_ACTIVITIES_2026-02-05.md
-│       ├── 2026-02-06/
-│       │   ├── SESSION_RECOVERY_2026-02-06.md
-│       │   └── TODAY_ACTIVITIES_2026-02-06.md
-│       ├── 2026-02-09/
-│       │   ├── SESSION_RECOVERY_2026-02-09.md
-│       │   ├── SESSION_REPORT_2026-02-09.md
-│       │   ├── FINAL_STATUS_2026-02-09.md
-│       │   └── TODAY_ACTIVITIES_2026-02-09.md
-│       ├── 2026-03-03/
-│       │   ├── SESSION_RECOVERY_2026-03-03.md
-│       │   ├── SESSION_REPORT_2026-03-03.md
-│       │   └── TODAY_ACTIVITIES_2026-03-03.md
+│       ├── 2026-01-16/ … 2026-03-03/
 │       └── 2026-03-17/              # ⭐ Sessão atual
 │           ├── SESSION_RECOVERY_2026-03-17.md
 │           ├── TODAY_ACTIVITIES_2026-03-17.md
 │           ├── SESSION_REPORT_2026-03-17.md
 │           └── FINAL_STATUS_2026-03-17.md
 │
-├── .secrets/                       # 🔐 Credenciais (não versionado)
-│   └── postgresql_destination_config.json
-│
-├── data/                           # 📊 Dados de entrada
-│   └── docker_collector/
-│       ├── wf001.vya.digital_docker_stats_20260116_100205.json
-│       ├── wf002.vya.digital_docker_stats_20260116_102230.json
-│       ├── wf005.vya.digital_docker_stats_20260116_105355.json
-│       └── wf006.vya.digital_docker_stats_20260116_105728.json
+├── src/n8n_analyzer/               # 🤖 ANA-001 N8N Performance Analyzer (novo)
+│   ├── analyzers/                  # LatencyAnalyzer, CorrelationAnalyzer, Geographic, Loki
+│   ├── collectors/                 # VictoriaMetrics, Loki, Base
+│   ├── labels/                     # RootCauseLabel + classify()
+│   ├── models/                     # Pydantic v2 models
+│   ├── reporters/                  # MarkdownReporter, JsonReporter
+│   ├── cli.py                      # analyze-n8n CLI entry-point
+│   └── config.py                   # Config + secrets loader
 │
 ├── scripts/                        # 🔧 Scripts Python
+│   ├── analyze_n8n_performance.py  # analyze-n8n shim entry-point (novo)
 │   ├── docker_analyzer.py          # Analisador principal
 │   ├── generate_report.py          # Gerador de relatórios
 │   └── docker_compose_ports_scanner.py
 │
-├── reports/                        # 📈 Relatórios gerados
-│   └── servidores_desligamento_report.md
+├── specs/001-n8n-performance-analyzer/ # 📐 Specs ANA-001 (novo)
+│   ├── plan.md
+│   └── tasks.md                    # 40/40 tasks ✅
 │
+├── .secrets/                       # 🔐 Credenciais (não versionado)
+├── data/                           # 📊 Dados de entrada
+├── reports/                        # 📈 Relatórios gerados
+├── tests/                          # 🧪 Testes (unit + integration)
 ├── migration_plan.json             # 🗺️ Plano de migração
 ├── main.py                         # Script principal
-├── pyproject.toml                  # Dependências Python
-├── README.md                       # Documentação inicial
+├── pyproject.toml                  # Dependências Python (v0.2.0)
+├── README.md                       # Documentação principal
 └── uv.lock                         # Lock de dependências
 ```
 
@@ -171,7 +148,7 @@ enterprise-python-analysis/
 
 ### Sessão 16/01/2026
 
-#### [SESSION_RECOVERY_2026-01-16.md](.docs/sessions/SESSION_RECOVERY_2026-01-16.md)
+#### [SESSION_RECOVERY_2026-01-16.md](docs/sessions/SESSION_RECOVERY_2026-01-16.md)
 Contexto completo para recuperar trabalho:
 - Infraestrutura analisada
 - Ferramentas desenvolvidas
@@ -179,7 +156,7 @@ Contexto completo para recuperar trabalho:
 - Plano de migração
 - Incidente Metabase (resolvido externamente)
 
-#### [SESSION_REPORT_2026-01-16.md](.docs/sessions/SESSION_REPORT_2026-01-16.md)
+#### [SESSION_REPORT_2026-01-16.md](docs/sessions/SESSION_REPORT_2026-01-16.md)
 Relatório executivo detalhado:
 - Resumo executivo
 - Objetivos vs resultados
@@ -187,7 +164,7 @@ Relatório executivo detalhado:
 - Timeline de atividades
 - Lições aprendidas
 
-#### [FINAL_STATUS_2026-01-16.md](.docs/sessions/FINAL_STATUS_2026-01-16.md)
+#### [FINAL_STATUS_2026-01-16.md](docs/sessions/FINAL_STATUS_2026-01-16.md)
 Status final e próximos passos:
 - Entregas realizadas
 - Resultados quantitativos
@@ -212,23 +189,27 @@ Status final e próximos passos:
 - [x] Stack completa validada (Grafana, Prometheus, Loki)
 - [x] Zero falhas de push desde deploy
 
-### Fase 3: N8N Monitoring ✅ 85% | ⏳ 15%
+### Fase 3: N8N Monitoring ✅ 85% implementação | ⏳ Deploy
 - [x] **Implementação Módulo N8N** (09/02/2026)
-  - [x] n8n_metrics.py - 9 métricas Prometheus (58 linhas)
-  - [x] n8n_client.py - Cliente HTTP completo (266 linhas)
-  - [x] n8n_collector.py - Coletor com cache (289 linhas)
-  - [x] Integração asyncio tasks no main.py
-  - [x] Build e push Docker (digest: 374607f1)
-- [ ] ⏳ Deploy no wf001.vya.digital (pendente)
-- [ ] ⏳ Validação de métricas
+  - [x] n8n_metrics.py, n8n_client.py, n8n_collector.py
+  - [x] Build e push Docker
+- [x] **ANA-001 N8N Performance Analyzer** ✅ 40/40 tasks (17/03/2026)
+  - [x] CLI `analyze-n8n` com VictoriaMetrics + Loki
+  - [x] LatencyAnalyzer + CorrelationAnalyzer + GeographicAnalyzer
+  - [x] MarkdownReporter + JsonReporter
+  - [x] --dry-run validado, SC-001 benchmark < 5 min
+- [ ] ⏳ Deploy Collector-API no wf001/wf002/wf008 (pendente)
+- [ ] ⏳ Run `analyze-n8n` em produção
 - [ ] ⏳ Dashboards N8N populando dados
 
 ### Fase 5: Organização & Segurança ✅ 100% (17/03/2026)
-- [x] Varredura completa de credenciais hardcoded
+- [x] Varredura completa de credenciais hardcoded (2 rodadas)
 - [x] Verificação .secrets/ no .gitignore ✅
+- [x] **Migração `.docs/` → `docs/`** ✅
+- [x] Todas referências `.docs/` → `docs/` atualizadas
+- [x] `.gitignore` atualizado com padrões IDE/OS
 - [x] Atualização README, INDEX, TODO
-- [x] Documentação sessão 2026-03-17 criada
-- [x] Branch GitHub criada
+- [x] Documentação sessão 2026-03-17 criada e finalizada
 
 ### Fase 4: Migração wf005 ⏳ 0%
 - [ ] Aprovação do plano de migração

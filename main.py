@@ -19,7 +19,7 @@ def main():
     print("  • python scripts/docker_analyzer.py - Análise de recursos Docker")
     print("  • python scripts/generate_report.py - Geração de relatórios")
     print("  • python scripts/docker_compose_ports_scanner.py - Scanner de portas")
-    print("\nDocumentação: .docs/INDEX.md")
+    print("\nDocumentação: docs/INDEX.md")
 
 
 if __name__ == "__main__":

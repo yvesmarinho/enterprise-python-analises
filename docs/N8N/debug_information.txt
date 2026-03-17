@@ -1,0 +1,34 @@
+# Debug info
+
+## core
+
+- n8nVersion: 2.6.4
+- platform: docker (self-hosted)
+- nodeJsVersion: 22.22.0
+- nodeEnv: production
+- database: postgres
+- executionMode: scaling (single-main)
+- concurrency: 10
+- license: enterprise (production)
+- consumerId: 1570e338-d031-4831-ae9d-0361124a5051
+
+## storage
+
+- success: all
+- error: all
+- progress: false
+- manual: true
+- binaryMode: filesystem
+
+## pruning
+
+- enabled: true
+- maxAge: 48 hours
+- maxCount: 5000 executions
+
+## client
+
+- userAgent: mozilla/5.0 (x11; linux x86_64; rv:148.0) gecko/20100101 firefox/148.0
+- isTouchDevice: false
+
+Generated at: 2026-03-17T19:02:05.775Z

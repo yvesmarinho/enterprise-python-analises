@@ -44,8 +44,8 @@
 ## 📚 Documentos Criados Hoje
 
 ### Arquivos de Sessão
-- `.docs/sessions/2026-02-06/SESSION_RECOVERY_2026-02-06.md` (~300 linhas)
-- `.docs/sessions/2026-02-06/TODAY_ACTIVITIES_2026-02-06.md` (~400 linhas)
+- `docs/sessions/2026-02-06/SESSION_RECOVERY_2026-02-06.md` (~300 linhas)
+- `docs/sessions/2026-02-06/TODAY_ACTIVITIES_2026-02-06.md` (~400 linhas)
 
 ### Scripts de Validação
 - `scripts/validate_enterprise_observability.py` (~300 linhas)
@@ -229,7 +229,7 @@ def fix_table_owner()          # Correção automática
 
 #### Criação de Diretórios
 ```bash
-mkdir -p .docs/sessions
+mkdir -p docs/sessions
 mkdir -p reports
 mkdir -p scripts
 ```

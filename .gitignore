@@ -24,5 +24,10 @@ wheels/
 reports/*
 !reports/.gitkeep
 
-# Volume remoto (removido em 17/03/2026 - pasta vazia, conteúdo em enterprise-observability)
-# wfdb01-docker-folder/
+# IDE / Editor
+.vscode/settings.json
+.idea/
+
+# OS artifacts
+.DS_Store
+Thumbs.db

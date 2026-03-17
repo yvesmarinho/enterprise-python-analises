@@ -1,8 +1,8 @@
 # ✅ TODO - Enterprise Python Analysis
 
-**Última Atualização**: 17/03/2026 - 14:00
-**Sessão Atual**: 2026-03-17 — Organização, Segurança, Documentação e Branch
-**Última sessão de trabalho**: 03/03/2026 | **Sessão atual**: 17/03/2026
+**Última Atualização**: 17/03/2026 - 19:00
+**Sessão Atual**: 2026-03-17 — Implementação ANA-001 + Organização + Encerramento
+**Última sessão de trabalho**: 17/03/2026 | **Data**: 17/03/2026
 
 ---
 
@@ -13,8 +13,8 @@
 | Análise de Infraestrutura | ✅ Completo | 100% |
 | Plano de Migração | ✅ Completo | 100% |
 | Integração Prometheus | ✅ Completo | 100% |
-| **Grafana Dashboards N8N** | ⚠️ Restaurados | **50%** |
-| **Coleta Métricas N8N** | ❌ Sem dados | **0%** |
+| **ANA-001 N8N Performance Analyzer** | ✅ **Implementado** | **100%** |
+| **Grafana Dashboards N8N** | ⚠️ Criados s/ dados | **50%** |
 | **Deploy N8N Collector** | ⏳ Pendente | **0%** |
 | Aprovação do Plano Migração | ⏳ Pendente | 0% |
 | Backup de wf005 | ⏳ Pendente | 0% |
@@ -23,26 +23,37 @@
 
 ---
 
-## ✅ Concluído em 17/03/2026
+## ✅ Concluído em 17/03/2026 (sessão completa)
+
+### ANA-001 N8N Performance Analyzer
+- [x] Implementar T001–T040 (40/40 tasks) via speckit.implement
+- [x] Phase 1 Setup: pyproject.toml v0.2.0, .env.example, .gitignore
+- [x] Phase 2 Foundational: Config, BaseCollector, Pydantic models, CLI
+- [x] Phase 3 US1 Latency: LatencyAnalyzer, MarkdownReporter, JsonReporter
+- [x] Phase 4 US2 Correlation: CorrelationAnalyzer, LokiAnalyzer, classify()
+- [x] Phase 5 US3 Geographic: GeographicAnalyzer, RTT estimator
+- [x] Phase 6 Polish: --dry-run, SC-001 benchmark, PromQL Appendix
+- [x] `git commit feat(ANA-001)` em branch `001-n8n-performance-analyzer`
 
 ### Organização & Segurança
 - [x] Carregar regras `.copilot*` na memória
-- [x] Criar pasta `.docs/sessions/2026-03-17/`
+- [x] Criar pasta `docs/sessions/2026-03-17/`
 - [x] Criar `SESSION_RECOVERY_2026-03-17.md`
-- [x] Varredura de credenciais hardcoded (resultado: limpo ✅)
+- [x] Varredura de credenciais hardcoded (2 rodadas, 160 arquivos — resultado: limpo ✅)
 - [x] Verificar `.secrets/` no `.gitignore` ✅
-- [x] Atualizar `README.md` (raiz) com data/status atuais
-- [x] Atualizar `.docs/INDEX.md` com sessão 2026-03-17
-- [x] Atualizar `.docs/TODO.md` com data atual
+- [x] **Migrar `.docs/` → `docs/`** ✅ (7 arquivos + 11 pastas sessões)
+- [x] Atualizar todas referências `.docs/` → `docs/` em 10+ arquivos
+- [x] Atualizar `.gitignore` com padrões IDE/OS adicionais
+- [x] Atualizar `README.md` (raiz) com data/status/ANA-001
+- [x] Atualizar `docs/INDEX.md` — sessão 2026-03-17, ANA-001, estrutura atualizada
+- [x] Atualizar `docs/TODO.md` (este arquivo)
 - [x] Criar docs de sessão: TODAY_ACTIVITIES, SESSION_REPORT, FINAL_STATUS
-- [x] Criar branch GitHub
+- [x] Branch GitHub `session/2026-03-17-org-docs-security` criada
 
-### Limpeza & Migração (17/03/2026)
+### Limpeza & Migração Anterior (17/03/2026 início)
 - [x] Remover `wfdb01-docker-folder/` (pasta vazia/obsoleta)
 - [x] Registrar migração `n8n-prometheus-wfdb01/` → `enterprise-observability`
 - [x] Registrar migração `n8n-tuning/` → `enterprise-observability`
-- [x] Atualizar README.md com tabela de componentes migrados
-- [x] Atualizar INDEX.md — remover referências de subprojetos migrados
 
 ---
 
