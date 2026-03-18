@@ -39,3 +39,18 @@ Veja [**TODO.md**](TODO.md) para lista priorizada de ações.
 ---
 
 **Última Atualização**: 02/02/2026
+
+---
+
+## Sessões Recentes
+
+#### 📅 17/03/2026 - ANA-001 Implementação + Organização
+- [SESSION_REPORT_2026-03-17.md](sessions/2026-03-17/SESSION_REPORT_2026-03-17.md)
+- [FINAL_STATUS_2026-03-17.md](sessions/2026-03-17/FINAL_STATUS_2026-03-17.md)
+- [TODAY_ACTIVITIES_2026-03-17.md](sessions/2026-03-17/TODAY_ACTIVITIES_2026-03-17.md)
+
+#### 📅 18/03/2026 - Bug Fixes P1 + Agentes Copilot + Debate Arquitetura
+- [SESSION_REPORT_2026-03-18.md](sessions/2026-03-18/SESSION_REPORT_2026-03-18.md) — relatório técnico completo
+- [FINAL_STATUS_2026-03-18.md](sessions/2026-03-18/FINAL_STATUS_2026-03-18.md) — estado final + próximos passos
+- [TODAY_ACTIVITIES_2026-03-18.md](sessions/2026-03-18/TODAY_ACTIVITIES_2026-03-18.md) — log do dia
+- [SESSION_RECOVERY_2026-03-18.md](sessions/2026-03-18/SESSION_RECOVERY_2026-03-18.md) — contexto de recuperação

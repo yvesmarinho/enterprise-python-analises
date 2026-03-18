@@ -188,7 +188,10 @@ async def _run_analysis(
         report.latency_events = events
         report.queries_executed.extend(queries)
     except Exception as exc:
-        click.echo(f"FATAL: VictoriaMetrics query failed: {exc}", err=True)
+        click.echo(
+            f"FATAL: VictoriaMetrics query failed: [{type(exc).__name__}] {exc!r}",
+            err=True,
+        )
         sys.exit(1)
 
     # ── Phase B: Infra Correlation (secondary — partial mode on failure) ─────

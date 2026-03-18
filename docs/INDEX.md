@@ -1,16 +1,24 @@
 # 📑 INDEX - Enterprise Python Analysis
 
-**Projeto**: Análise e Otimização de Infraestrutura Docker + N8N Monitoring
-**Última Atualização**: 17/03/2026 19:00
-**Status**: ✅ ANA-001 Implementado (100%) | ✅ Docs Organizados | ⏳ Deploy Pendente
+**Projeto**: Análise de Performance do N8N — Diagnóstico de Lentidão
+**Última Atualização**: 18/03/2026 16:32
+**Status**: ✅ ANA-001 Implementado + Bugs P1 Corrigidos + 8 Agentes Copilot | ⏳ Análise real no wfdb01 pendente (executar próxima sessão)
 
 ---
 
 ## 🎯 Objetivo do Projeto
 
-Analisar recursos de 4 servidores Docker em produção para identificar oportunidades de consolidação e redução de custos através do desligamento de servidor subutilizado.
+> **⚠️ ESCOPO**: Este projeto é de **ANÁLISE APENAS**. Operações de deploy, migração de containers ou gerenciamento de servidores não são tratadas aqui.
 
-**Resultado**: wf005.vya.digital identificado para shutdown - Economia projetada de R$ 7,800-12,600/ano
+**Problema a resolver**: Diagnosticar a **lentidão no N8N** — cada etapa de workflow levando ≥ 1 segundo para executar. Problema reportado desde **janeiro/2026**.
+
+**Abordagem**: Consultar dados históricos do **Prometheus/VictoriaMetrics + Loki** usando a ferramenta `analyze-n8n` (ANA-001), identificar violações de latência, correlacionar com eventos de infraestrutura (Redis, PostgreSQL, APIs externas) e produzir relatório estruturado com causa raiz.
+
+**Fontes de dados**:
+- `Prometheus` (`https://prometheus.vya.digital`) — scraping engine, **15 dias de retenção**, público HTTPS. Dados disponíveis: **2026-03-04 → 2026-03-14** (10 dias, 68 séries, 2 instâncias).
+- `VictoriaMetrics` (interno `http://victoriametrics:8428`) — **12 meses de retenção**, sem DNS público. Acesso via SSH SPA: `source .secrets/wfdb01_connection.sh && wfdb01_tunnel_vm`.
+- `Loki` (`https://loki.vya.digital`) — logs de erro do N8N
+- Dois pontos de coleta: **wf001** (USA) e **wf008** (Brasil) → análise geográfica de latência
 
 ---
 
@@ -28,11 +36,16 @@ enterprise-python-analysis/
 │   ├── Prometheus/                 # Documentação Prometheus + collector-api
 │   └── sessions/                   # Documentação de sessões
 │       ├── 2026-01-16/ … 2026-03-03/
-│       └── 2026-03-17/              # ⭐ Sessão atual
-│           ├── SESSION_RECOVERY_2026-03-17.md
-│           ├── TODAY_ACTIVITIES_2026-03-17.md
-│           ├── SESSION_REPORT_2026-03-17.md
-│           └── FINAL_STATUS_2026-03-17.md
+│       ├── 2026-03-17/              # Sessão anterior
+│       │   ├── SESSION_RECOVERY_2026-03-17.md
+│       │   ├── TODAY_ACTIVITIES_2026-03-17.md
+│       │   ├── SESSION_REPORT_2026-03-17.md
+│       │   └── FINAL_STATUS_2026-03-17.md
+│       └── 2026-03-18/              # ⭐ Sessão atual
+│           ├── SESSION_RECOVERY_2026-03-18.md
+│           ├── TODAY_ACTIVITIES_2026-03-18.md
+│           ├── SESSION_REPORT_2026-03-18.md
+│           └── FINAL_STATUS_2026-03-18.md
 │
 ├── src/n8n_analyzer/               # 🤖 ANA-001 N8N Performance Analyzer (novo)
 │   ├── analyzers/                  # LatencyAnalyzer, CorrelationAnalyzer, Geographic, Loki
@@ -66,31 +79,45 @@ enterprise-python-analysis/
 
 ---
 
-## 📊 Servidores Analisados
+## 📊 Infraestrutura de Servidores
 
-### wf001.vya.digital
-- **Containers**: 22
-- **CPU**: 12.52%
-- **RAM**: ~11 GB / 86.63 GB (13%)
-- **Status**: ✅ Target para migração (alta capacidade)
+### 🟢 Servidores Ativos
 
-### wf002.vya.digital
-- **Containers**: 7
-- **CPU**: 11.85%
-- **RAM**: ~10 GB / 86.63 GB (12%)
-- **Status**: ✅ Target para migração (alta capacidade)
+#### wf001.vya.digital — Docker Host USA
+- **Containers**: 22 (ref. jan/2026)
+- **CPU**: 12.52% | **RAM**: ~11 GB / 86.63 GB (13%)
+- **Papel**: N8N principal + Collector-API + Observability Stack (Grafana, VictoriaMetrics, Loki)
+- **Coletor**: ✅ **Ativo** — ponto de referência de latência USA
+- **Status**: ✅ Operacional
 
-### wf005.vya.digital ⭐
-- **Containers**: 13
-- **CPU**: 6.32%
-- **RAM**: 4.81 GB
-- **Status**: 🎯 **CANDIDATO A DESLIGAMENTO**
+#### wf008.vya.digital — Docker Host Brasil
+- **Papel**: VPS Brasil + Collector-API
+- **Coletor**: ✅ **Ativo** — ponto de referência de latência Brasil
+- **Status**: ✅ Operacional
+- **Observação**: Dados cruzados wf001 (USA) + wf008 (BR) → referência de latência geográfica N8N
 
-### wf006.vya.digital
-- **Containers**: 8
-- **CPU**: 54.66%
-- **RAM**: 12.78 GB
-- **Status**: ⚠️ Alta utilização (não tocar)
+#### wfdb01.vya.digital — Docker Host USA
+- **Papel**: Docker host adicional USA — **hospeda stack de observabilidade** (Prometheus, VictoriaMetrics, Loki, Grafana)
+- **Containers ativos**: enterprise-prometheus, enterprise-victoriametrics, enterprise-postgres, enterprise-grafana, loki-read/write/backend, cAdvisor, node-exporter, alertmanager
+- **Acesso SSH**: SPA via fwknop (`source .secrets/wfdb01_connection.sh` para helpers)
+- **Rede Docker interna**: `enterprise-observability_loki` (compartilhada entre todos os containers)
+- **VictoriaMetrics**: `http://victoriametrics:8428` (interno) — 12 meses de dados; tunnel local: `wfdb01_tunnel_vm`
+- **enterprise-postgres**: pertence ao stack observabilidade (Grafana + Loki) — **não modificar**
+- **Status**: ✅ Operacional
+
+#### wfdb02.vya.digital — Database Server
+- **Papel**: Servidor de banco de dados — PostgreSQL 16.10 (N8N DB + serviços) + MySQL 8.4.6
+- **Importante**: wfdb02 hospeda **dados de aplicação de produção** — não é destino para dados de análise
+- **Status**: ✅ Operacional
+
+### 🔴 Servidores Cancelados (VPS encerrado)
+
+| Servidor | Cancelado em | Motivo | Impacto |
+|---|---|---|---|
+| wf002.vya.digital | Mar/2026 | Contrato VPS cancelado | N8N secundário desativado |
+| wf005.vya.digital | Mar/2026 | Contrato VPS cancelado | Era candidato a shutdown |
+| wf006.vya.digital | Mar/2026 | Contrato VPS cancelado | Alta utilização, encerrado |
+| wfdb03.vya.digital | Mar/2026 | Contrato VPS cancelado | DB server desativado |
 
 ---
 
@@ -198,9 +225,25 @@ Status final e próximos passos:
   - [x] LatencyAnalyzer + CorrelationAnalyzer + GeographicAnalyzer
   - [x] MarkdownReporter + JsonReporter
   - [x] --dry-run validado, SC-001 benchmark < 5 min
-- [ ] ⏳ Deploy Collector-API no wf001/wf002/wf008 (pendente)
-- [ ] ⏳ Run `analyze-n8n` em produção
+  - [x] Bugs corrigidos (le PromQL, math.isnan, repr(exc)) — 18/03/2026
+- [x] **Agentes Copilot especializados** ✅ 5 agentes criados (18/03/2026)
+  - [x] dba, prometheus, observability, victoriametrics, python-dev
+  - [x] Prompts correspondentes em `.github/prompts/`
+- [x] **Debate arquitetura coleta wfdb01** ✅ Consenso v2 (18/03/2026)
+  - [x] `reports/DEBATE_COLETA_WFDB01_2026-03-18.md` — 11 seções, consenso final
+  - [x] Solução aprovada: venv SSH direto no wfdb01 → `victoriametrics:8428` → scp reports
+  - [x] `reports/PROMETHEUS_RECORDING_RULES_N8N_2026-03-18.md` — para enterprise-observability-dashboards
+- [ ] ⏳ Executar `analyze-n8n` no wfdb01 (Run 1 histórico + Run 2 drill-down) — **PRÓXIMO**
+- [ ] ⏳ Deploy Collector-API em **wf001** (N8N principal) — pendente
+- [ ] ⏳ Deploy Collector-API em **wf008** (VPS Brasil) — pendente
+- [ ] ⏳ Cruzar dados wf001 + wf008 para análise de latência geográfica
 - [ ] ⏳ Dashboards N8N populando dados
+
+> ⚠️ **wf002 cancelado** — deploy em wf002 não é mais necessário.
+
+### Fase 4: Migração wf005 ✅ RESOLVIDA (Mar/2026)
+- [x] wf005 teve contrato VPS cancelado — migração não precisou de execução manual
+- [x] wf002 e wfdb03 também cancelados — consolidação natural da infraestrutura
 
 ### Fase 5: Organização & Segurança ✅ 100% (17/03/2026)
 - [x] Varredura completa de credenciais hardcoded (2 rodadas)
@@ -211,32 +254,27 @@ Status final e próximos passos:
 - [x] Atualização README, INDEX, TODO
 - [x] Documentação sessão 2026-03-17 criada e finalizada
 
-### Fase 4: Migração wf005 ⏳ 0%
-- [ ] Aprovação do plano de migração
-- [ ] Agendamento de janela de manutenção
-- [ ] Execução da migração
-- [ ] Validação pós-migração (72h)
-- [ ] Desligamento de wf005
-
 ---
 
 ## 🎯 Próximas Ações
 
 ### Prioridade ALTA (Esta Semana)
-1. ⏳ Obter aprovação para migração
-2. ⏳ Agendar janela de manutenção
-3. ⏳ Executar backup completo de wf005
-4. ⏳ Validar conectividade wf005 ↔ wf001/wf002
+1. ⏳ Deploy Collector-API em wf001 (N8N principal)
+2. ⏳ Deploy Collector-API em wf008 (VPS Brasil)
+3. ⏳ Validar coleta das 9 métricas N8N em wf001
+4. ⏳ Cruzar dados wf001 + wf008 para latência geográfica
+5. ⏳ Verificar dashboards N8N populando no Grafana
 
 ### Prioridade MÉDIA (Próxima Semana)
-1. ⏳ Executar migração de containers
-2. ⏳ Monitorar por 72h
-3. ⏳ Validar funcionalidades
+1. ⏳ Executar `analyze-n8n` em produção com dados reais
+2. ⏳ Configurar alertas Prometheus
+3. ⏳ Dashboard de latência geográfica Brasil × USA
 
-### Prioridade BAIXA (Após Validação)
-1. ⏳ Desligar wf005 definitivamente
-2. ⏳ Documentar economia alcançada
-3. ⏳ Relatório pós-migração
+### Resolvidas Automaticamente (Mar/2026)
+- ✅ ~~Migração wf005~~ — servidor cancelado
+- ✅ ~~Deploy em wf002~~ — servidor cancelado
+- ✅ ~~Monitorar wf006~~ — servidor cancelado
+- ✅ ~~Aprovação de migração~~ — encerramento de contrato
 
 ---
 

@@ -17,36 +17,21 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
 **Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
+**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- [ ] **I. Production Safety**: Does this feature write to or restart any production service?
-  If yes, execution MUST be gated behind 20:30 and require manual confirmation.
-- [ ] **II. Observability-First**: Are all data sources Prometheus/VictoriaMetrics APIs or
-  the `monitor_user` read-only DB account? Direct production DB writes are prohibited.
-- [ ] **III. Security**: Are credentials stored in `.secrets/` with permissions 640?
-  Are they excluded from git? Does SSH access use SPA (fwknop)?
-  Does no script log or embed credentials in its output?
-- [ ] **IV. Reproducible Analysis**: Do scripts accept explicit time-range parameters?
-  Do output reports include metric source, PromQL query, and time range?
-  Does the script declare its Analysis Registry ID (e.g., `# ANA-001`) at the top?
-- [ ] **V. Data Integrity**: Is the analysis scope clearly bounded per its Analysis Registry entry?
-  Are multi-region metrics (wf001 US East / wf008 Brazil) labelled separately?
-  Is geographic latency documented separately from application latency?
-- [ ] **VI. Analysis Registry**: Is this analysis registered in the Analysis Registry
-  section of `constitution.md` before work begins? Does it have an ANA-NNN identifier,
-  objective doc, scope, and primary metric defined?
+[Gates determined based on constitution file]
 
 ## Project Structure
 

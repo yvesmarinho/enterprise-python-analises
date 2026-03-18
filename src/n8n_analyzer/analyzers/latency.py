@@ -9,6 +9,7 @@ SC-002: all nodes (clean + violations) are collected.
 from __future__ import annotations
 
 import logging
+import math
 from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 
@@ -24,13 +25,20 @@ logger = logging.getLogger(__name__)
 # Latency violation threshold in seconds (FR-003)
 VIOLATION_THRESHOLD_SECONDS = 1.0
 
-# PromQL expressions — use histogram_quantile over the full bucket metric
+# PromQL expressions — workflow-level histogram (node-level metric unavailable).
+# Adaptation: n8n_node_execution_duration_seconds_bucket not present in production;
+# using n8n_workflow_execution_duration_seconds_bucket (workflow granularity).
+# NOTE: `le` MUST be included in `sum by` — histogram_quantile requires the le label.
 _QUANTILE_EXPR = (
     "histogram_quantile({quantile}, "
-    "sum by (workflow_id, workflow_name, node_name, node_type, instance) ("
-    "rate(n8n_node_execution_duration_seconds_bucket[{window}])"
+    "sum by (workflow_id, workflow_name, instance, le) ("
+    "rate(n8n_workflow_execution_duration_seconds_bucket[{window}])"
     "))"
 )
+
+# Sentinel values to indicate workflow-granularity in LatencyEvent.node_* fields
+_NODE_NAME_WORKFLOW_LEVEL = "[workflow]"
+_NODE_TYPE_WORKFLOW_LEVEL = "[workflow-level]"
 
 
 class LatencyAnalyzer:
@@ -188,12 +196,11 @@ def _step_to_range_window(step: str) -> str:
 def _build_series_index(
     results: list[tuple[dict, list[float], list[str]]]
 ) -> dict[tuple, dict[float, float]]:
-    """Build a (workflow_id, node_name, instance) → {timestamp: value} index."""
+    """Build a (workflow_id, instance) → {timestamp: value} index."""
     index: dict[tuple, dict[float, float]] = {}
     for labels, timestamps, values in results:
         key = (
             labels.get("workflow_id", ""),
-            labels.get("node_name", ""),
             labels.get("instance", ""),
         )
         ts_map: dict[float, float] = {}
@@ -213,14 +220,18 @@ def _series_to_events(
     p50_index: dict,
     p99_index: dict,
 ) -> list[LatencyEvent]:
-    """Convert a single p95 metric series into a list of LatencyEvent objects."""
+    """Convert a single p95 workflow metric series into LatencyEvent objects.
+
+    Uses workflow-level granularity (n8n_workflow_execution_duration_seconds).
+    node_name and node_type are set to sentinel values indicating this.
+    """
     workflow_id = labels.get("workflow_id", "unknown")
     workflow_name = labels.get("workflow_name", workflow_id)
-    node_name = labels.get("node_name", "unknown")
-    node_type = labels.get("node_type", "unknown")
+    node_name = _NODE_NAME_WORKFLOW_LEVEL
+    node_type = _NODE_TYPE_WORKFLOW_LEVEL
     source_host = labels.get("instance", "unknown")
 
-    series_key = (workflow_id, node_name, source_host)
+    series_key = (workflow_id, source_host)
     p50_map = p50_index.get(series_key, {})
     p99_map = p99_index.get(series_key, {})
 
@@ -230,8 +241,8 @@ def _series_to_events(
             p95_val = float(raw_val)
         except (ValueError, TypeError):
             continue
-        if p95_val <= 0.0:
-            continue  # VM returns NaN as "NaN" string — skip
+        if p95_val <= 0.0 or math.isnan(p95_val):
+            continue  # skip NaN (no executions in window) and zero/negative values
 
         executed_at = datetime.fromtimestamp(ts, tz=timezone.utc)
         # Use p95 as the representative duration; p50/p99 stored differently if needed

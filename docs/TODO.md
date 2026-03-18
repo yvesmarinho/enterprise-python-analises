@@ -1,8 +1,8 @@
 # ✅ TODO - Enterprise Python Analysis
 
-**Última Atualização**: 17/03/2026 - 19:00
-**Sessão Atual**: 2026-03-17 — Implementação ANA-001 + Organização + Encerramento
-**Última sessão de trabalho**: 17/03/2026 | **Data**: 17/03/2026
+**Última Atualização**: 18/03/2026 - 16:32
+**Sessão Atual**: 2026-03-18 — Encerramento de sessão
+**Última sessão de trabalho**: 18/03/2026 | **Data**: 18/03/2026
 
 ---
 
@@ -11,17 +11,86 @@
 | Categoria | Status | Progresso |
 |-----------|--------|-----------|
 | Análise de Infraestrutura | ✅ Completo | 100% |
-| Plano de Migração | ✅ Completo | 100% |
+| Plano de Migração | ✅ Resolvido (VPS cancelados) | 100% |
 | Integração Prometheus | ✅ Completo | 100% |
-| **ANA-001 N8N Performance Analyzer** | ✅ **Implementado** | **100%** |
+| **ANA-001 N8N Performance Analyzer** | ✅ **Implementado + P1 validado** | **100%** |
+| **ANA-001 Agentes Copilot** | ✅ **5 agentes + 5 prompts criados** | **100%** |
+| **ANA-001 Debate Arquitetura (coleta wfdb01)** | ✅ **Consenso final v2** | **100%** |
+| **ANA-001 Análise Real (executar no wfdb01)** | ⏳ Pendente — aguarda SSH após 20:30 | **0%** |
+| **Recording Rules N8N** | ✅ **Documento gerado** (aguarda aplicação em enterprise-observability-dashboards) | **80%** |
 | **Grafana Dashboards N8N** | ⚠️ Criados s/ dados | **50%** |
-| **Deploy N8N Collector** | ⏳ Pendente | **0%** |
-| Aprovação do Plano Migração | ⏳ Pendente | 0% |
-| Backup de wf005 | ⏳ Pendente | 0% |
-| Execução de Migração | ⏳ Pendente | 0% |
-| Validação Pós-Migração | ⏳ Pendente | 0% |
+| **Deploy N8N Collector (wf001)** | ⏳ Pendente | **0%** |
+| **Deploy N8N Collector (wf008 BR)** | ⏳ Pendente | **0%** |
+| **Latência wf001 × wf008 cross-ref** | ⏳ Planejado | **0%** |
+| ~~Aprovação Plano Migração~~ | ✅ N/A (VPS cancelados) | — |
+| ~~Backup wf005/wf006~~ | ✅ N/A (VPS cancelados) | — |
+| ~~Migração wf005/wf006~~ | ✅ N/A (VPS cancelados) | — |
 
 ---
+
+## 🔥 Prioridade Imediata — ANA-001 Análise Real (wfdb01)
+
+> Executar após 20:30 (janela de manutenção). Ver detalhes em `reports/DEBATE_COLETA_WFDB01_2026-03-18.md`
+
+- [ ] SSH SPA → wfdb01 → criar venv em `/opt/docker_user/enterprise-python-analysis/`
+- [ ] Run 1: `analyze-n8n --from 2026-01-01 --to 2026-03-18 --step-global 1h --output-format json` via `victoriametrics:8428`
+- [ ] `scp` dos reports para local → análise com pandas/DuckDB
+- [ ] Run 2: drill-down no período de pico identificado (`--step-global 5m --step-drilldown 1m`)
+- [ ] Identificar causa-raiz do gargalo → documentar conclusão em `reports/ANA001_CONCLUSAO.md`
+- [ ] Submeter `reports/PROMETHEUS_RECORDING_RULES_N8N_2026-03-18.md` ao responsável por `enterprise-observability-dashboards`
+- [ ] Encerrar ANA-001 após causa confirmada + documentada
+
+---
+
+## ✅ Concluído em 18/03/2026 (tarde)
+
+### Validação P1 ANA-001 + Descoberta Arquitetura Dual-DB
+- [x] P1: `pip install -e .` — pacote `n8n-analyzer` instalado com sucesso
+- [x] P1: Validar `--dry-run` com config real (exit 0 ✅)
+- [x] P1: Enumerar métricas N8N no Prometheus (18 métricas, 68 séries, 10 dias de dados)
+- [x] Descoberta: `n8n_node_execution_duration_seconds` AUSENTE — só existe granularidade workflow-level
+- [x] Adaptação ANA-001: `latency.py` atualizado para `n8n_workflow_execution_duration_seconds_bucket`
+- [x] Arquitetura dual-DB corrigida: Prometheus (15d, público) + VictoriaMetrics (12mo, interno)
+- [x] `config.py` — dual-DB logic + `using_prometheus_fallback` flag
+- [x] `.env.example` — documentado Prometheus vs VictoriaMetrics + SSH SPA
+- [x] `spec.md` — 2 clarifications Session 2026-03-18 registradas
+- [x] `scripts/check_prometheus_n8n_metrics.py` — atualizado para dual-backend (Prometheus + VictoriaMetrics)
+- [x] `.secrets/wfdb01_connection.sh` — criado com comandos fwknop SPA + funções helpers (tunnel VM)
+
+### Atualização de Infraestrutura (18/03/2026 manhã)
+- [x] Registrar cancelamento VPS: wf002, wf005, wfdb03 (Mar/2026)
+- [x] Atualizar arquitetura de coletores: wf001 + wf008 (dois pontos de latência)
+- [x] Reclassificar tarefas obsoletas (migração wf005 — N/A)
+- [x] Atualizar INDEX.md, TODO.md, SESSION_RECOVERY com nova infraestrutura
+
+### Criação de Agentes Copilot
+- [x] `.github/agents/session.start-first.agent.md`
+- [x] `.github/agents/session.start.agent.md`
+- [x] `.github/agents/session.end.agent.md`
+- [x] Prompts correspondentes em `.github/prompts/`
+
+### Agentes Especializados wfdb01 (18/03/2026 tarde)
+- [x] `.github/agents/dba.agent.md` + `.github/prompts/dba.prompt.md` — DBA PostgreSQL 16
+- [x] `.github/agents/prometheus.agent.md` + `.github/prompts/prometheus.prompt.md` — Prometheus PromQL
+- [x] `.github/agents/observability.agent.md` + `.github/prompts/observability.prompt.md` — Grafana/Loki
+- [x] `.github/agents/victoriametrics.agent.md` + `.github/prompts/victoriametrics.prompt.md` — VM + SSH tunnel
+- [x] `.github/agents/python-dev.agent.md` + `.github/prompts/python-dev.prompt.md` — ANA-001 dev
+
+### Debate Técnico + Artefatos (18/03/2026 tarde)
+- [x] Bugs ANA-001 corrigidos: `le` ausente em PromQL, `math.isnan()`, `repr(exc)` no CLI
+- [x] `tmp/debug_prometheus_query.py` — script standalone de teste de queries
+- [x] `reports/DEBATE_COLETA_WFDB01_2026-03-18.md` — debate completo v2 (11 seções)
+  - Premissas corrigidas: short-term project, wfdb02=app data, enterprise-postgres=observability
+  - Consenso final: venv SSH (Opção 1) vs container efêmero (Opção 2); venv recomendado
+- [x] `reports/PROMETHEUS_RECORDING_RULES_N8N_2026-03-18.md` — recording rules para enterprise-observability-dashboards
+
+### Encerramento de Sessão (18/03/2026)
+- [x] SESSION_REPORT_2026-03-18.md criado
+- [x] FINAL_STATUS_2026-03-18.md criado
+- [x] Varredura de credenciais: limpa
+- [x] docs/INDEX.md atualizado com SESSION_REPORT + FINAL_STATUS
+- [x] docs/README.md atualizado com sessão 2026-03-18
+- [x] git commit + push
 
 ## ✅ Concluído em 17/03/2026 (sessão completa)
 
@@ -57,63 +126,71 @@
 
 ---
 
-## 🔥 Prioridade MÁXIMA (Próxima Sessão - URGENTE)
+## 🔥 Próxima Ação — ANA-001 Análise Real
 
-### ⚠️ Resolver Dashboards N8N Sem Dados
-**Status Atual (03/03/2026 19:00)**:
-- ✅ 3 dashboards N8N criados e deployados em wfdb01
-- ❌ Dashboards sem dados (gráficos vazios)
-- ❌ Métricas N8N não encontradas no VictoriaMetrics
-- ❌ Coletor N8N não deployado ainda
+### Executar análise com dados Prometheus disponíveis (2026-03-04 → 2026-03-14)
+- [ ] `python scripts/analyze_n8n_performance.py --from 2026-03-04 --to 2026-03-14 --output-format markdown`
+- [ ] Validar relatório gerado em `reports/`
+- [ ] Verificar identificação de violações de latência (≥ 1s)
+- [ ] Confirmar labels de causa raiz (QUEUE_DEPTH_SPIKE, DB_SLOW_QUERY, etc)
 
-**Causa Raiz**: Collector-API com módulo N8N **NÃO ESTÁ DEPLOYADO** nos servidores N8N (wf001/wf002/wf008)
-
-**Solução Necessária**:
-1. **Deploy do Collector-API com N8N** nos servidores N8N
-   - Deploy em wf001.vya.digital (N8N principal)
-   - Deploy em wf002.vya.digital (N8N secundário)
-   - Deploy em wf008.vya.digital (N8N Brasil)
-
-2. **Validar coleta de métricas**
-   - Verificar logs: `docker logs collector-api | grep n8n`
-   - Verificar métricas: `curl localhost:8000/metrics | grep n8n_`
-   - Verificar Pushgateway: `curl pushgateway:9091/metrics | grep n8n_`
-   - Verificar VictoriaMetrics: `curl victoria-metrics:8428/api/v1/label/__name__/values | grep n8n`
-
-3. **Verificar dashboards Grafana**
-   - Aguardar 2-3 minutos após deploy
-   - Refresh dashboards (Ctrl+F5)
-   - Validar população de dados
+### Para dados históricos completos (12 meses — VictoriaMetrics)
+- [ ] Abrir SSH SPA + tunnel:
+  ```
+  source .secrets/wfdb01_connection.sh && wfdb01_tunnel_vm
+  ```
+- [ ] Executar com VICTORIA_METRICS_URL:
+  ```
+  VICTORIA_METRICS_URL=http://localhost:8428 python scripts/analyze_n8n_performance.py --from 2025-03-18 --to 2026-03-18
+  ```
 
 ---
 
-## 🔥 Prioridade CRÍTICA (Próxima Sessão - 45 min)
+## 🔥 Prioridade MÁXIMA (Próxima Ação - URGENTE)
 
-### Deploy Módulo N8N ⏳ URGENTE
-- [ ] **Deploy da imagem no wf001.vya.digital**
-  - [ ] SSH no servidor wf001
-  - [ ] Identificar nome correto do serviço no docker-compose.yml
-  - [ ] Pull nova imagem: adminvyadigital/n8n-collector-api:latest
-  - [ ] Restart container prod-collector-api
-  - [ ] Aguardar 2-3 minutes (2 ciclos de coleta)
+### Deploy Collector-API N8N nos Pontos Ativos
+**Contexto Atualizado (18/03/2026)**:
+- wf002 — **cancelado**
+- wf005 — **cancelado**
+- wf006 — **cancelado**
+- wfdb03 — **cancelado**
+- wf001 — **ativo**, docker host USA — N8N + Collector, ponto latência USA
+- wf008 — **ativo**, docker host Brasil — Collector, ponto latência BR
+- wfdb01 — **ativo**, docker host USA
+- wfdb02 — **ativo**, database server (MySQL + PostgreSQL)
 
-- [ ] **Validação de Logs**
-  - [ ] docker logs -f prod-collector-api | grep n8n
-  - [ ] Confirmar "n8n_collector_enabled"
-  - [ ] Confirmar "n8n_workflows_fetched" count=X
-  - [ ] Confirmar "n8n_executions_fetched" total=Y new=Z
-  - [ ] Verificar ausência de "n8n_api_request_errors"
+**Objetivo**: Com coletores em wf001 (USA) + wf008 (BR) é possível medir latência das respostas N8N de duas regiões geográficas distintas, cruzando os dados para referência.
 
-- [ ] **Validação de Métricas**
-  - [ ] docker exec prod-collector-api curl /metrics | grep n8n_
-  - [ ] curl pushgateway/metrics | grep n8n_
-  - [ ] Prometheus: Query n8n_workflow_active_status
-  - [ ] Verificar 9 métricas N8N disponíveis
+**Deploy em wf001.vya.digital** ⏳
+- [ ] SSH no servidor wf001
+- [ ] Identificar nome do serviço collector no docker-compose.yml
+- [ ] Pull nova imagem: `adminvyadigital/n8n-collector-api:latest`
+- [ ] Restart container `prod-collector-api`
+- [ ] Aguardar 2-3 min (2 ciclos de coleta)
 
-- [ ] **Restart Grafana e Validação Dashboards**
-  - [ ] docker restart enterprise-grafana (aplicar foldersFromFilesStructure)
-  - [ ] Verificar pastas: N8N/, MySQL/, PostgreSQL/, Docker/
-  - [ ] Abrir dashboards N8N e verificar dados populando
+**Validação wf001** ⏳
+- [ ] `docker logs -f prod-collector-api | grep n8n`
+- [ ] Confirmar `n8n_collector_enabled`, `n8n_workflows_fetched`, `n8n_executions_fetched`
+- [ ] `docker exec prod-collector-api curl /metrics | grep n8n_`
+- [ ] Verificar 9 métricas N8N disponíveis no VictoriaMetrics
+
+**Deploy em wf008.vya.digital (BR)** ⏳
+- [ ] SSH no servidor wf008
+- [ ] Deploy Collector-API com módulo N8N
+- [ ] Configurar variáveis (N8N_BASE_URL, N8N_API_KEY)
+- [ ] Apontar Pushgateway para stack central
+
+**Validação wf008** ⏳
+- [ ] Confirmar coleta de métricas N8N
+- [ ] Verificar envio para Pushgateway/VictoriaMetrics
+
+**Latência Geográfica (wf001 USA × wf008 BR)** ⏳
+- [ ] Confirmar métricas de ambos os coletores no Grafana
+- [ ] Criar/atualizar dashboard de latência geográfica
+- [ ] Executar `analyze-n8n --geographic` com dados reais dos dois pontos
+- [ ] Validar cruzamento de dados para referência de RTT
+
+---
 
 ---
 
@@ -161,202 +238,40 @@
   - Alert: memory_usage > 200MB (high memory)
   - Alert: database_latency > 500ms (slow database)
 
-### Migração de Infraestrutura - Pré-Migração
-- [ ] **Aprovar plano de migração**
-  - Revisar migration_plan.json com stakeholders
-  - Obter sign-off técnico e de negócio
-  - Documentar aprovações
+### Migração de Infraestrutura ✅ RESOLVIDA (Mar/2026)
 
-- [ ] **Agendar janela de manutenção**
-  - Definir data/hora (recomendado: madrugada ou fim de semana)
-  - Duração estimada: 4-8 horas
-  - Comunicar equipes afetadas
-  - Criar evento no calendário compartilhado
-
-- [ ] **Backup completo de wf005**
-  - [ ] Backup de todos os volumes Docker
-  - [ ] Export de configurações de containers
-  - [ ] Backup de docker-compose files (se existirem)
-  - [ ] Validar integridade dos backups
-
-- [ ] **Validar conectividade**
-  - Testar rede entre wf005 ↔ wf001
-  - Testar rede entre wf005 ↔ wf002
-  - Verificar firewall rules
-  - Documentar requisitos de rede
-
-- [ ] **Executar port scanner**
-  - Buscar arquivos docker-compose.yml em todos os servidores
-  - Executar docker_compose_ports_scanner.py
-  - Identificar conflitos potenciais
-  - Planejar remapeamento de portas se necessário
+> wf002, wf005, wf006 e wfdb03 tiveram os contratos VPS **cancelados** em março de 2026.
+> A migração planejada não precisou ser executada manualmente.
+> Infraestrutura ativa consolidada: **wf001** + **wf008** + **wfdb01** + **wfdb02**
 
 ---
 
 ## ⚙️ Prioridade MÉDIA (Próxima Semana)
 
-### Fase 2: Execução da Migração
+### Observability e Análise de Performance
 
-#### Containers Críticos (Migrar Primeiro)
-- [ ] **n8n** (wf005 → wf001)
-  - Parar container em wf005
-  - Copiar volumes
-  - Iniciar em wf001
-  - Testar workflows
-  - Validar webhooks
+#### Grafana — Dashboards de Latência Geográfica
+- [ ] Criar dashboard **Network Latency: Brasil (wf008) × USA (wf001)**
+  - Comparar métricas N8N dos dois coletores
+  - Painel de RTT estimado entre os pontos
+  - Histórico de latência por período
+- [ ] Dashboard: Collector API Overview consolidado (wf001 + wf008)
+- [ ] Dashboard: Database Health (apontando para DBs ativos)
 
-- [ ] **postgres** (wf005 → wf002)
-  - Backup do banco de dados
-  - Parar container
-  - Copiar dados
-  - Iniciar em wf002
-  - Validar conectividade
-  - Testar aplicações dependentes
+#### Prometheus — Alertas
+- [ ] Alert: `collector_api_up == 0` (serviço fora)
+- [ ] Alert: `push_failure_time_seconds > 0` (falha de push)
+- [ ] Alert: `memory_usage > 200MB`
+- [ ] Alert: `n8n_workflow_error_rate > 5%`
 
-- [ ] **keycloak** (wf005 → wf002)
-  - Export de configuração
-  - Parar container
-  - Migrar volumes
-  - Iniciar em wf002
-  - Testar autenticação
-
-#### Containers de Monitoramento
-- [ ] **grafana** (wf005 → wf001)
-  - Backup de dashboards
-  - Migrar configuração
-  - Reconectar datasources
-  - Validar visualizações
-
-- [ ] **prometheus** (wf005 → wf001)
-  - Migrar dados históricos
-  - Atualizar targets
-  - Validar métricas
-
-- [ ] **loki** (wf005 → wf001)
-  - Migrar logs
-  - Reconectar com grafana
-  - Testar queries
-
-#### Containers Auxiliares
-- [ ] **redis** (wf005 → wf001)
-  - Backup de dados (se persistente)
-  - Migrar container
-  - Atualizar referências em apps
-
-- [ ] **minio** (wf005 → wf001)
-  - Backup de buckets
-  - Migrar dados
-  - Validar access keys
-
-- [ ] **rabbitmq** (wf005 → wf001)
-  - Export de configuração
-  - Migrar queues
-  - Testar producers/consumers
-
-- [ ] **caddy** (wf005 → wf002)
-  - Backup de Caddyfile
-  - Migrar certificados SSL
-  - Atualizar DNS (se necessário)
-  - Validar reverse proxy
-
-- [ ] **waha** (wf005 → wf002)
-  - Migrar configuração
-  - Testar integração WhatsApp
-
-- [ ] **metabase** (wf005 → wf002)
-  - Migrar container (já configurado externamente)
-  - Validar dashboards
-
-- [ ] **temporal** (wf005 → wf001)
-  - Migrar workflows
-  - Validar workers
+#### Análise Geográfica com ANA-001
+- [ ] Executar `analyze-n8n --geographic` com dados reais de wf001 + wf008
+- [ ] Gerar relatório de latência com `analyze-n8n --output reports/`
+- [ ] Documentar padrões de latência Brasil × USA
 
 ---
 
-## 🔍 Prioridade MÉDIA (Durante Migração)
-
-### Validação e Testes
-- [ ] **Health checks**
-  - Verificar status de todos os containers migrados
-  - Executar health check endpoints
-  - Validar dependências entre serviços
-
-- [ ] **Smoke tests**
-  - Testar funcionalidades principais de cada app
-  - Validar integrações críticas
-  - Verificar autenticação/autorização
-
-- [ ] **Verificação de logs**
-  - Monitorar logs de todos os containers
-  - Identificar erros ou warnings
-  - Resolver issues imediatamente
-
----
-
-## 📊 Prioridade MÉDIA (Pós-Migração)
-
-### Fase 3: Monitoramento (72 horas)
-- [ ] **Monitorar métricas em wf001**
-  - CPU usage (alertar se > 70%)
-  - RAM usage (alertar se > 80%)
-  - Disk I/O
-  - Network throughput
-  - Container health
-
-- [ ] **Monitorar métricas em wf002**
-  - Mesmas métricas de wf001
-  - Comparar com baseline pré-migração
-
-- [ ] **Análise de logs**
-  - Verificar logs de aplicações 2x por dia
-  - Documentar erros encontrados
-  - Resolver issues críticos imediatamente
-
-- [ ] **Feedback de usuários**
-  - Coletar relatos de problemas
-  - Criar tickets para issues
-  - Comunicar status
-
-- [ ] **Testes de carga** (opcional)
-  - Simular carga normal de produção
-  - Identificar gargalos
-  - Ajustar recursos se necessário
-
----
-
-## 🔴 Prioridade BAIXA (Após 72h de Estabilidade)
-
-### Fase 4: Desligamento Final
-- [ ] **Validar estabilidade**
-  - Confirmar 72h sem incidentes críticos
-  - Revisar métricas acumuladas
-  - Obter aprovação final
-
-- [ ] **Backup final de wf005**
-  - Último backup antes do desligamento
-  - Armazenar em local seguro
-  - Documentar localização
-
-- [ ] **Desligar containers restantes**
-  - Parar todos os containers em wf005
-  - Validar que nenhum serviço depende deles
-
-- [ ] **Desligar servidor wf005**
-  - Executar shutdown do sistema
-  - Desativar no provedor de nuvem (se aplicável)
-  - Atualizar monitoramento para não alertar
-
-- [ ] **Atualizar infraestrutura**
-  - Atualizar inventário de servidores
-  - Atualizar documentação de rede
-  - Atualizar diagramas de arquitetura
-  - Atualizar runbooks
-
-- [ ] **Documentar economia**
-  - Calcular economia real alcançada
-  - Comparar com projeção inicial
-  - Criar relatório de ROI
-  - Apresentar resultados para gestão
+## 🔴 Prioridade BAIXA (Backlog)
 
 ---
 

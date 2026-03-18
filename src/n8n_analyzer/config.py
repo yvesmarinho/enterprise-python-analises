@@ -17,14 +17,21 @@ class ConfigError(Exception):
 
 
 # Required environment variable names
-_REQUIRED_VARS = [
-    "VICTORIA_METRICS_URL",
-    "LOKI_URL",
-]
+# Stack architecture (from docker-compose.yaml in docs/Prometheus/):
+#   Prometheus  — public HTTPS (Traefik), 15d retention, scrapes all targets.
+#   VictoriaMetrics — internal only (http://victoriametrics:8428, no Traefik),
+#                     12-month retention, receives remote_write from Prometheus.
+# From a local analysis machine:
+#   - PROMETHEUS_URL is always reachable (https://prometheus.vya.digital).
+#   - VICTORIA_METRICS_URL requires SSH tunnel or running from inside wfdb01 network.
+# ANA-001 uses VICTORIA_METRICS_URL when set (longer history); falls back to
+# PROMETHEUS_URL (public, max 15d) when not set or unreachable.
+_REQUIRED_VARS: list[str] = []
 
 # Optional vars with defaults
 _DEFAULTS = {
     "PROMETHEUS_URL": "https://prometheus.vya.digital",
+    "LOKI_URL": "https://loki.vya.digital",
     "REQUEST_TIMEOUT_SECONDS": "30",
     "CORRELATION_WINDOW_SECONDS": "30",
 }
@@ -95,8 +102,20 @@ class Config:
             )
 
         # 6. Assign (values never logged)
-        self.victoria_metrics_url: str = os.environ["VICTORIA_METRICS_URL"].rstrip("/")
-        self.loki_url: str = os.environ["LOKI_URL"].rstrip("/")
+        # VictoriaMetrics: internal-only (no public DNS). Only reachable via
+        # SSH tunnel to wfdb01 or when running directly on the server.
+        # Falls back to Prometheus (public, 15d retention) when not set.
+        vm_url = os.environ.get("VICTORIA_METRICS_URL", "").rstrip("/")
+        prometheus_url_val = os.environ.get("PROMETHEUS_URL", "").rstrip("/")
+        self.victoria_metrics_url: str = vm_url or prometheus_url_val
+        self.prometheus_url: str = prometheus_url_val
+        if not self.victoria_metrics_url:
+            raise ConfigError(
+                "Neither VICTORIA_METRICS_URL nor PROMETHEUS_URL is set."
+                " Set at least one in .secrets/ or as an environment variable."
+            )
+        self.using_prometheus_fallback: bool = (not vm_url) and bool(prometheus_url_val)
+        self.loki_url: str = os.environ.get("LOKI_URL", "").rstrip("/")
         self.prometheus_url: str = os.environ.get("PROMETHEUS_URL", "").rstrip("/")
         self.postgres_dsn: str | None = os.environ.get("POSTGRES_DSN")
         self.request_timeout_seconds: int = int(
@@ -109,10 +128,11 @@ class Config:
     def safe_repr(self) -> str:
         """Return config summary with all credential values redacted (for --dry-run)."""
         postgres_dsn_repr = "<set>" if self.postgres_dsn else "<not set>"
+        vm_note = " (fallback: using Prometheus)" if self.using_prometheus_fallback else " (VictoriaMetrics)"
         return (
-            f"victoria_metrics_url = {self.victoria_metrics_url}\n"
-            f"loki_url             = {self.loki_url}\n"
+            f"victoria_metrics_url = {self.victoria_metrics_url}{vm_note}\n"
             f"prometheus_url       = {self.prometheus_url or '<not set>'}\n"
+            f"loki_url             = {self.loki_url}\n"
             f"postgres_dsn         = {postgres_dsn_repr}\n"
             f"request_timeout      = {self.request_timeout_seconds}s\n"
             f"correlation_window   = {self.correlation_window_seconds}s\n"

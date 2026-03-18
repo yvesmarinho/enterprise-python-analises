@@ -219,7 +219,8 @@
     "*.migration.py": "python",
     "*.migration.sql": "sql",
     "*.test.py": "python",
-    ".python-version": "properties"
+    ".python-version": "properties",
+    "markdown.validate.enabled": true
   },
   "tasks": {
     "version": "2.0.0",

@@ -157,6 +157,11 @@ per source host, and a computed "network contribution" estimate.
 
 ## Clarifications
 
+### Session 2026-03-18
+
+- Q: The metric `n8n_node_execution_duration_seconds_bucket` (node-level) assumed in FR-002 is absent from the production Prometheus. Only `n8n_workflow_execution_duration_seconds_bucket` (workflow-level) is available. How to proceed? → A: Proceed with available data. ANA-001 adapts to workflow-level granularity. `LatencyEvent.node_name` and `.node_type` are populated with sentinel values `[workflow]` / `[workflow-level]` to make the adaption explicit in every report. FR-002 is re-scoped: compute p50/p95/p99 **per workflow** (not per node). FR-003 threshold (≥ 1s) remains unchanged. This is recorded in `latency.py` as an inline comment referencing this clarification.
+- Q: `VICTORIA_METRICS_URL` (victoriametrics.vya.digital) does not resolve from the analysis machine. What is the stack architecture? → A: The stack uses two separate backends with complementary roles. **Prometheus** (`https://prometheus.vya.digital`) is the scraping engine and short-term store (15d retention), publicly accessible via Traefik HTTPS. **VictoriaMetrics** is the long-term store (12-month retention), configured as a Prometheus `remote_write` target, accessible **only internally** at `http://victoriametrics:8428` (no Traefik route, no public DNS). VictoriaMetrics is not reachable from a local analysis machine without an SSH tunnel to wfdb01. `Config` uses `VICTORIA_METRICS_URL` as primary (when set via tunnel) and falls back to `PROMETHEUS_URL` (public, 15d cap) automatically. Both expose an identical `/api/v1/query_range` PromQL API. Historical analysis beyond 15 days requires SSH + SPA (Single Packet Authorization via fwknop): `fwknop --rc-file ~/.fwknoprc -n wfdb01 && sleep 3 && ssh -p 5010 -N -L 8428:victoriametrics:8428 archaris@wfdb01.vya.digital`. Connection helpers are in `.secrets/wfdb01_connection.sh`.
+
 ### Session 2026-03-17
 
 - Q: What is the delivery format for the analyzer toolset? → A: Single entry-point script (`scripts/analyze_n8n_performance.py`) with supporting modules under `src/`, installable via pip in editable mode. No Jupyter notebooks. No fragmented per-phase scripts.
