@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from datetime import datetime
 from typing import Any
 
@@ -61,8 +62,20 @@ class LokiCollector(BaseCollector):
             time_to=end,
         )
 
+        headers: dict[str, str] = {}
+        tenant_id = os.environ.get("LOKI_TENANT_ID", "").strip()
+        bearer_token = os.environ.get("LOKI_BEARER_TOKEN", "").strip()
+        if tenant_id:
+            headers["X-Scope-OrgID"] = tenant_id
+        if bearer_token:
+            headers["Authorization"] = f"Bearer {bearer_token}"
+
         try:
-            body = await self._get("/loki/api/v1/query_range", params=params)
+            body = await self._get(
+                "/loki/api/v1/query_range",
+                params=params,
+                headers=headers or None,
+            )
         except Exception as exc:
             raise PartialDataError(self.base_url, f"Loki unreachable: {exc}") from exc
 

@@ -47,7 +47,12 @@ class BaseCollector:
             )
         return self._client
 
-    async def _get(self, path: str, params: dict[str, Any] | None = None) -> dict:
+    async def _get(
+        self,
+        path: str,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+    ) -> dict:
         """HTTP GET with one retry on transient failure.
 
         Returns the parsed JSON response body.
@@ -57,7 +62,7 @@ class BaseCollector:
         last_exc: Exception | None = None
         for attempt in range(2):
             try:
-                response = await client.get(path, params=params)
+                response = await client.get(path, params=params, headers=headers)
                 response.raise_for_status()
                 return response.json()
             except (httpx.HTTPStatusError, httpx.TransportError, httpx.TimeoutException) as exc:

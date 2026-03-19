@@ -206,19 +206,23 @@ async def _run_analysis(
         click.echo(f"WARNING: {exc}", err=True)
         report.unavailable_sections["Infrastructure Correlation"] = str(exc)
 
-    # ── Phase C: Loki error logs (secondary — partial mode on failure) ───────
-    click.echo("[3/4] Querying Loki error logs…")
-    try:
-        loki_analyzer = LokiAnalyzer(loki_collector)
-        loki_result, loki_queries = await loki_analyzer.analyze(
-            from_dt, to_dt, events
-        )
-        report.loki_error_count = loki_result["total_errors"]
-        report.loki_top_errors = loki_result["top_errors"]
-        report.queries_executed.extend(loki_queries)
-    except PartialDataError as exc:
-        click.echo(f"WARNING: {exc}", err=True)
-        report.unavailable_sections["Error Log Summary"] = str(exc)
+    # ── Phase C: Loki error logs (secondary — only if violations exist) ──────
+    violations_present = any(e.status == "violation" for e in events)
+    if violations_present:
+        click.echo("[3/4] Querying Loki error logs…")
+        try:
+            loki_analyzer = LokiAnalyzer(loki_collector)
+            loki_result, loki_queries = await loki_analyzer.analyze(
+                from_dt, to_dt, events
+            )
+            report.loki_error_count = loki_result["total_errors"]
+            report.loki_top_errors = loki_result["top_errors"]
+            report.queries_executed.extend(loki_queries)
+        except PartialDataError as exc:
+            click.echo(f"WARNING: {exc}", err=True)
+            report.unavailable_sections["Error Log Summary"] = str(exc)
+    else:
+        click.echo("[3/4] Skipping Loki error logs (no latency violations to correlate)…")
 
     # ── Phase D: Geographic Analysis ─────────────────────────────────────────
     click.echo("[4/4] Computing geographic breakdown…")
