@@ -1,0 +1,14 @@
+scaffold_version: "1.0.0"
+created_at: "2026-01-16T00:00:00Z"
+updated_at: "2026-03-23T15:30:00Z"
+project:
+  name: enterprise-python-analysis
+  title: Enterprise Python Analysis
+  description: Análise de performance N8N e infraestrutura observável
+  domain: analysis
+  language: python
+  github_repo: ""
+paths:
+  target_dir: /home/yves_marinho/Documentos/DevOps/Vya-Jobs
+  shared_dir: /home/yves_marinho/Documentos/DevOps/.copilot-shared
+profiles_applied: []
