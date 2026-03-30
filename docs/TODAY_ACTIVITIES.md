@@ -1,43 +1,44 @@
 # 📋 TODAY ACTIVITIES
 
-**Link para Sessão Atual**: [2026-03-23](./sessions/2026-03-23/TODAY_ACTIVITIES_2026-03-23.md)
-**Última Atualização**: 23/03/2026
-**Status**: ✅ Sessão 2026-03-23 encerrada (documentação sincronizada)
+**Link para Sessão Atual**: [2026-03-30](./sessions/2026-03-30/TODAY_ACTIVITIES_2026-03-30.md)
+**Última Atualização**: 30/03/2026 (encerramento)
+**Status**: ✅ Sessão 2026-03-30 encerrada
 
 ---
 
-## 🎯 Sessão Ativa: 23/03/2026
+## 🎯 Sessão Ativa: 30/03/2026
 
 ### Foco Principal
-**Encerramento formal da sessão e sincronização de documentação**
+**Análise WF001: correlação estatística, drill-down de causa raiz e instrumentação N8N**
 
 ### Conquistas do Dia
-1. ✅ Recuperação completa de contexto via MCP
-2. ✅ Leitura de regras do Copilot (.copilot-*.md)
-3. ✅ Análise da sessão anterior (2026-02-06)
-4. ✅ Criação de estrutura de sessão 2026-02-09
-5. ✅ Atualização de INDEX.md e TODO.md
-6. ✅ Verificação da organização da raiz (OK)
-7. ✅ Análise completa do VictoriaMetrics
-8. ✅ Criação de script de verificação de métricas
-9. ✅ Confirmação: 496 séries temporais ativas
-10. ✅ Relatório de análise completo gerado
-11. ✅ Renomeação: n8n-monitoring-local → n8n-prometheus-wfdb01
-12. ✅ Atualização de 25+ arquivos com novas referências
+1. ✅ Contexto da sessão 2026-03-23 recuperado
+2. ✅ Debate técnico WF001/VPS publicado
+3. ✅ ANA-001 executado (2026-01-01 a 2026-03-30) via VictoriaMetrics — 0 violações p95 >= 1s
+4. ✅ Fase 1 correlação estatística (pivotada) — 2.247 timestamps, correlações CPU/Net/Load
+5. ✅ Fase 2 drill-down causa raiz — load=28.42 × CPUs 30/03 17:40 UTC (scheduler contention)
+6. ✅ Ação de instrumentação preparada — plano + guard rules + validador automático
+7. ✅ Baseline de instrumentação gerado (sum_raw_negative=289, p95_unique_values=1)
+8. ✅ Bug corrigido: `correlation.py` + `geographic.py` (contracto tuple)
+9. ✅ Testes de regressão: `tests/analyzers/test_series_tuple_order.py` (2 passando)
+10. ✅ Relatório técnico consolidado: `reports/RELATORIO_TECNICO_ANALISE_N8N_2026-03-30.md`
+11. ✅ Inventário VPS normalizado: 4 hosts ativos (wf001/wf008/wfdb01/wfdb02)
 
 ### Status Atual
-- **Projeto**: 🟢 Bem organizado e documentado
-- **Integração Prometheus**: 🟢 100% Operacional (desde 06/02)
-- **VictoriaMetrics**: 🟢 659 MB de dados, 496 séries ativas
-- **Collector API**: 🟢 8,527 requests (24h), zero falhas
-- **Migração wf005**: 🟡 Aguardando aprovação
-- **Contexto**: 🟢 Totalmente recuperado
+- **Projeto**: 🟢 Análise WF001 concluída
+- **ANA-001**: 🟢 0 violações p95 >= 1s (histórico 2026-01-01 a 2026-03-30)
+- **VictoriaMetrics**: 🟢 77 séries de workflow, 48 dias de cobertura
+- **Instrumentação N8N**: 🔴 Fix pendente (sum negativo, bucket único histograma)
+- **cAdvisor wf001**: 🔴 Labels de container ausentes (deploy pendente)
+- **Loki**: 🔴 Autenticação 401 (credenciais/token inválidos)
+- **Sessão**: ✅ Encerrada formalmente
 
-### Pendências
-- ⏳ Testar endpoint /api/ping (requer API_KEY)
-- ⏳ Criar dashboards no Grafana
-- ⏳ Configurar alertas no Prometheus
-- ⏳ Planejar deploy em wf008 (Brasil)
+### Pendências (próxima sessão)
+- 🔴 [P1] Corrigir cAdvisor wf001 — labels de container
+- 🔴 [P1] Corrigir Loki — autenticação 401
+- 🟡 [P2] Gate de proveniência ANA-001 (host por série)
+- 🟡 [P2] Submeter recording rules N8N → enterprise-observability-dashboards
+- 🟢 [P3] Auditoria proveniência scripts wf001_*.py
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 agentName: session-manager
 description: Session initialization and project organization specialist
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Session Manager Agent
@@ -33,6 +33,7 @@ Invoke this agent when:
 - Recover context from previous sessions (README, INDEX, TODO, session documents)
 - Load project rules from `.copilot-rules.md` and `.copilot-*` files incrementally
 - Create session documentation structure (`docs/SESSIONS/YYYY-MM-DD/`)
+- Ensure mandatory chat transcript file is available and active for current session
 
 ### 2. Security & Credentials
 - Scan workspace for exposed credentials or sensitive files
@@ -143,8 +144,18 @@ Invoke this agent when:
      - `SESSION_RECOVERY_[date].md`
      - `DAILY_ACTIVITIES_[date].md` (incremental log)
      - `SESSION_REPORT_[date].md` (incremental reports)
+       - `CHAT_LOG_[date].md` (full chat transcript)
 
-7. **Ready for Work**
+7. **Enable Chat Logging Policy**
+    - Record every interaction in session documents:
+       - User prompt
+       - Copilot full response content
+       - Timestamp
+    - If file size grows too much, continue in:
+       - `CHAT_LOG_[date]_part01.md`, `CHAT_LOG_[date]_part02.md`, ...
+    - Mask sensitive values before persisting content
+
+8. **Ready for Work**
    - Display pending P0/P1 tasks from TODO
    - Request work mode: PROGRAMMING | INFRASTRUCTURE | ANALYSIS
    - Load appropriate domain profile
@@ -201,6 +212,10 @@ Invoke this agent when:
      - Complete activity list with all tasks
      - Update artifacts table with all files
      - Add context for next session recovery
+    - Validate `docs/SESSIONS/[YYYY-MM-DD]/CHAT_LOG_[date].md`
+       - Ensure all chat interactions in the session are recorded
+       - Ensure no sensitive values remain unmasked
+       - Ensure part files are linked when log rotation was required
 
 3. **Update Project Rules (if needed)**
    - Review if any new P0/P1 rules emerged from session work
@@ -290,6 +305,7 @@ docs/
       SESSION_REPORT_YYYY-MM-DD.md
       FINAL_STATUS_YYYY-MM-DD.md
       SESSION_RECOVERY_YYYY-MM-DD.md
+         CHAT_LOG_YYYY-MM-DD.md
   INDEX.md
   TODO.md
 scripts/           # Shell and Python scripts
@@ -385,12 +401,14 @@ A session is properly initialized when:
 - ✅ Previous session context recovered (or initial docs created)
 - ✅ Security scan clean (no exposed credentials)
 - ✅ Session documentation created (`docs/SESSIONS/YYYY-MM-DD/`)
+- ✅ Chat transcript document created and ready for incremental updates
 - ✅ Git status checked and clean
 - ✅ Project structure organized
 - ✅ Ready to receive work assignments
 
 A session is properly closed when:
 - ✅ All session documentation finalized (DAILY_ACTIVITIES, SESSION_REPORT, FINAL_STATUS)
+- ✅ Chat transcript finalized (CHAT_LOG with all interactions)
 - ✅ Core documentation updated (README, INDEX, TODO)
 - ✅ Project rules updated if needed (incremental)
 - ✅ Final security scan completed
@@ -425,5 +443,6 @@ Agent: [Executes full session closure workflow with documentation updates]
 
 ## Version History
 
+- **1.2.0** (2026-03-30): Added mandatory chat transcript policy (`CHAT_LOG`) with full-response capture and part-file rotation
 - **1.1.0** (2026-03-20): Added session end workflow with documentation updates, security scan, and git commit automation
 - **1.0.0** (2026-03-20): Initial agent creation with full session management workflow

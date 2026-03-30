@@ -128,15 +128,15 @@ class GeographicAnalyzer:
                 probe_expr, from_dt, to_dt, _PROBE_STEP, is_primary=False
             )
             probe_values: list[float] = []
-            for _labels, _values, timestamps in series_list:
-                for val_str in _values:
+            for _labels, _, values in series_list:
+                for val_str in values:
                     try:
                         probe_values.append(float(val_str))
                     except (ValueError, TypeError):
                         continue
             if probe_values:
                 rtt_seconds = statistics.median(probe_values)
-        except (PartialDataError, Exception):
+        except PartialDataError:
             # Primary source unavailable — fall back to p50 delta
             qr = None
 

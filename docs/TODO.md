@@ -1,8 +1,8 @@
 # ✅ TODO - Enterprise Python Analysis
 
-**Última Atualização**: 23/03/2026
-**Sessão Atual**: 2026-03-23 — Encerramento de sessão e sincronização documental
-**Última sessão de trabalho**: 23/03/2026 | **Data**: 23/03/2026
+**Última Atualização**: 30/03/2026
+**Sessão Atual**: 2026-03-30 — Análise WF001, Correlação, Drill-down, Instrumentação
+**Última sessão de trabalho**: 30/03/2026 | **Data**: 30/03/2026
 
 ---
 
@@ -60,6 +60,29 @@
 - [x] Sincronização incremental de `docs/INDEX.md`, `docs/TODAY_ACTIVITIES.md`, `README.md`
 - [x] Varredura de segurança concluída (credenciais reais apenas em `.secrets/`)
 - [x] Hygiene de `tmp/` validada (somente `.gitkeep`)
+
+## ✅ Fechamento da Sessão 2026-03-30
+
+- [x] Fase 1 correlação estatística (pivotada) executada — `reports/WF001_FASE1_CORRELACAO_2026-03-30.md`
+- [x] Fase 2 drill-down de causa raiz executada — `reports/WF001_FASE2_DRILLDOWN_2026-03-30.md`
+- [x] Ação de instrumentação N8N preparada — plano, guard rules e validador criados
+- [x] Baseline de instrumentação gerado — `reports/N8N_INSTRUMENTATION_VALIDATION_2026-03-30.json`
+- [x] Debate técnico WF001 publicado — `reports/DEBATE_ESPECIALISTAS_FALHA_ANALISE_DADOS_VPS_2026-03-30.md`
+- [x] Bug corrigido: `correlation.py` e `geographic.py` — contracto tuple `(labels, timestamps, values)`
+- [x] Testes de regressão adicionados — `tests/analyzers/test_series_tuple_order.py` (2 passando)
+- [x] Relatório técnico consolidado da sessão — `reports/RELATORIO_TECNICO_ANALISE_N8N_2026-03-30.md`
+- [x] Inventário VPS atualizado: apenas wf001/wf008/wfdb01/wfdb02 (wf002/wf005/wf006 cancelados)
+- [x] `docs/sessions/2026-03-30/` — todos os arquivos de sessão criados e finalizados
+- [x] Varredura de segurança final: limpa (`.secrets/` preservado)
+
+## 🔴 Pendências Abertas (P1/P2 — próxima sessão)
+
+- [ ] **[P1]** cAdvisor wf001: implantar correção de labels de container (em `enterprise-observability`)
+- [ ] **[P1]** Loki: corrigir autenticação 401 (validar credenciais/token)
+- [ ] **[P2]** ANA-001: implementar gate de proveniência no pipeline (validar host por série antes de correlação)
+- [ ] **[P2]** Submeter recording rules N8N: `reports/PROMETHEUS_RECORDING_RULES_N8N_2026-03-18.md` → `enterprise-observability-dashboards`
+- [ ] **[P3]** Auditoria de proveniência: scripts `scripts/wf001_*.py` — validar mapeamento host vs instance
+- [ ] **[P3]** Revalidar p95 após rollout do fix de instrumentação N8N exporter
 
 ---
 

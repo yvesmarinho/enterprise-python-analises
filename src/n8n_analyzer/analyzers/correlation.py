@@ -111,7 +111,7 @@ class CorrelationAnalyzer:
         snaps: list[InfraMetricSnapshot] = []
         half = timedelta(seconds=self._config.correlation_window_seconds)
 
-        for labels, values, timestamps in series_list:
+        for labels, timestamps, values in series_list:
             metric_name = labels.get("__name__", "unknown")
             instance = labels.get("instance", labels.get("job", "vm"))
 
