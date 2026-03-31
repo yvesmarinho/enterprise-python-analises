@@ -149,6 +149,7 @@ async def _run_analysis(
     from n8n_analyzer.analyzers.geographic import GeographicAnalyzer
     from n8n_analyzer.analyzers.latency import LatencyAnalyzer
     from n8n_analyzer.analyzers.loki_analyzer import LokiAnalyzer
+    from n8n_analyzer.analyzers.provenance import ProvenanceGate
     from n8n_analyzer.collectors.base import PartialDataError
     from n8n_analyzer.collectors.loki import LokiCollector
     from n8n_analyzer.collectors.victoria_metrics import VictoriaMetricsCollector
@@ -181,7 +182,11 @@ async def _run_analysis(
     # ── Phase A: Latency Analysis (primary — exit 1 on failure) ─────────────
     click.echo(f"[1/4] Querying latency metrics ({step_global} step)…")
     try:
-        analyzer = LatencyAnalyzer(vm_collector, config)
+        provenance_gate = ProvenanceGate(
+            allowed_instances=["wf001", "wf008"],
+            expected_job="n8n",
+        )
+        analyzer = LatencyAnalyzer(vm_collector, config, gate=provenance_gate)
         events, queries = await analyzer.analyze(
             from_dt, to_dt, step_global, step_drilldown
         )

@@ -26,6 +26,7 @@ from typing import Optional
 
 import numpy as np
 import requests
+from _audit import audit_end, audit_start
 
 # ---------------------------------------------------------------------------
 # Configuração
@@ -583,6 +584,15 @@ def main():
                         help="Arquivo de saída do relatório Markdown")
     args = parser.parse_args()
 
+    _audit_ctx = audit_start(__file__, args)
+    try:
+        _run(args, _audit_ctx)
+    except Exception:
+        audit_end(__file__, _audit_ctx, outcome="error")
+        raise
+
+
+def _run(args, _audit_ctx):
     print("=" * 70)
     print("FASE 1 — CORRELAÇÃO ESTATÍSTICA WF001")
     print("=" * 70)
@@ -663,6 +673,9 @@ def main():
         lbl, _ = corr_label(corr)
         print(f"  #{rank}  {meta[0]:35}  r={corr:+.4f}  {lbl}")
     print("=" * 70 + "\n")
+
+    json_path = args.output.replace(".md", ".json")
+    audit_end(__file__, _audit_ctx, outcome="ok", output_files=[args.output, json_path])
 
 
 if __name__ == "__main__":

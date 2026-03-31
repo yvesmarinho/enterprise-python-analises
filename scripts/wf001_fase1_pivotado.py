@@ -14,14 +14,15 @@ Saída:
   - reports/WF001_FASE1_CORRELACAO_2026-03-30.json (dados JSON)
 """
 
-import sys
+import argparse
 import json
 import math
-import argparse
+import sys
 from datetime import datetime, timezone
 from typing import Optional
 
 import requests
+from _audit import audit_end, audit_start
 
 # ─────────────────────────────────────────────────────────────────────────────
 VM_URL        = "http://localhost:18428"
@@ -694,6 +695,15 @@ def main():
     parser.add_argument("--output",  default="reports/WF001_FASE1_CORRELACAO_2026-03-30.md")
     args = parser.parse_args()
 
+    _audit_ctx = audit_start(__file__, args)
+    try:
+        _run(args, _audit_ctx)
+    except Exception:
+        audit_end(__file__, _audit_ctx, outcome="error")
+        raise
+
+
+def _run(args, _audit_ctx):
     print("=" * 70)
     print("WF001 FASE 1 (PIVOTADA) — CORRELAÇÃO ESTATÍSTICA")
     print(f"Backend: {args.backend}  |  {START} → {END}  |  step={STEP}")
@@ -774,6 +784,8 @@ def main():
     print(f"RESUMO: load_max={load_max} ({round(float(load_max)/WF001_CPUS,2)}× CPUs) | "
           f"cpu_max={cpu_max}% | iowait_max={iow_max}% | picos={n_sp}")
     print(f"{'=' * 70}\n")
+
+    audit_end(__file__, _audit_ctx, outcome="ok", output_files=[args.output, json_path])
 
 
 if __name__ == "__main__":

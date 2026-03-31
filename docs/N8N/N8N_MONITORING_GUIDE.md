@@ -1,7 +1,7 @@
 # N8N Monitoring Guide
 
-**Servidor:** WF001 (31.220.103.208)  
-**Data de Implementação:** 05/02/2026  
+**Servidor:** WF001 (31.220.103.208)
+**Data de Implementação:** 05/02/2026
 **Status:** ✅ Configurado no Prometheus
 
 ---
@@ -65,18 +65,18 @@ services:
       - "5678:5678"
     environment:
       # Configurações básicas
-      - N8N_HOST=n8n.vya.digital
+      - N8N_HOST=workflow.vya.digital
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
-      - WEBHOOK_URL=https://n8n.vya.digital/
-      
+      - WEBHOOK_URL=https://workflow.vya.digital/
+
       # Métricas Prometheus ✅
       - N8N_METRICS=true
       - N8N_METRICS_PREFIX=n8n_
       - N8N_METRICS_INCLUDE_DEFAULT_METRICS=true
       - N8N_METRICS_INCLUDE_CACHE_METRICS=true
       - N8N_METRICS_INCLUDE_MESSAGE_EVENT_BUS_METRICS=true
-      
+
       # Database (ajustar conforme necessário)
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
@@ -191,8 +191,8 @@ sum(rate(n8n_workflow_executions_total[1h])) by (status)
 
 ```promql
 (
-  sum(rate(n8n_workflow_executions_total{status="error"}[5m])) 
-  / 
+  sum(rate(n8n_workflow_executions_total{status="error"}[5m]))
+  /
   sum(rate(n8n_workflow_executions_total[5m]))
 ) * 100
 ```
@@ -208,7 +208,7 @@ topk(5, sum by (workflow_id) (
 ### Duração Média (P95)
 
 ```promql
-histogram_quantile(0.95, 
+histogram_quantile(0.95,
   sum by (le, workflow_id) (
     rate(n8n_workflow_execution_duration_seconds_bucket[5m])
   )
@@ -218,8 +218,8 @@ histogram_quantile(0.95,
 ### Workflows Mais Lentos (P99)
 
 ```promql
-topk(5, 
-  histogram_quantile(0.99, 
+topk(5,
+  histogram_quantile(0.99,
     sum by (le, workflow_id) (
       rate(n8n_workflow_execution_duration_seconds_bucket[5m])
     )
@@ -232,8 +232,8 @@ topk(5,
 ```promql
 sum by (workflow_id) (
   rate(n8n_workflow_executions_total{status="success"}[5m])
-) 
-/ 
+)
+/
 sum by (workflow_id) (
   rate(n8n_workflow_executions_total[5m])
 )
@@ -308,8 +308,8 @@ groups:
       - alert: N8NHighErrorRate
         expr: |
           (
-            sum(rate(n8n_workflow_executions_total{status="error"}[5m])) 
-            / 
+            sum(rate(n8n_workflow_executions_total{status="error"}[5m]))
+            /
             sum(rate(n8n_workflow_executions_total[5m]))
           ) > 0.1
         for: 5m
@@ -342,7 +342,7 @@ groups:
 ```yaml
 - alert: N8NSlowExecution
   expr: |
-    histogram_quantile(0.95, 
+    histogram_quantile(0.95,
       rate(n8n_workflow_execution_duration_seconds_bucket[5m])
     ) > 300
   for: 10m
@@ -489,8 +489,8 @@ docker compose restart prometheus
 
 ---
 
-**Servidor:** WF001 (31.220.103.208)  
-**Porta:** 5678  
-**Endpoint:** http://31.220.103.208:5678/metrics  
-**Job Prometheus:** n8n  
+**Servidor:** WF001 (31.220.103.208)
+**Porta:** 5678
+**Endpoint:** http://31.220.103.208:5678/metrics
+**Job Prometheus:** n8n
 **Última Atualização:** 05/02/2026

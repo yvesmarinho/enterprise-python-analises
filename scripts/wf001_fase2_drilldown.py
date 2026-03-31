@@ -19,6 +19,7 @@ import re
 from datetime import datetime, timezone
 
 import requests
+from _audit import audit_end, audit_start
 
 VM_URL = "http://localhost:18428"
 START = "2026-03-23T00:00:00Z"
@@ -265,6 +266,15 @@ def main():
     parser.add_argument("--output", default="reports/WF001_FASE2_DRILLDOWN_2026-03-30.md")
     args = parser.parse_args()
 
+    _audit_ctx = audit_start(__file__, args)
+    try:
+        _run(args, _audit_ctx)
+    except Exception:
+        audit_end(__file__, _audit_ctx, outcome="error")
+        raise
+
+
+def _run(args, _audit_ctx):
     base = collect_base(args.backend)
     peak_ts, peak_load = find_peak(base["load"])
     peak_iso = ts_to_iso(peak_ts)
@@ -309,6 +319,9 @@ def main():
     print(f"OK report: {args.output}")
     print(f"OK json:   {args.output.replace('.md','.json')}")
     print(f"Peak: {peak['human']} load={peak['load_abs']} ({peak['load_norm']}x) cpu={peak['cpu_pct']}% iow={peak['iowait_pct']}%")
+
+    json_path = args.output.replace(".md", ".json")
+    audit_end(__file__, _audit_ctx, outcome="ok", output_files=[args.output, json_path])
 
 
 if __name__ == "__main__":

@@ -208,8 +208,8 @@ Path: /opt/docker_user/n8n-monitoring-local/
 **Variáveis de Ambiente** (já configuradas):
 ```bash
 N8N_URL=https://workflow.vya.digital/          ✅
-N8N_API_KEY=eyJhbGci... (JWT válido até 2027)   ✅
-COLLECTOR_API_KEY=BR*sL9aqutR...                ✅
+N8N_API_KEY=<REDACTED>                          ✅
+COLLECTOR_API_KEY=<REDACTED>                    ✅
 PUSHGATEWAY_URL=https://prometheus.vya.digital/pushgateway ✅
 ```
 

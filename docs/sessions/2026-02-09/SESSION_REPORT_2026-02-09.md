@@ -122,7 +122,7 @@ docker exec prod-collector-api cat /app/src/config.py | grep n8n
 # Verificou variáveis de ambiente
 docker exec prod-collector-api env | grep N8N
 # N8N_URL=https://workflow.vya.digital/
-# N8N_API_KEY=eyJhbGci... ✅ CONFIGURADO CORRETAMENTE
+# N8N_API_KEY=<REDACTED> ✅ CONFIGURADO CORRETAMENTE
 ```
 
 **Resultado**:

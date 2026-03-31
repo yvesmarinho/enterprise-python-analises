@@ -69,7 +69,7 @@
 │  N8N API (workflow.vya.digital)                             │
 ├─────────────────────────────────────────────────────────────┤
 │  URL: https://workflow.vya.digital/api/v1/                  │
-│  Autenticação: X-N8N-API-KEY (JWT válido até 2027)         │
+│  Autenticação: X-N8N-API-KEY (valor redigido)              │
 │  Endpoints:                                                  │
 │    - GET /workflows                                          │
 │    - GET /executions?limit=X&cursor=Y                       │
@@ -230,7 +230,7 @@ async def lifespan(app: FastAPI):
 ```bash
 $ docker exec prod-collector-api env | grep N8N
 N8N_URL=https://workflow.vya.digital/
-N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (JWT válido até 2027)
+N8N_API_KEY=<REDACTED>
 ```
 
 ---

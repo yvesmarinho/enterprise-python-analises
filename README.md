@@ -131,6 +131,13 @@ enterprise-python-analysis/
 └── migration_plan.json     # 🗺️ Plano de migração
 ```
 
+
+## 📋 Servidores Existentes
+
+| Servidor | Função     | CPU NR | RAM GB | Disco |
+|----------|------------|--------|--------|--------|
+
+
 ---
 
 ## 📋 Servidores Analisados
@@ -138,9 +145,9 @@ enterprise-python-analysis/
 | Servidor | Containers | CPU % | RAM GB | Status |
 |----------|-----------|-------|--------|--------|
 | wf001 | 22 | 12.52% | ~11 | ✅ Target |
-| wf002 | 7 | 11.85% | ~10 | ✅ Target |
+| wf002 | 7 | 11.85% | ~10 | 🎯 **Desligar** |
 | wf005 | 13 | 6.32% | 4.81 | 🎯 **Desligar** |
-| wf006 | 8 | 54.66% | 12.78 | ⚠️ Alta carga |
+| wf006 | 8 | 54.66% | 12.78 | 🎯 **Desligar** |
 
 ---
 

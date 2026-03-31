@@ -1,39 +1,37 @@
 # 📋 TODAY ACTIVITIES
 
-**Link para Sessão Atual**: [2026-03-30](./sessions/2026-03-30/TODAY_ACTIVITIES_2026-03-30.md)
-**Última Atualização**: 30/03/2026 (encerramento)
-**Status**: ✅ Sessão 2026-03-30 encerrada
+**Link para Sessão Atual**: [2026-03-31](./sessions/2026-03-31/TODAY_ACTIVITIES_2026-03-31.md)
+**Última Atualização**: 31/03/2026 (abertura)
+**Status**: ▶️ Sessão 2026-03-31 iniciada
 
 ---
 
-## 🎯 Sessão Ativa: 30/03/2026
+## 🎯 Sessão Ativa: 31/03/2026
 
 ### Foco Principal
-**Análise WF001: correlação estatística, drill-down de causa raiz e instrumentação N8N**
+**Abertura de sessão: recuperação de contexto, higiene inicial e definição do objetivo técnico do dia**
 
 ### Conquistas do Dia
-1. ✅ Contexto da sessão 2026-03-23 recuperado
-2. ✅ Debate técnico WF001/VPS publicado
-3. ✅ ANA-001 executado (2026-01-01 a 2026-03-30) via VictoriaMetrics — 0 violações p95 >= 1s
-4. ✅ Fase 1 correlação estatística (pivotada) — 2.247 timestamps, correlações CPU/Net/Load
-5. ✅ Fase 2 drill-down causa raiz — load=28.42 × CPUs 30/03 17:40 UTC (scheduler contention)
-6. ✅ Ação de instrumentação preparada — plano + guard rules + validador automático
-7. ✅ Baseline de instrumentação gerado (sum_raw_negative=289, p95_unique_values=1)
-8. ✅ Bug corrigido: `correlation.py` + `geographic.py` (contracto tuple)
-9. ✅ Testes de regressão: `tests/analyzers/test_series_tuple_order.py` (2 passando)
-10. ✅ Relatório técnico consolidado: `reports/RELATORIO_TECNICO_ANALISE_N8N_2026-03-30.md`
-11. ✅ Inventário VPS normalizado: 4 hosts ativos (wf001/wf008/wfdb01/wfdb02)
+1. ✅ Contexto da sessão 2026-03-30 recuperado
+2. ✅ Regras obrigatórias `.copilot-*` recarregadas
+3. ✅ Estado do git e histórico recente validados
+4. ✅ Varredura inicial de segurança executada
+5. ✅ Estrutura documental `docs/sessions/2026-03-31/` criada
+6. ✅ `SESSION_RECOVERY`, `TODAY_ACTIVITIES`, `SESSION_REPORT`, `FINAL_STATUS` e `CHAT_LOG` criados
+7. ✅ Alerta histórico de segurança registrado para acompanhamento futuro
 
 ### Status Atual
-- **Projeto**: 🟢 Análise WF001 concluída
-- **ANA-001**: 🟢 0 violações p95 >= 1s (histórico 2026-01-01 a 2026-03-30)
-- **VictoriaMetrics**: 🟢 77 séries de workflow, 48 dias de cobertura
+- **Projeto**: 🟢 Base analítica preservada após encerramento de 30/03
+- **ANA-001**: 🟢 Concluído no recorte histórico já validado
+- **Sessão**: ▶️ Aberta em 31/03, aguardando definição do objetivo técnico
 - **Instrumentação N8N**: 🔴 Fix pendente (sum negativo, bucket único histograma)
 - **cAdvisor wf001**: 🔴 Labels de container ausentes (deploy pendente)
 - **Loki**: 🔴 Autenticação 401 (credenciais/token inválidos)
-- **Sessão**: ✅ Encerrada formalmente
+- **Segurança histórica**: 🟡 Documentos de 2026-02-09 exigem revisão futura
 
-### Pendências (próxima sessão)
+### Pendências Imediatas
+- 🔴 Definir objetivo técnico principal da sessão 31/03
+- 🔴 Decidir tratamento dos artefatos locais pendentes no worktree
 - 🔴 [P1] Corrigir cAdvisor wf001 — labels de container
 - 🔴 [P1] Corrigir Loki — autenticação 401
 - 🟡 [P2] Gate de proveniência ANA-001 (host por série)

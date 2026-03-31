@@ -1,7 +1,6 @@
 """Configuração do Collector API"""
-import os
-from pydantic_settings import BaseSettings
 from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -10,7 +9,7 @@ class Settings(BaseSettings):
     # API Configuration
     api_host: str = Field(default="0.0.0.0")
     api_port: int = Field(default=5000)
-    api_key: str = Field(default="dev-secret-key-12345", alias="COLLECTOR_API_KEY")
+    api_key: str = Field(default="CHANGE_ME_DEV_ONLY", alias="COLLECTOR_API_KEY")
 
     # N8N Configuration
     n8n_url: str = Field(default="https://workflow.vya.digital/", alias="N8N_URL")

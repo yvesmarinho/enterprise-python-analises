@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from n8n_analyzer.collectors.victoria_metrics import VictoriaMetricsCollector
     from n8n_analyzer.config import Config
 
+from n8n_analyzer.analyzers.provenance import ProvenanceGate
 from n8n_analyzer.models.latency_event import LatencyEvent
 from n8n_analyzer.models.report import QueryRecord
 
@@ -48,9 +49,11 @@ class LatencyAnalyzer:
         self,
         vm: "VictoriaMetricsCollector",
         config: "Config",
+        gate: ProvenanceGate | None = None,
     ) -> None:
         self._vm = vm
         self._config = config
+        self._gate = gate
 
     async def analyze(
         self,
@@ -94,6 +97,12 @@ class LatencyAnalyzer:
             is_primary=True,
         )
         all_queries.append(q99)
+
+        # Apply provenance gate to reject series from unexpected hosts/jobs
+        if self._gate is not None:
+            p95_results, _ = self._gate.validate(
+                p95_results, source=self._vm.base_url
+            )
 
         # Build per-(workflow, node, host) series index for p50 and p99 lookups
         p50_index = _build_series_index(p50_results)
@@ -142,6 +151,12 @@ class LatencyAnalyzer:
 
             dd_p50_idx = _build_series_index(dd_p50)
             dd_p99_idx = _build_series_index(dd_p99)
+
+            # Apply gate to drilldown results as well
+            if self._gate is not None:
+                dd_p95, _ = self._gate.validate(
+                    dd_p95, source=self._vm.base_url
+                )
 
             for labels, timestamps, values in dd_p95:
                 drilldown_events.extend(
