@@ -178,7 +178,7 @@
       "activityBar.background": "#0d1b2a",
       "activityBar.foreground": "#FFFFFF"
     },
-    "workbench.colorTheme": "Default Dark+",
+    "workbench.colorTheme": "Dark+",
     "git.ignoreLimitWarning": true,
     "explorer.fileNesting.enabled": false,
     "breadcrumbs.enabled": true,
